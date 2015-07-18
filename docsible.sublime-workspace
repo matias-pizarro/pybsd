@@ -17,10 +17,63 @@
 			}
 		},
 		{
-			"file": ".git/config",
+			"file": "systems/__init__.py",
 			"settings":
 			{
-				"buffer_size": 92,
+				"buffer_size": 445,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "systems/tests.py",
+			"settings":
+			{
+				"buffer_size": 614,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/usr/home/mpizarro/projects/bsdploy/bsdploy/README.rst",
+			"settings":
+			{
+				"buffer_size": 3344,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "docbase/__init__.py",
+			"settings":
+			{
+				"buffer_size": 156,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/usr/home/mpizarro/.virtualenvs/ansible/lib/python2.7/site-packages/docsible.pth",
+			"settings":
+			{
+				"buffer_size": 36,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "Searching 85 files for \"flavour\"\n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/__init__.py:\n  158          instance.config.setdefault('startup_script', path.join(\n  159              bsdploy_path, 'startup-ansible-jail.sh'))\n  160:         instance.config.setdefault('flavour', 'bsdploy_base')\n  161  \n  162  \n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/roles/jails_host/tasks/main.yml:\n  106    get_url: dest=/var/cache/pkg/All/pkg.txz url={{ pkg_txz_url }}\n  107  \n  108: - name: Directory for jail flavour \"bsdploy_base\"\n  109:   file: dest=/usr/jails/flavours/bsdploy_base state=directory owner=root group=wheel\n  110  \n  111: - name: Pkg in bsdploy_base flavour\n  112:   command: \"tar -x -C /usr/jails/flavours/bsdploy_base --chroot --exclude '+*' -f /var/cache/pkg/All/pkg.txz creates=/usr/jails/flavours/bsdploy_base/usr/local/sbin/pkg\"\n  113  \n  114: - name: The .ssh directory for root in bsdploy_base flavour\n  115    file:\n  116:     dest: \"/usr/jails/flavours/bsdploy_base/{{ploy_root_home_path}}/.ssh\"\n  117      state: directory\n  118      mode: \"0600\"\n  ...\n  120      group: wheel\n  121  \n  122: - name: The etc directory in bsdploy_base flavour\n  123:   file: dest=/usr/jails/flavours/bsdploy_base/etc state=directory owner=root group=wheel\n  124: - name: The etc/ssh directory in bsdploy_base flavour\n  125:   file: dest=/usr/jails/flavours/bsdploy_base/etc/ssh state=directory owner=root group=wheel\n  126  \n  127: - copy: src=make.conf dest=/usr/jails/flavours/bsdploy_base/etc/make.conf owner=root group=wheel\n  128: - file: dest=/usr/jails/flavours/bsdploy_base/usr/local/etc/pkg/repos state=directory owner=root group=wheel\n  129: - template: src=pkg.conf dest=/usr/jails/flavours/bsdploy_base/usr/local/etc/pkg.conf owner=root group=wheel\n  130: - template: src=FreeBSD.conf dest=/usr/jails/flavours/bsdploy_base/usr/local/etc/pkg/repos/FreeBSD.conf owner=root group=wheel\n  131  \n  132  \n  133  #\n  134: # configure bsdploy_base flavour\n  135  # TODO: rename to ``bsdploy_base``\n  136  #\n  137  \n  138: - name: rc.conf for bsdploy_base flavour\n  139:   copy: src=base_flavour_rc.conf dest=/usr/jails/flavours/bsdploy_base/etc/rc.conf owner=root group=wheel\n  140: - name: sshd_config for bsdploy_base flavour\n  141:   copy: src=base_flavour_sshd_config dest=/usr/jails/flavours/bsdploy_base/etc/ssh/sshd_config owner=root group=wheel\n  142: - name: motd for bsdploy_base flavour\n  143:   copy: src=base_flavour_motd dest=/usr/jails/flavours/bsdploy_base/etc/motd owner=root group=wheel\n  144: - name: copy some settings from host to bsdploy_base flavour\n  145    shell: cmp -s {{ item.src }} {{ item.dest }} || cp -v {{ item.src }} {{ item.dest }}\n  146    register: _cp_settings_result\n  147    changed_when: _cp_settings_result.stdout|default() != ''\n  148    with_items:\n  149:     - { src: \"/etc/resolv.conf\", dest: \"/usr/jails/flavours/bsdploy_base/etc/resolv.conf\" }\n  150:     - { src: \"/{{ploy_root_home_path}}/.ssh/authorized_keys\", dest: \"/usr/jails/flavours/bsdploy_base{{ploy_root_home_path}}/.ssh/authorized_keys\" }\n  151  \n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/roles/jails_host/templates/ezjail.conf:\n   26  # ezjail_default_execute=\"/usr/bin/login -f root\"\n   27  \n   28: # This is the flavour used by default when setting up a new jail\n   29: # ezjail_default_flavour=\"\"\n   30  \n   31  # This is the default location where ezjail archives its jails to\n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/tests/test_bsdploy.py:\n  114      config = dict(ctrl.instances['foo'].config)\n  115      assert sorted(config.keys()) == [\n  116:         'ansible_python_interpreter', 'fabric-shell', 'flavour', 'master',\n  117          'startup_script']\n  118      assert config['ansible_python_interpreter'] == '/usr/local/bin/python2.7'\n  119      assert config['fabric-shell'] == '/bin/sh -c'\n  120:     assert config['flavour'] == 'bsdploy_base'\n  121      assert config['master'] == 'jailhost'\n  122      assert config['startup_script']['path'].endswith('startup-ansible-jail.sh')\n  ...\n  216      ('foo', 'ansible_python_interpreter', 'python2.7', 'python2.7'),\n  217      ('foo', 'startup_script', 'foo', {'path': '{tempdir}/etc/foo'}),\n  218:     ('foo', 'flavour', 'foo', 'foo'),\n  219      ('jailhost', 'bootstrap', 'daemonology', ('fabfile', '{bsdploy_path}/fabfile_daemonology.py')),\n  220      ('jailhost', 'bootstrap', 'foo', SystemExit),\n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/tests/test_roles.py:\n   84          'Create pkg cache folder',\n   85          'Download pkg.txz',\n   86:         'Directory for jail flavour \"bsdploy_base\"',\n   87:         'Pkg in bsdploy_base flavour',\n   88:         'The .ssh directory for root in bsdploy_base flavour',\n   89:         'The etc directory in bsdploy_base flavour',\n   90:         'The etc/ssh directory in bsdploy_base flavour',\n   91:         'copy src=make.conf dest=/usr/jails/flavours/bsdploy_base/etc/make.conf owner=root group=wheel',\n   92:         'file dest=/usr/jails/flavours/bsdploy_base/usr/local/etc/pkg/repos state=directory owner=root group=wheel',\n   93:         'template src=pkg.conf dest=/usr/jails/flavours/bsdploy_base/usr/local/etc/pkg.conf owner=root group=wheel',\n   94:         'template src=FreeBSD.conf dest=/usr/jails/flavours/bsdploy_base/usr/local/etc/pkg/repos/FreeBSD.conf owner=root group=wheel',\n   95:         'rc.conf for bsdploy_base flavour',\n   96:         'sshd_config for bsdploy_base flavour',\n   97:         'motd for bsdploy_base flavour',\n   98:         'copy some settings from host to bsdploy_base flavour']\n   99  \n  100  \n\n47 matches across 5 files\n\n\nSearching 85 files for \"ezjail\"\n\n/usr/home/mpizarro/projects/bsdploy/CHANGES.rst:\n   66  - automatically set env.shell for fabric scripts.\n   67  - generate ssh host keys locally during bootstrap if possible.\n   68: - set ``fingerprint`` option for ezjail master automatically if a ssh host key exists locally.\n   69  \n   70  \n\n/usr/home/mpizarro/projects/bsdploy/README.rst:\n   28  ------------\n   29  \n   30: BSDploy takes the shape of a commandline tool by the name of ``ploy`` which is installed on a so-called *control host* (typically your laptop or desktop machine) with which you then control one or more *target hosts*. The only two things installed on target hosts by BSDploy are Python and ``ezjail`` – everything else stays on the control host.\n   31  \n   32  \n   ..\n   62  BSDploy's scope is quite ambitious, so naturally it does not attempt to do all of the work on its own. In fact, BSDPloy is just a fairly thin, slightly opinionated wrapper around existing excellent tools.\n   63  \n   64: In addition to the above mentioned Ansible and Fabric, it uses `ezjail <http://erdgeist.org/arts/software/ezjail/>`_ on the host to manage the jails and on the client numerous members of the `ployground family <https://github.com/ployground/>`_ for pretty much everything else.\n   65  \n   66  \n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/__init__.py:\n   58              prog=\"%s bootstrap\" % self.ctrl.progname,\n   59              description=help)\n   60:         masters = dict((master.id, master) for master in self.ctrl.get_masters('ezjail_admin'))\n   61          parser.add_argument(\n   62              \"master\",\n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/roles/jails_host/defaults/main.yml:\n    5  ploy_bootstrap_geli: no\n    6  ploy_bootstrap_zpool_version: 28\n    7: ploy_ezjail_install_host: \"ftp.freebsd.org\"\n    8  jails_dir: /usr/jails\n    9  jails_zfs_root:  \"{{ ploy_bootstrap_data_pool_name }}/jails\"\n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/roles/jails_host/handlers/main.yml:\n    2  - name: restart network\n    3    raw: /etc/netstart\n    4: - name: restart ezjail\n    5:   service: name=ezjail state=restarted\n    6  - name: reload pf\n    7    service: name=pf state=reloaded\n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/roles/jails_host/tasks/main.yml:\n   39    pkgng: name={{ item }} state=present\n   40    with_items:\n   41:   - ezjail\n   42  \n   43  - name: Set default jail interface\n   ..\n   45      name: jail_interface\n   46      value: \"{{ ploy_jail_host_default_jail_interface }}\"\n   47:   notify: restart ezjail\n   48  - name: Set default jail parameters\n   49    sysrc:\n   50      name: jail_parameters\n   51      value: \"allow.raw_sockets=1 allow.sysvipc=1\"\n   52:   notify: restart ezjail\n   53  - name: Set default jail exec stop\n   54    sysrc:\n   55      name: jail_exec_stop\n   56      value: \"/bin/sh /etc/rc.shutdown\"\n   57:   notify: restart ezjail\n   58  \n   59: - name: Enable ezjail in rc.conf\n   60    service:\n   61:     name: ezjail\n   62      enabled: yes\n   63:   notify: restart ezjail\n   64  \n   65: - name: Setup ezjail.conf\n   66:   template: src=ezjail.conf dest=/usr/local/etc/ezjail.conf\n   67:   notify: restart ezjail\n   68  \n   69  - name: Setup data zpool\n   ..\n   88      mountpoint=/usr/jails\n   89  \n   90: - name: Initialize ezjail (using http proxy)\n   91:   command: \"ezjail-admin install -h {{ ploy_ezjail_install_host }} -r {{ ploy_ezjail_install_release|default(ansible_distribution_release) }} creates=/usr/jails/basejail\"\n   92    when: ploy_http_proxy is defined\n   93    environment:\n   ..\n   95      https_proxy: \"{{ploy_http_proxy}}\"\n   96  \n   97: - name: Initialize ezjail (may take a while)\n   98:   command: \"ezjail-admin install -h {{ ploy_ezjail_install_host }} -r {{ ploy_ezjail_install_release|default(ansible_distribution_release) }} creates=/usr/jails/basejail\"\n   99    when: ploy_http_proxy is not defined\n  100  \n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/roles/jails_host/templates/ezjail.conf:\n    1: # ezjail.conf - Example file, see ezjail.conf(5)\n    2  #\n    3  # Note: If you alter some of those variables AFTER creating your first\n    4: # jail, you may have to adapt /etc/fstab.* and EZJAIL_PREFIX/etc/ezjail/* by\n    5  # hand\n    6  \n    .\n    9  # Note: If you have spread your jails to multiple locations, use softlinks\n   10  # to collect them in this directory\n   11: ezjail_jaildir={{ jails_dir }}\n   12  \n   13  # Location of the tiny skeleton jail template\n   14: # ezjail_jailtemplate=${ezjail_jaildir}/newjail\n   15  \n   16  # Location of the huge base jail\n   17: # ezjail_jailbase=${ezjail_jaildir}/basejail\n   18  \n   19  # Location of your copy of FreeBSD's source tree\n   20: # ezjail_sourcetree=/usr/src\n   21  \n   22  # This is where the install sub command defaults to fetch its packages from\n   23: # ezjail_ftphost=ftp.freebsd.org\n   24  \n   25  # This is the command that is being executed by the console subcommand\n   26: # ezjail_default_execute=\"/usr/bin/login -f root\"\n   27  \n   28  # This is the flavour used by default when setting up a new jail\n   29: # ezjail_default_flavour=\"\"\n   30  \n   31: # This is the default location where ezjail archives its jails to\n   32: # ezjail_archivedir=\"${ezjail_jaildir}/ezjail_archives\"\n   33  \n   34  # base jail will provide a soft link from /usr/bin/perl to /usr/local/bin/perl\n   35  # to accomodate all scripts using '#!/usr/bin/perl'...\n   36: # ezjail_uglyperlhack=\"YES\"\n   37  \n   38  # Default options for newly created jails\n   39  #\n   40: # Note: Be VERY careful about disabling ezjail_mount_enable. Mounting\n   41  # basejail via nullfs depends on this. You will have to find other\n   42  # ways to provide your jail with essential system files\n   43: # ezjail_mount_enable=\"YES\"\n   44: # ezjail_devfs_enable=\"YES\"\n   45: # ezjail_devfs_ruleset=\"devfsrules_jail\"\n   46: ezjail_procfs_enable=\"NO\"\n   47: # ezjail_fdescfs_enable=\"YES\"\n   48  \n   49  # ZFS options\n   50  \n   51  # Setting this to YES will start to manage the basejail and newjail in ZFS\n   52: ezjail_use_zfs=\"YES\"\n   53  \n   54  # Setting this to YES will manage ALL new jails in their own zfs\n   55: # ezjail_use_zfs_for_jails=\"YES\"\n   56  \n   57: # The name of the ZFS ezjail should create jails on, it will be mounted at the ezjail_jaildir\n   58  \n   59: ezjail_jailzfs=\"{{ jails_zfs_root }}\"\n   60  # ADVANCED, be very careful!\n   61: # ezjail_zfs_properties=\"-o compression=lzjb -o atime=off\"\n   62: # ezjail_zfs_jail_properties=\"-o dedup=on\"\n   63  \n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/tests/test_bsdploy.py:\n    8      import bsdploy\n    9      import ploy.plain\n   10:     import ploy_ezjail\n   11      import ploy_fabric\n   12      ployconf.fill([\n   ..\n   17      ctrl.plugins = {\n   18          'bsdploy': bsdploy.plugin,\n   19:         'ezjail': ploy_ezjail.plugin,\n   20          'fabric': ploy_fabric.plugin,\n   21          'plain': ploy.plain.plugin}\n   ..\n   35  \n   36  \n   37: def test_augment_ezjail_master(ctrl, ployconf, tempdir):\n   38      tempdir['bootstrap-files/ssh_host_rsa_key.pub'].fill('rsa')\n   39      config = dict(ctrl.instances['jailhost'].config)\n   ..\n   49  \n   50  \n   51: def test_augment_ezjail_master_playbook_implicit(ctrl, ployconf, tempdir):\n   52      from ploy_ansible import has_playbook\n   53      jailhost_yml = tempdir['jailhost.yml']\n   ..\n   59  \n   60  \n   61: def test_augment_ezjail_master_playbook_explicit(ctrl, ployconf, tempdir):\n   62      from ploy_ansible import has_playbook\n   63      ployconf.fill([\n   ..\n   70  \n   71  \n   72: def test_augment_ezjail_master_fabfile_default_mfsbsd(ctrl, ployconf, tempdir):\n   73      \"\"\" if no fabfile is stated and the by-convention does not exist,\n   74      the default is set \"\"\"\n   ..\n   79  \n   80  \n   81: def test_augment_ezjail_master_fabfile_implicit(ctrl, ployconf, tempdir):\n   82      jailhost_fab = tempdir['jailhost/fabfile.py']\n   83      jailhost_fab.fill('')\n   ..\n   88  \n   89  \n   90: def test_augment_ezjail_jail_fabfile_implicit(ctrl, ployconf, tempdir):\n   91      jailhost_fab = tempdir['jailhost-foo/fabfile.py']\n   92      jailhost_fab.fill('')\n   ..\n   97  \n   98  \n   99: def test_augment_ezjail_master_fabfile_explicit(ctrl, ployconf, tempdir):\n  100      jailhost_fab = tempdir['jailhost/fabfile.py']\n  101      jailhost_fab.fill('')\n  ...\n  111  \n  112  \n  113: def test_augment_ezjail_instance(ctrl, ployconf):\n  114      config = dict(ctrl.instances['foo'].config)\n  115      assert sorted(config.keys()) == [\n  ...\n  124  \n  125  \n  126: def test_augment_non_ezjail_instance(ctrl, ployconf):\n  127      ployconf.fill([\n  128          '[plain-instance:foo]'])\n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/tests/test_roles.py:\n    8      from ploy import Controller\n    9      import bsdploy\n   10:     import ploy_ezjail\n   11      import ploy_ansible\n   12      ployconf.fill([\n   ..\n   15      ctrl.plugins = {\n   16          'bsdploy': bsdploy.plugin,\n   17:         'ezjail': ploy_ezjail.plugin,\n   18          'ansible': ploy_ansible.plugin}\n   19      ctrl.configfile = ployconf.path\n   ..\n   75          'Set default jail parameters',\n   76          'Set default jail exec stop',\n   77:         'Enable ezjail in rc.conf',\n   78:         'Setup ezjail.conf',\n   79          'Setup data zpool',\n   80          'Set data zpool options',\n   81          'Jails ZFS file system',\n   82:         'Initialize ezjail (using http proxy)',\n   83:         'Initialize ezjail (may take a while)',\n   84          'Create pkg cache folder',\n   85          'Download pkg.txz',\n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/tests/test_templates.py:\n    7  \n    8  \n    9: def test_jails_host_ezjail_conf():\n   10      pass\n   11  \n\n/usr/home/mpizarro/projects/bsdploy/buildout.cfg:\n    5      ploy_ansible\n    6      ploy_ec2\n    7:     ploy_ezjail\n    8      ploy_fabric\n    9      ploy_virtualbox\n   ..\n   28  ploy_fabric = git https://github.com/ployground/ploy_fabric\n   29  ploy_ansible = git https://github.com/ployground/ploy_ansible\n   30: ploy_ezjail = git https://github.com/ployground/ploy_ezjail\n   31  ploy_ec2 = git https://github.com/ployground/ploy_ec2\n   32  ploy_virtualbox = git https://github.com/ployground/ploy_virtualbox\n\n/usr/home/mpizarro/projects/bsdploy/docs/advanced/customizing-bootstrap.rst:\n   36                      run('reboot')\n   37  \n   38: For the ezjail initialization you have to add the following setting with a FreeBSD http mirror of your choice to your jail host config in ``ploy.conf``::\n   39  \n   40:     ansible-ploy_ezjail_install_host = http://ftp4.de.freebsd.org\n   41  \n   42  The ``_mfsbsd`` context manager takes care of setting the ``bootstrap-fingerprint`` etc for mfsBSD.\n\n/usr/home/mpizarro/projects/bsdploy/docs/installation.rst:\n   15  A FreeBSD system that wants to be managed by BSDploy will\n   16  \n   17: - need to have `ezjail <http://erdgeist.org/arts/software/ezjail/>`_ installed\n   18  - as well as `Python <http://python.org>`_ \n   19  - must have SSH access enabled (either for root or with ``sudo`` configured).\n   20  - have ZFS support (BSDploy does not support running on non-ZFS filesystems)\n   21  \n   22: Strictly speaking, BSDploy only needs Python for the initial configuration of the jailhost. If you chose to perform that step yourself or use a pre-existing host, you won't need Python on the host, just ezjail.\n   23  \n   24  Normally, BSDploy will take care of these requirements for you during  :doc:`bootstrapping </setup/bootstrapping>` but in situations where this is not possible, manually providing the abovementioned requirements should allow you to :doc:`apply BSDploy's host configuration </setup/configuration>` anyway.\n\n/usr/home/mpizarro/projects/bsdploy/docs/quickstart.rst:\n   74      instance = ploy-demo\n   75  \n   76: This creates an ezjail jailhost (``ez-master``) named ``jailhost`` and tells BSDploy that it lives / should live inside the provisioning instance named ``ploy-demo`` (our freshly created virtual machine).\n   77  \n   78  But since none of this has happened yet, we need to tell BSDploy to make it so, like this::\n   ..\n  144      [...]\n  145  \n  146: Package-wise nothing much has changed – only ``ezjail`` has been installed::\n  147  \n  148      root@jailhost:~ # pkg info\n  149:     ezjail-3.4.1                   Framework to easily create, manipulate, and run FreeBSD jails\n  150      gettext-runtime-0.19.3         GNU gettext runtime libraries and programs\n  151      indexinfo-0.2.2                Utility to regenerate the GNU info page index\n  ...\n  155      root@jailhost:~ # \n  156  \n  157: There is now a second zpool called ``tank`` and ``ezjail`` has been configured to use it::\n  158  \n  159      root@jailhost:~ # zpool list\n  ...\n  176  But there aren't any jails configured yet::\n  177  \n  178:     root@jailhost:~ # ezjail-admin list\n  179      STA JID  IP              Hostname                       Root Directory\n  180      --- ---- --------------- ------------------------------ ------------------------\n  ...\n  200  \n  201      ploy ssh jailhost\n  202:     root@jailhost:~ # ezjail-admin list\n  203      STA JID  IP              Hostname                       Root Directory\n  204      --- ---- --------------- ------------------------------ ------------------------\n  ...\n  208  Basically, there are two options (besides giving it a public IP): either port forwarding from the host or using a SSH proxy command.\n  209  \n  210: Rather conveniently `ploy_ezjail <https://github.com/ployground/ploy_ezjail>`_ has defaults for the latter.\n  211  \n  212  Log out from the jailhost and run this::\n\n/usr/home/mpizarro/projects/bsdploy/docs/setup/configuration.rst:\n    9  But before we can create and manage jails, a few tasks still remain, in particular\n   10  \n   11: - installation and configuration of ``ezjail``\n   12  - ZFS setup and layout, including optional encryption\n   13  - jail specific network setup\n\n/usr/home/mpizarro/projects/bsdploy/docs/setup/overview.rst:\n   14  - At the end of the provisioning process we have a system that has booted into an installer (usually mfsBSD) which is ready for bootstrapping\n   15  - At the end of the bootstrapping process we have installed and booted into a vanilla FreeBSD system with just the essential requirements to complete the actual configuration\n   16: - At the end of the configuration process we have a FreeBSD system with a pre-configured ``ezjail`` setup which can be managed by BSDploy.\n   17  \n   18  Conceptually, the provider of a jailhost is a separate entity from the jailhost itself, i.e. in a VirtualBox based setup you could have the following::\n\n/usr/home/mpizarro/projects/bsdploy/docs/setup/provisioning-ec2.rst:\n  111      bootstrap_data_pool_devices = xbd1s2 xbd2s2\n  112  \n  113: In addition, since daemonology will also update the installation to the latest patch level, we will need to explicitly tell ``ezjail`` which version to install, since by default it uses the output of ``uname`` to compute the URL for downloading the base jail but that most likely won't exist (i.e ``10.0-RELEASE-p10``). You can do this by specifying ``ezjail_install_release`` for the ``ez-master`` like so::\n  114  \n  115:     ezjail_install_release = 10.0-RELEASE\n  116  \n  117  With this information you are now finally and truly ready to :doc:`configure the jailhost. </setup/configuration>`.\n\n/usr/home/mpizarro/projects/bsdploy/docs/tutorial/webserver.rst:\n    8  The website will be in a dedicated ZFS that will be mounted into the jail, so let's start with creating this.\n    9  \n   10: In ``etc/ploy.conf`` from the quickstart you should have the following ezjail master::\n   11  \n   12  	[ez-master:jailhost]\n\n/usr/home/mpizarro/projects/bsdploy/setup.py:\n   14      'ploy>=1.1.0',\n   15      'ploy_ansible>=1.2.4',\n   16:     'ploy_ezjail>=1.1.0',\n   17      'ploy_fabric>=1.1.0',\n   18  ]\n\n101 matches across 19 files\n\n\nSearching 85 files for \"ploy_jail_host_cloned_interfaces\"\n\n/usr/home/mpizarro/projects/bsdploy/CHANGES.rst:\n    8  - [feature] files copied during bootstrap can be encrypted using the ``ploy vault`` commands. This is useful for the private ssh host keys in ``bootstrap-files``.\n    9  - [fix] fixed setting of virtualbox defaults, so they can be properly overwritten\n   10: - [feature] added new variables: ploy_jail_host_cloned_interfaces/ploy_jail_host_default_jail_interface to give more flexiblity around network interface setup\n   11  \n   12  \n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/roles/jails_host/defaults/main.yml:\n   26  ploy_root_user_name: \"{{ploy_user | default('root')}}\"\n   27  ploy_root_home_path: \"{{ '/' if ploy_root_user_name == 'root' else '/usr/home/' }}{{ploy_root_user_name}}\"\n   28: ploy_jail_host_cloned_interfaces: lo1\n   29  ploy_jail_host_default_jail_interface: lo1\n   30  \n\n/usr/home/mpizarro/projects/bsdploy/bsdploy/roles/jails_host/tasks/main.yml:\n   14    sysrc:\n   15      name: cloned_interfaces\n   16:     value: \"{{ ploy_jail_host_cloned_interfaces }}\"\n   17    notify: restart network\n   18  \n\n3 matches across 3 files\n",
+			"settings":
+			{
+				"buffer_size": 22678,
+				"line_ending": "Unix",
+				"name": "Find Results",
+				"scratch": true
+			}
+		},
+		{
+			"contents": "---\n- name: bind host sshd to primary ip\n  lineinfile:\n    dest: /etc/ssh/sshd_config\n    regexp: ^ListenAddress\n    line: 'ListenAddress {{ ploy_jail_host_sshd_listenaddress }}'\n  notify: restart sshd\n\n- { include: ntpd.yml, tags: ntpd }\n- { include: obsolete-ipf.yml, tags: pf }\n- { include: pf.yml, tags: pf }\n\n- name: Setup cloned interfaces\n  sysrc:\n    name: cloned_interfaces\n    value: \"{{ ploy_jail_host_cloned_interfaces }}\"\n  notify: restart network\n\n- meta: flush_handlers\n\n# The sysctl module in ansible adds spaces around the equal sign in\n# /etc/sysctl.conf which breaks in FreeBSD 10, so we do this manually\n- name: Enable security.jail.allow_raw_sockets\n  lineinfile:\n    dest: /etc/sysctl.conf\n    regexp: ^security.jail.allow_raw_sockets\\s*=\n    line: security.jail.allow_raw_sockets=1\n  notify: reload sysctl\n  tags: sysctl\n- name: Enable security.jail.sysvipc_allowed\n  lineinfile:\n    dest: /etc/sysctl.conf\n    regexp: ^security.jail.sysvipc_allowed\\s*=\n    line: security.jail.sysvipc_allowed=1\n  notify: reload sysctl\n  tags: sysctl\n\n- name: Ensure helper packages are installed\n  pkgng: name={{ item }} state=present\n  with_items:\n  - ezjail\n\n- name: Set default jail interface\n  sysrc:\n    name: jail_interface\n    value: \"{{ ploy_jail_host_default_jail_interface }}\"\n  notify: restart ezjail\n- name: Set default jail parameters\n  sysrc:\n    name: jail_parameters\n    value: \"allow.raw_sockets=1 allow.sysvipc=1\"\n  notify: restart ezjail\n- name: Set default jail exec stop\n  sysrc:\n    name: jail_exec_stop\n    value: \"/bin/sh /etc/rc.shutdown\"\n  notify: restart ezjail\n\n- name: Enable ezjail in rc.conf\n  service:\n    name: ezjail\n    enabled: yes\n  notify: restart ezjail\n\n- name: Setup ezjail.conf\n  template: src=ezjail.conf dest=/usr/local/etc/ezjail.conf\n  notify: restart ezjail\n\n- name: Setup data zpool\n  zpool:\n    name: \"{{ ploy_bootstrap_data_pool_name }}\"\n    geli: \"{{ ploy_bootstrap_geli|bool }}\"\n    version: \"{{ ploy_bootstrap_zpool_version }}\"\n    devices: \"{{ ploy_bootstrap_data_pool_devices }}\"\n    raid_mode: \"{{ ploy_bootstrap_raid_mode }}\"\n\n- name: Set data zpool options\n  zfs:\n    name=\"{{ ploy_bootstrap_data_pool_name }}\"\n    state=present\n    atime=off\n    checksum=fletcher4\n\n- name: Jails ZFS file system\n  zfs:\n    name=\"{{ ploy_bootstrap_data_pool_name }}/jails\"\n    state=present\n    mountpoint=/usr/jails\n\n- name: Initialize ezjail (using http proxy)\n  command: \"ezjail-admin install -h {{ ploy_ezjail_install_host }} -r {{ ploy_ezjail_install_release|default(ansible_distribution_release) }} creates=/usr/jails/basejail\"\n  when: ploy_http_proxy is defined\n  environment:\n    http_proxy: \"{{ploy_http_proxy}}\"\n    https_proxy: \"{{ploy_http_proxy}}\"\n\n- name: Initialize ezjail (may take a while)\n  command: \"ezjail-admin install -h {{ ploy_ezjail_install_host }} -r {{ ploy_ezjail_install_release|default(ansible_distribution_release) }} creates=/usr/jails/basejail\"\n  when: ploy_http_proxy is not defined\n\n- name: Create pkg cache folder\n  file: dest=/var/cache/pkg/All/ state=directory owner=root group=wheel\n\n# TODO: is this still necessary? and if yes, it should be proxy aware...\n- name: Download pkg.txz\n  get_url: dest=/var/cache/pkg/All/pkg.txz url={{ pkg_txz_url }}\n\n- name: Directory for jail flavour \"bsdploy_base\"\n  file: dest=/usr/jails/flavours/bsdploy_base state=directory owner=root group=wheel\n\n- name: Pkg in bsdploy_base flavour\n  command: \"tar -x -C /usr/jails/flavours/bsdploy_base --chroot --exclude '+*' -f /var/cache/pkg/All/pkg.txz creates=/usr/jails/flavours/bsdploy_base/usr/local/sbin/pkg\"\n\n- name: The .ssh directory for root in bsdploy_base flavour\n  file:\n    dest: \"/usr/jails/flavours/bsdploy_base/{{ploy_root_home_path}}/.ssh\"\n    state: directory\n    mode: \"0600\"\n    owner: \"{{ploy_root_user_name}}\"\n    group: wheel\n\n- name: The etc directory in bsdploy_base flavour\n  file: dest=/usr/jails/flavours/bsdploy_base/etc state=directory owner=root group=wheel\n- name: The etc/ssh directory in bsdploy_base flavour\n  file: dest=/usr/jails/flavours/bsdploy_base/etc/ssh state=directory owner=root group=wheel\n\n- copy: src=make.conf dest=/usr/jails/flavours/bsdploy_base/etc/make.conf owner=root group=wheel\n- file: dest=/usr/jails/flavours/bsdploy_base/usr/local/etc/pkg/repos state=directory owner=root group=wheel\n- template: src=pkg.conf dest=/usr/jails/flavours/bsdploy_base/usr/local/etc/pkg.conf owner=root group=wheel\n- template: src=FreeBSD.conf dest=/usr/jails/flavours/bsdploy_base/usr/local/etc/pkg/repos/FreeBSD.conf owner=root group=wheel\n\n\n#\n# configure bsdploy_base flavour\n# TODO: rename to ``bsdploy_base``\n#\n\n- name: rc.conf for bsdploy_base flavour\n  copy: src=base_flavour_rc.conf dest=/usr/jails/flavours/bsdploy_base/etc/rc.conf owner=root group=wheel\n- name: sshd_config for bsdploy_base flavour\n  copy: src=base_flavour_sshd_config dest=/usr/jails/flavours/bsdploy_base/etc/ssh/sshd_config owner=root group=wheel\n- name: motd for bsdploy_base flavour\n  copy: src=base_flavour_motd dest=/usr/jails/flavours/bsdploy_base/etc/motd owner=root group=wheel\n- name: copy some settings from host to bsdploy_base flavour\n  shell: cmp -s {{ item.src }} {{ item.dest }} || cp -v {{ item.src }} {{ item.dest }}\n  register: _cp_settings_result\n  changed_when: _cp_settings_result.stdout|default() != ''\n  with_items:\n    - { src: \"/etc/resolv.conf\", dest: \"/usr/jails/flavours/bsdploy_base/etc/resolv.conf\" }\n    - { src: \"/{{ploy_root_home_path}}/.ssh/authorized_keys\", dest: \"/usr/jails/flavours/bsdploy_base{{ploy_root_home_path}}/.ssh/authorized_keys\" }\n",
+			"file": "/usr/home/mpizarro/projects/bsdploy/bsdploy/roles/jails_host/tasks/main.yml",
+			"file_size": 5561,
+			"file_write_time": 130816934586375333,
+			"settings":
+			{
+				"buffer_size": 5561,
 				"line_ending": "Unix"
 			}
 		}
@@ -57,10 +110,20 @@
 	},
 	"expanded_folders":
 	[
-		"/usr/home/mpizarro/projects/docsible"
+		"/usr/home/mpizarro/projects/docsible",
+		"/usr/home/mpizarro/projects/docsible/docbase",
+		"/usr/home/mpizarro/projects/docsible/docsible/group_vars",
+		"/usr/home/mpizarro/projects/docsible/docsible/group_vars/all",
+		"/usr/home/mpizarro/projects/docsible/systems",
+		"/usr/home/mpizarro/projects/bsdploy",
+		"/usr/home/mpizarro/projects/bsdploy/bsdploy",
+		"/usr/home/mpizarro/projects/bsdploy/bsdploy/bsdploy"
 	],
 	"file_history":
 	[
+		"/usr/home/mpizarro/projects/docsible/.git/config",
+		"/usr/home/mpizarro/Software/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/usr/home/mpizarro/.bsd_bash_aliases",
 		"/home/mpizarro/projects/docsible/requirements.txt",
 		"/usr/home/mpizarro/projects/docsible/requirements.txt",
 		"/usr/home/mpizarro/Software/sublime-text-3/Packages/soda-theme/Soda Dark 3.sublime-theme",
@@ -102,13 +165,14 @@
 	],
 	"find":
 	{
-		"height": 25.0
+		"height": 37.0
 	},
 	"find_in_files":
 	{
 		"height": 95.0,
 		"where_history":
 		[
+			"/usr/home/mpizarro/projects/bsdploy",
 			"/data/os/BSD/FreeBSD/scripts/1.3/ansible",
 			"<open files>,/data/os/BSD/FreeBSD/scripts/1.3/*.bash",
 			"<open files>"
@@ -119,6 +183,13 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"object",
+			"unittest.TestCase",
+			"Host",
+			"arg",
+			"ploy_jail_host_cloned_interfaces",
+			"ezjail",
+			"flavour",
 			"ansible_ssh_host",
 			"ssh",
 			"hetzner",
@@ -204,7 +275,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 3,
 			"sheets":
 			[
 				{
@@ -220,8 +291,8 @@
 						"selection":
 						[
 							[
-								90,
-								90
+								118,
+								118
 							]
 						],
 						"settings":
@@ -233,24 +304,136 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": ".git/config",
+					"file": "systems/__init__.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 92,
+						"buffer_size": 445,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								92,
-								92
+								98,
+								98
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "systems/tests.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 614,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								422,
+								422
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/usr/home/mpizarro/projects/bsdploy/bsdploy/README.rst",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 3344,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/RestructuredText/reStructuredText.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "docbase/__init__.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 156,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								144,
+								144
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "/usr/home/mpizarro/.virtualenvs/ansible/lib/python2.7/site-packages/docsible.pth",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 36,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								36,
+								36
 							]
 						],
 						"settings":
@@ -261,7 +444,684 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 22678,
+						"regions":
+						{
+							"match":
+							{
+								"flags": 112,
+								"regions":
+								[
+									[
+										266,
+										273
+									],
+									[
+										500,
+										507
+									],
+									[
+										554,
+										561
+									],
+									[
+										658,
+										665
+									],
+									[
+										706,
+										713
+									],
+									[
+										801,
+										808
+									],
+									[
+										910,
+										917
+									],
+									[
+										962,
+										969
+									],
+									[
+										1153,
+										1160
+									],
+									[
+										1192,
+										1199
+									],
+									[
+										1310,
+										1317
+									],
+									[
+										1349,
+										1356
+									],
+									[
+										1471,
+										1478
+									],
+									[
+										1561,
+										1568
+									],
+									[
+										1694,
+										1701
+									],
+									[
+										1814,
+										1821
+									],
+									[
+										1953,
+										1960
+									],
+									[
+										2060,
+										2067
+									],
+									[
+										2092,
+										2099
+									],
+									[
+										2124,
+										2131
+									],
+									[
+										2225,
+										2232
+									],
+									[
+										2257,
+										2264
+									],
+									[
+										2293,
+										2300
+									],
+									[
+										2395,
+										2402
+									],
+									[
+										2427,
+										2434
+									],
+									[
+										2456,
+										2463
+									],
+									[
+										2570,
+										2577
+									],
+									[
+										2856,
+										2863
+									],
+									[
+										2984,
+										2991
+									],
+									[
+										3232,
+										3239
+									],
+									[
+										3307,
+										3314
+									],
+									[
+										3629,
+										3636
+									],
+									[
+										3850,
+										3857
+									],
+									[
+										4192,
+										4199
+									],
+									[
+										4559,
+										4566
+									],
+									[
+										4620,
+										4627
+									],
+									[
+										4690,
+										4697
+									],
+									[
+										4750,
+										4757
+									],
+									[
+										4814,
+										4821
+									],
+									[
+										4875,
+										4882
+									],
+									[
+										4973,
+										4980
+									],
+									[
+										5114,
+										5121
+									],
+									[
+										5242,
+										5249
+									],
+									[
+										5367,
+										5374
+									],
+									[
+										5422,
+										5429
+									],
+									[
+										5470,
+										5477
+									],
+									[
+										5541,
+										5548
+									],
+									[
+										5845,
+										5851
+									],
+									[
+										6299,
+										6305
+									],
+									[
+										6666,
+										6672
+									],
+									[
+										6708,
+										6714
+									],
+									[
+										7139,
+										7145
+									],
+									[
+										7384,
+										7390
+									],
+									[
+										7683,
+										7689
+									],
+									[
+										7713,
+										7719
+									],
+									[
+										7958,
+										7964
+									],
+									[
+										8142,
+										8148
+									],
+									[
+										8322,
+										8328
+									],
+									[
+										8489,
+										8495
+									],
+									[
+										8526,
+										8532
+									],
+									[
+										8579,
+										8585
+									],
+									[
+										8635,
+										8641
+									],
+									[
+										8671,
+										8677
+									],
+									[
+										8706,
+										8712
+									],
+									[
+										8738,
+										8744
+									],
+									[
+										8775,
+										8781
+									],
+									[
+										8895,
+										8901
+									],
+									[
+										8940,
+										8946
+									],
+									[
+										8972,
+										8978
+									],
+									[
+										9006,
+										9012
+									],
+									[
+										9249,
+										9255
+									],
+									[
+										9294,
+										9300
+									],
+									[
+										9326,
+										9332
+									],
+									[
+										9360,
+										9366
+									],
+									[
+										9601,
+										9607
+									],
+									[
+										9633,
+										9639
+									],
+									[
+										9789,
+										9795
+									],
+									[
+										9807,
+										9813
+									],
+									[
+										9979,
+										9985
+									],
+									[
+										10080,
+										10086
+									],
+									[
+										10102,
+										10108
+									],
+									[
+										10183,
+										10189
+									],
+									[
+										10201,
+										10207
+									],
+									[
+										10299,
+										10305
+									],
+									[
+										10426,
+										10432
+									],
+									[
+										10552,
+										10558
+									],
+									[
+										10689,
+										10695
+									],
+									[
+										10767,
+										10773
+									],
+									[
+										10805,
+										10811
+									],
+									[
+										10826,
+										10832
+									],
+									[
+										10842,
+										10848
+									],
+									[
+										11024,
+										11030
+									],
+									[
+										11163,
+										11169
+									],
+									[
+										11339,
+										11345
+									],
+									[
+										11374,
+										11380
+									],
+									[
+										11409,
+										11415
+									],
+									[
+										11455,
+										11461
+									],
+									[
+										11490,
+										11496
+									],
+									[
+										11644,
+										11650
+									],
+									[
+										11754,
+										11760
+									],
+									[
+										11822,
+										11828
+									],
+									[
+										11879,
+										11885
+									],
+									[
+										11909,
+										11915
+									],
+									[
+										11992,
+										11998
+									],
+									[
+										12058,
+										12064
+									],
+									[
+										12253,
+										12259
+									],
+									[
+										12409,
+										12415
+									],
+									[
+										12423,
+										12429
+									],
+									[
+										12572,
+										12578
+									],
+									[
+										12789,
+										12795
+									],
+									[
+										12992,
+										12998
+									],
+									[
+										13172,
+										13178
+									],
+									[
+										13392,
+										13398
+									],
+									[
+										13585,
+										13591
+									],
+									[
+										13780,
+										13786
+									],
+									[
+										13973,
+										13979
+									],
+									[
+										14156,
+										14162
+									],
+									[
+										14410,
+										14416
+									],
+									[
+										14567,
+										14573
+									],
+									[
+										14581,
+										14587
+									],
+									[
+										14806,
+										14812
+									],
+									[
+										14848,
+										14854
+									],
+									[
+										15005,
+										15011
+									],
+									[
+										15060,
+										15066
+									],
+									[
+										15278,
+										15284
+									],
+									[
+										15428,
+										15434
+									],
+									[
+										15639,
+										15645
+									],
+									[
+										15687,
+										15693
+									],
+									[
+										15972,
+										15978
+									],
+									[
+										16150,
+										16156
+									],
+									[
+										16470,
+										16476
+									],
+									[
+										16512,
+										16518
+									],
+									[
+										16971,
+										16977
+									],
+									[
+										17420,
+										17426
+									],
+									[
+										17801,
+										17807
+									],
+									[
+										17888,
+										17894
+									],
+									[
+										18255,
+										18261
+									],
+									[
+										18438,
+										18444
+									],
+									[
+										18702,
+										18708
+									],
+									[
+										19081,
+										19087
+									],
+									[
+										19124,
+										19130
+									],
+									[
+										19429,
+										19435
+									],
+									[
+										20027,
+										20033
+									],
+									[
+										20508,
+										20514
+									],
+									[
+										20734,
+										20740
+									],
+									[
+										20810,
+										20816
+									],
+									[
+										21248,
+										21254
+									],
+									[
+										21425,
+										21431
+									],
+									[
+										21921,
+										21953
+									],
+									[
+										22327,
+										22359
+									],
+									[
+										22574,
+										22606
+									]
+								],
+								"scope": ""
+							}
+						},
+						"selection":
+						[
+							[
+								15693,
+								15693
+							]
+						],
+						"settings":
+						{
+							"detect_indentation": false,
+							"line_numbers": false,
+							"output_tag": 3,
+							"result_base_dir": "",
+							"result_file_regex": "^([A-Za-z\\\\/<].*):$",
+							"result_line_regex": "^ +([0-9]+):",
+							"scroll_past_end": true,
+							"syntax": "Packages/Default/Find Results.hidden-tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 4794.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/usr/home/mpizarro/projects/bsdploy/bsdploy/roles/jails_host/tasks/main.yml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5561,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								383,
+								383
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/YAML/YAML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": -0.0,
+						"translation.y": 459.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
 					"type": "text"
 				}
 			]
