@@ -1,0 +1,16 @@
+[hetzner]
+hetzner.docbase.net
+
+[digital_ocean]
+droplet-01.docbase.net
+
+[desktops]
+mpizarro
+
+[servers:children]
+hetzner
+digital_ocean
+
+[freebsd_boxes:children]
+servers
+desktops
