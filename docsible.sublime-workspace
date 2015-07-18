@@ -1,0 +1,352 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "requirements.txt",
+			"settings":
+			{
+				"buffer_size": 118,
+				"line_ending": "Unix",
+				"name": "JLHDSJHSJKHJKFHjk"
+			}
+		},
+		{
+			"file": ".git/config",
+			"settings":
+			{
+				"buffer_size": 92,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/usr/home/mpizarro/projects/docsible"
+	],
+	"file_history":
+	[
+		"/home/mpizarro/projects/docsible/requirements.txt",
+		"/usr/home/mpizarro/projects/docsible/requirements.txt",
+		"/usr/home/mpizarro/Software/sublime-text-3/Packages/soda-theme/Soda Dark 3.sublime-theme",
+		"/usr/home/mpizarro/Software/sublime-text-3/Packages/soda-theme/Soda Dark.sublime-theme",
+		"/usr/home/mpizarro/.config/sublime-text-3/Packages/Theme - Soda SolarizedDark/Soda SolarizedDark/fold-closed.png",
+		"/usr/home/mpizarro/.config/sublime-text-3/Packages/Theme - Soda SolarizedDark/Soda SolarizedDark/folder-open.png",
+		"/usr/local/share/sublime_text_3/Packages/Color Scheme - Default.sublime-package",
+		"/usr/home/mpizarro/theme.txt",
+		"/usr/home/mpizarro/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+		"/usr/home/mpizarro/configs/hetzner/files/usr/jails/mysql/usr/local/etc/mysql/my.cnf",
+		"/usr/home/mpizarro/Downloads/bcompare-4.0.7.19761/bcmount32",
+		"/tmp/chromium-43.0.2357.125.log",
+		"/tmp/thunderbird-31.7.0.log",
+		"/tmp/firefox-i18n-38.0.5.log",
+		"/tmp/firefox-38.0.5,1.log",
+		"/tmp/qt4-webkit-4.8.6_2.log",
+		"/tmp/ffmpeg-2.3.6_2,1.log",
+		"/tmp/ffmpeg-2.3.6_4,1.log",
+		"/tmp/webkit-gtk3-2.4.9.log",
+		"/usr/home/mpizarro/.config/sublime-text-3/Packages/Theme - Soda SolarizedDark/Soda SolarizedDark.sublime-theme",
+		"/old_pool/data/os/BSD/FreeBSD/scripts/1.3/5_1_2_6_001_create_artichauts_jail.bash",
+		"/old_pool/data/os/BSD/FreeBSD/scripts/1.3/2_1_summary_hetzner.bash",
+		"/old_pool/data/os/BSD/FreeBSD/scripts/1.3/1_2_pre_install_mfsbsd.bash",
+		"/old_pool/data/os/BSD/FreeBSD/scripts/1.3/2_1_install_root.bash",
+		"/old_pool/data/os/BSD/FreeBSD/scripts/1.3/5_1_2_2_create_nginx_proxy_jail.bash",
+		"/old_pool/data/os/BSD/FreeBSD/scripts/1.3/5_1_2_6_008_create_rickabel_jail.bash",
+		"/home/mpizarro/Downloads/Renta2014_unix_1_25.sh",
+		"/tmp/chromium-43.0.2357.81.log",
+		"/tmp/chromium-43.0.2357.81-1.log",
+		"/tmp/kblocks-4.14.3.log",
+		"/tmp/chromium-40.0.2214.115.log",
+		"/old_pool/etc/X11/xorg.conf",
+		"/home/mpizarro/Downloads/ffmpeg-2.3.6_2,1.log",
+		"/old_pool/data/images/100PHOTO/SAM_1898.JPG",
+		"/usr/home/mpizarro/.config/sublime-text-3/Packages/Theme - Soda SolarizedDark/Soda SolarizedDark.sublime-theme.orig",
+		"/etc/hosts",
+		"/etc/defaults/devfs.rules",
+		"/usr/home/mpizarro/.shrc"
+	],
+	"find":
+	{
+		"height": 25.0
+	},
+	"find_in_files":
+	{
+		"height": 95.0,
+		"where_history":
+		[
+			"/data/os/BSD/FreeBSD/scripts/1.3/ansible",
+			"<open files>,/data/os/BSD/FreeBSD/scripts/1.3/*.bash",
+			"<open files>"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"ansible_ssh_host",
+			"ssh",
+			"hetzner",
+			"mysql",
+			"pos",
+			"postgres",
+			"1010",
+			"mpizarro",
+			"diego",
+			"H 0",
+			"pw user",
+			"/Soda Light/",
+			"43",
+			"/Soda SolarizedDark/",
+			"/Soda Light/",
+			"folder-closed.png",
+			"/Soda Dark/",
+			"/Soda SolarizedDark/",
+			"43",
+			"042029",
+			"Run",
+			"#",
+			"==",
+			"php",
+			"/usr/share",
+			"ldconfig",
+			"BC_BIN",
+			"qtc.so",
+			"LD_LIBRARY_PATH",
+			"EXEC",
+			"sed -i",
+			"BC_BIN",
+			"2014",
+			"MY_VIDEO",
+			"MY_VIDEO_1",
+			"snapsh",
+			"agencia_tributaria",
+			"kg.list",
+			"finger",
+			"fstab",
+			"poudriere ",
+			"poudriere repo",
+			"bash",
+			"}/usr/local/etc/pkg/",
+			"pkg",
+			"pkg ",
+			"ezjail-admin",
+			"ezjail_adm",
+			"$osname",
+			"/usr/local/lib/X11/fonts",
+			"FontPath \"",
+			" ,",
+			"  ",
+			"          \n",
+			"high",
+			"line",
+			"transient",
+			"155",
+			"203, 75, 22",
+			"0, 43, 54",
+			"	\"*.",
+			"# ",
+			"/etc/",
+			"sys"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"/Soda SolarizedDark/",
+			"/Soda Light/",
+			"/Soda SolarizedDark/",
+			" "
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "requirements.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 118,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								90,
+								90
+							]
+						],
+						"settings":
+						{
+							"auto_name": "JLHDSJHSJKHJKFHjk",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": ".git/config",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 92,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								92,
+								92
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "docsible.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 293.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
