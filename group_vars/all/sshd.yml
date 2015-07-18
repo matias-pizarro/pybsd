@@ -1,0 +1,8 @@
+---
+sshd_config_use_dns: "yes"
+sshd_config_password_authentication: "no"
+sshd_config_permit_empty_passwords: "no"
+sshd_config_login_grace_time: "10s"
+sshd_config_permit_root_login: "without-password"
+sshd_config_max_auth_tries: "2"
+sshd_config_allow_users: []
