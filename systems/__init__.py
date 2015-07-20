@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 from lazy import lazy
-from .common import Executor
+import ipaddr
 import logging
+import re
 import socket
 import sys
 import time
+import unipath
+from .common import Executor
 
 
 log = logging.getLogger('py_ezjail')
+IP_PROPERTY = re.compile(r'\w*_ipv(4|6)$')
+PATH_PROPERTY = re.compile(r'\w*(?=_path$)')
 
 
 class EzjailError(Exception):
@@ -18,21 +23,60 @@ class EzjailError(Exception):
 class System(object):
     """Describes an OS instance, as a computer, a virtualized system or a jail"""
     name = None
+    hostname = None
+    ext_if = None
+    int_if = None
+    lo_if = None
+    ip_pool = None
+    ext_ipv4 = None
+    ext_ipv6 = None
+    int_ipv4 = None
+    int_ipv6 = None
+    lo_ipv4 = None
+    lo_ipv6 = None
 
-    def __init__(self, name):
+    def __init__(self, name, **kwargs):
         super(System, self).__init__()
         self.name = name
+        self.ip_pool = []
+        self._set_properties(kwargs, ['hostname', 'ext_if', 'int_if', 'lo_if', 'ext_ipv4',
+            'ext_ipv6', 'int_ipv4', 'int_ipv6', 'lo_ipv4', 'lo_ipv6'])
+
+    def ip_pool_check(self, ip):
+        if ip in self.ip_pool:
+            raise EzjailError('IP address {} has already been attributed'.format(ip))
+        self.ip_pool.append(ip)
+        return True
+
+    def _set_properties(self, kwargs, kws):
+        for kw in kws:
+            val = kwargs[kw] if kw in kwargs else self.__getattribute__(kw)
+            if val:
+                if IP_PROPERTY.match(kw):
+                    val = ipaddr.IPNetwork(val)
+                    self.ip_pool_check(val.ip.compressed)
+                path = PATH_PROPERTY.match(kw)
+                if path:
+                    kw = path.group()
+                    val = unipath.Path(val)
+                # print(kw, val)
+                self.__setattr__(kw, val)
 
 
-class Host(System):
+class Master(System):
     """Describes a system that will host jails"""
     _exec = None
+    jlo_if = None
+    jail_root_path = '/usr/jails'
+    jails = None
 
-    def __init__(self, name):
-        super(Host, self).__init__(name)
+    def __init__(self, name, **kwargs):
+        super(Master, self).__init__(name, **kwargs)
         prefix_args = ()
         if self._exec is None:
             self._exec = Executor(prefix_args=prefix_args)
+        self.jails = {}
+        self._set_properties(kwargs, ['jlo_if', 'jail_root_path'])
 
     @lazy
     def ezjail_admin_binary(self):
@@ -43,28 +87,33 @@ class Host(System):
         try:
             return self._exec(self.ezjail_admin_binary, *args)
         except socket.error as e:
-            raise EzjailError("Couldn't connect")
+            raise EzjailError('Could not connect')
 
     @lazy
     def ezjail_admin_list_headers(self):
+        """
+        rc:  command return code
+        out: command stdout
+        err: command stderr
+        """
         rc, out, err = self._ezjail_admin('list')
         if rc:
             raise EzjailError(err.strip())
         lines = out.splitlines()
         if len(lines) < 2:
-            raise EzjailError("ezjail-admin list output too short:\n%s" % out.strip())
+            raise EzjailError('ezjail-admin list output too short:\n%s' % out.strip())
         headers = []
-        current = ""
+        current = ''
         for i, c in enumerate(lines[1]):
             if c != '-' or i >= len(lines[0]):
                 headers.append(current.strip())
                 if i >= len(lines[0]):
                     break
-                current = ""
+                current = ''
             else:
                 current = current + lines[0][i]
         if headers != ['STA', 'JID', 'IP', 'Hostname', 'Root Directory']:
-            raise EzjailError("ezjail-admin list output has unknown headers:\n%s" % headers)
+            raise EzjailError('ezjail-admin list output has unknown headers:\n%s' % headers)
         return ('status', 'jid', 'ip', 'name', 'root')
 
     def ezjail_admin(self, command, **kwargs):
@@ -109,7 +158,7 @@ class Host(System):
                 raise EzjailError(err.strip())
             lines = out.splitlines()
             if len(lines) < 2:
-                raise EzjailError("ezjail-admin list output too short:\n%s" % out.strip())
+                raise EzjailError('ezjail-admin list output too short:\n%s' % out.strip())
             headers = self.ezjail_admin_list_headers
             jails = {}
             current_jail = None
@@ -145,6 +194,75 @@ class Host(System):
             raise ValueError("Unknown command '%s'" % command)
 
 
+class DummyMaster(Master):
+    """Describes a system that will host jails"""
+
+    def _exec(ezjail_admin_binary, *args):
+        if args[1] == 'list':
+            return (0,
+                 'STA JID  IP              Hostname                       Root Directory\n--- ---- --------------- ------------------------------ ------------------------\nZR  1    10.0.1.41/24    agencia_tributaria             /usr/jails/agencia_tributaria\n    1    re0|2a01:4f8:210:41e6::1:41:1\n    1    lo1|127.0.1.41\n    1    lo1|::1:41\n',
+                 '')
+
+
 class Jail(System):
     """Describes a jailed system"""
-    pass
+    master = None
+    state = None
+    jid = None
+    allowed_main_ips = ('ext_ipv4', 'ext_ipv6', 'int_ipv4', 'int_ipv6')
+    main_ip = None
+    jail_ip_pool = None
+    ip = None
+    path = None
+
+    def __init__(self, name, master=None, **kwargs):
+        self.jail_ip_pool = []
+        if master and not isinstance(master, Master):
+            raise EzjailError('{} must be an instance of systems.Master'.format(master.name))
+        self.master = master
+        super(Jail, self).__init__(name, **kwargs)
+        self.ip_pool = None
+        for _if in ['ext_if', 'int_if', 'lo_if']:
+            if _if in kwargs:
+                raise EzjailError('A Jail cannot define its own interfaces')
+            if self.master:
+                self.__setattr__(_if, self.master.__getattribute__(_if))
+        self.set_main_ip(**kwargs)
+        if self.master:
+            self.path = self.master.jail_root.child(self.name)
+            self.master.jails[self.name] = self
+        else:
+            self.path = unipath.Path('foo', name)
+
+    def ip_pool_check(self, ip):
+        if ((self.master and ip in self.master.ip_pool)
+            or ip in self.jail_ip_pool):
+            # Before we die, we clear our tracks
+            if self.master:
+                for previous_ip in self.jail_ip_pool:
+                    self.master.ip_pool[:] = [value for value in self.master.ip_pool if value != previous_ip]
+            raise EzjailError('IP address {} has already been attributed'.format(ip))
+        elif self.master:
+            self.master.ip_pool.append(ip)
+        self.jail_ip_pool.append(ip)
+        return True
+
+    def set_main_ip(self, **kwargs):
+        if 'main_ip' in kwargs:
+            main_ip = kwargs['main_ip']
+            if main_ip not in kwargs:
+                raise EzjailError('Chosen main ip is not defined')
+            if main_ip not in self.allowed_main_ips:
+                raise EzjailError('Chosen main ip is not allowed')
+        else:
+            default_ip = self.allowed_main_ips[0]
+            if default_ip in kwargs:
+                main_ip = default_ip
+            else:
+                defined_ips = 0
+                for main_ip in self.allowed_main_ips:
+                    if main_ip in kwargs:
+                        defined_ips += 1
+                        if defined_ips > 1:
+                            raise EzjailError('Main ip cannot be determined')
+        self.ip = self.__getattribute__(main_ip)
