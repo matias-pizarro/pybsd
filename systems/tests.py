@@ -7,6 +7,13 @@ from . import System, Master, DummyMaster, Jail, EzjailError
 
 
 class SystemTestCase(unittest.TestCase):
+    """
+    Somewhere down the line, the bleeding obvious comes back to kick our ass
+    My bleeding obvious might not be your bleeding obvious
+    Somewhere down the line the bleeding obvious might not seem so obvious
+    Tests are part of the documentation
+    Redundancy in tests is a feature, not an issue
+    """
     system_class = System
 
     def test_name(self):
@@ -219,6 +226,128 @@ class MasterTestCase(SystemTestCase):
         self.assertDictEqual(master.jails, {jail_1.name: jail_1, jail_2.name: jail_2},
                         'incorrect jails dict')
 
+    def test_add_jail_master(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = self.system_class('jail', ext_ipv4='8.8.8.8/24')
+        with self.assertRaises(EzjailError) as cm:
+            master.add_jail(jail)
+        self.assertEqual(cm.exception.message, u'{} should be an instance of systems.Jail'.format(jail.name))
+
+    def test_add_jail_name_in_jails(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', ext_ipv4='8.8.8.8/24')
+        master.add_jail(jail)
+        self.assertIn('jail', master.jails,
+                        'master.jails should have a \'jail\' key')
+
+    def test_add_jail_new(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', ext_ipv4='8.8.8.8/24')
+        master.add_jail(jail)
+        _jail = master.jails['jail']
+        self.assertNotEqual(_jail, jail,
+                        'jail and _jail should be different objects')
+
+    def test_add_jail_not_new(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', master=master, ext_ipv4='8.8.8.8/24')
+        master.add_jail(jail)
+        _jail = master.jails['jail']
+        self.assertEqual(_jail, jail,
+                        'jail and _jail should be the same object')
+
+    def test_add_jail_jails(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', ext_ipv4='8.8.8.8/24')
+        master.add_jail(jail)
+        self.assertEqual(len(master.jails), 1,
+                        'corrupt master.jails')
+
+    def test_add_jail_ip_pool(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', ext_ipv4='8.8.8.8/24')
+        master.add_jail(jail)
+        self.assertSetEqual(master.ip_pool, set(['9.9.9.9', '8.8.8.8']),
+                        'incorrect master ip_pool')
+
+    def test_add_jail_jail_ip_pool(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', ext_ipv4='8.8.8.8/24')
+        master.add_jail(jail)
+        _jail = master.jails['jail']
+        self.assertSetEqual(_jail.ip_pool, set(['8.8.8.8']),
+                        'incorrect jail ip_pool')
+
+    def test_add_jail_if(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', ext_ipv4='8.8.8.8/24')
+        master.add_jail(jail)
+        _jail = master.jails['jail']
+        self.assertEqual(_jail.ext_if, 're0',
+                        'incorrect ext_if')
+
+    def test_add_jail_path(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', ext_ipv4='8.8.8.8/24')
+        master.add_jail(jail)
+        _jail = master.jails['jail']
+        self.assertEqual(_jail.path, master.jail_root.child(_jail.name),
+                        'incorrect jail path')
+        self.assertEqual(str(_jail.path), '/usr/jails/jail',
+                        'incorrect jail path')
+
+    def test_add_jail_omnipotency_1(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', ext_ipv4='8.8.8.8/24')
+        master.add_jail(jail)
+        _jail = master.jails['jail']
+        master.add_jail(jail)
+        self.expected_values(master, _jail)
+
+    def test_add_jail_omnipotency_2(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', ext_ipv4='8.8.8.8/24')
+        master.add_jail(jail)
+        _jail = master.jails['jail']
+        master.add_jail(_jail)
+        self.expected_values(master, _jail)
+
+    def test_add_jail_omnipotency_3(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', master=master, ext_ipv4='8.8.8.8/24')
+        _jail = master.jails['jail']
+        master.add_jail(jail)
+        self.expected_values(master, _jail)
+
+    def test_add_jail_omnipotency_4(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail = Jail('jail', master=master, ext_ipv4='8.8.8.8/24')
+        _jail = master.jails['jail']
+        master.add_jail(_jail)
+        self.expected_values(master, _jail)
+
+    def test_add_jail_omnipotency_5(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail_1 = Jail('jail', ext_ipv4='8.8.8.8/24')
+        jail_2 = Jail('jail', ext_ipv4='8.8.8.8/24')
+        master.add_jail(jail_1)
+        master.add_jail(jail_2)
+        _jail = master.jails['jail']
+        self.expected_values(master, _jail)
+
+    def expected_values(self, master, jail):
+        self.assertDictEqual(master.jails, {jail.name: jail},
+                        'corrupt master.jails')
+        self.assertSetEqual(master.ip_pool, set(['9.9.9.9', '8.8.8.8']),
+                        'incorrect master ip_pool')
+        self.assertSetEqual(jail.ip_pool, set(['8.8.8.8']),
+                        'incorrect jail ip_pool')
+        self.assertEqual(jail.ext_if, 're0',
+                        'incorrect ext_if')
+        self.assertEqual(jail.path, master.jail_root.child(jail.name),
+                        'incorrect jail path')
+        self.assertEqual(str(jail.path), '/usr/jails/jail',
+                        'incorrect jail path')
 
 
 class DummyMasterTestCase(MasterTestCase):
@@ -237,7 +366,6 @@ class JailTestCase(SystemTestCase):
         jail = self.system_class('jail', ext_ipv4='8.8.8.8/24')
         self.assertSetEqual(jail.ip_pool, set(['8.8.8.8']),
                         'incorrect ip_pool')
-
 
     def test_ip_pool_2(self):
         jail = self.system_class('jail', ext_ipv4='8.8.8.8/24',
@@ -278,7 +406,7 @@ class JailTestCase(SystemTestCase):
         master = System('master', ext_if='re0')
         with self.assertRaises(EzjailError) as cm:
             jail = self.system_class('jail', master=master, ext_ipv4='9.9.9.9')
-        self.assertEqual(cm.exception.message, u'master must be an instance of systems.Master')
+        self.assertEqual(cm.exception.message, u'master should be an instance of systems.Master')
 
     def test_ext_if(self):
         with self.assertRaises(EzjailError) as cm:
@@ -380,5 +508,7 @@ class JailTestCase(SystemTestCase):
         master = DummyMaster('master', ext_if='re0', ext_ipv4='9.9.9.9')
         jail = self.system_class('jail', master=master, ext_ipv4='8.8.8.8/24',
             int_ipv4='8.8.8.9/24')
-        self.assertEqual(jail.path, master.jail_root.child(jail.name))
-        self.assertEqual(str(jail.path), '/usr/jails/jail')
+        self.assertEqual(jail.path, master.jail_root.child(jail.name),
+                        'incorrect jail path')
+        self.assertEqual(str(jail.path), '/usr/jails/jail',
+                        'incorrect jail path')

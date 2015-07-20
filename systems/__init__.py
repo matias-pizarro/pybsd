@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
-from lazy import lazy
+import copy
 import ipaddr
+from lazy import lazy
 import logging
 import re
 import socket
@@ -78,7 +79,10 @@ class Master(System):
         self.jails = {}
         self._set_properties(kwargs, ['jlo_if', 'jail_root_path'])
 
-    def add_jail(self, jail):
+    def add_jail(self, _jail, _new=False):
+        if not isinstance(_jail, Jail):
+            raise EzjailError(u'{} should be an instance of systems.Jail'.format(_jail.name))
+        jail = _jail if _new else copy.deepcopy(_jail)
         if jail.name not in self.jails:
             m = self.ip_pool
             j = jail.ip_pool
@@ -90,7 +94,7 @@ class Master(System):
                 jail.__setattr__(_if, self.__getattribute__(_if))
             jail.path = self.jail_root.child(jail.name)
             self.jails[jail.name] = jail
-            jail.master =self
+            jail.master = self
 
     @lazy
     def ezjail_admin_binary(self):
@@ -237,8 +241,8 @@ class Jail(System):
         self.path = unipath.Path('foo', name)
         if master:
             if not isinstance(master, Master):
-                raise EzjailError('{} must be an instance of systems.Master'.format(master.name))
-            master.add_jail(self)
+                raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
+            master.add_jail(self, _new=True)
 
     def set_main_ip(self, **kwargs):
         if 'main_ip' in kwargs:
