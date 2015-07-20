@@ -16,6 +16,19 @@ log = logging.getLogger('py_ezjail')
 IP_PROPERTY = re.compile(r'\w*_ipv(4|6)$')
 PATH_PROPERTY = re.compile(r'\w*(?=_path$)')
 
+"""
+check all system ips have an interface
+jails cannot define ips. They are attributed to them by their master
+through an ifconfig backend provided by systems.ipconfig. We will provide
+a BaseIPConfigurator than can be subclassed
+TBD:
+    - implement check that every ip has an if
+    - implement jail id
+    - implement BaseIPConfigurator
+    - implement systems.Master.remove_jail
+    - rename systems.Master.clone clone_jail
+    - organise projects
+"""
 
 class EzjailError(Exception):
     pass
@@ -90,12 +103,15 @@ class Master(System):
         if len(intersec):
             raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
         m.update(j)
-        for _if in ['ext_if', 'int_if', 'lo_if']:
-            jail.__setattr__(_if, self.__getattribute__(_if))
+        self.jail_ifconfig(jail)
         jail.path = self.jail_root.child(jail.name)
         self.jails[jail.name] = jail
         jail.master = self
         return jail
+
+    def jail_ifconfig(self, jail):
+        for _if in ['ext_if', 'int_if', 'lo_if']:
+            jail.__setattr__(_if, self.__getattribute__(_if))
 
     def clone(self, jail):
         if not isinstance(jail, Jail):
@@ -253,6 +269,9 @@ class Jail(System):
         if master:
             master._add_jail(self)
 
+    """
+    TBD: move to the ipconfigurator
+    """
     def set_main_ip(self, **kwargs):
         if 'main_ip' in kwargs:
             main_ip = kwargs['main_ip']
