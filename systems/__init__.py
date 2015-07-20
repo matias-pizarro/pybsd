@@ -79,13 +79,11 @@ class Master(System):
         self.jails = {}
         self._set_properties(kwargs, ['jlo_if', 'jail_root_path'])
 
-    def _add_jail(self, jail, clone=False):
+    def _add_jail(self, jail):
         if not isinstance(jail, Jail):
             raise EzjailError(u'{} should be an instance of systems.Jail'.format(jail.name))
         if jail.name in self.jails:
             raise EzjailError('a jail called `{}` is already attached to `{}`'.format(jail.name, self.name))
-        if clone:
-            jail = copy.deepcopy(jail)
         m = self.ip_pool
         j = jail.ip_pool
         intersec = m.intersection(j)
@@ -100,7 +98,10 @@ class Master(System):
         return jail
 
     def clone(self, jail):
-        return self._add_jail(jail, clone=True)
+        if not isinstance(jail, Jail):
+            raise EzjailError(u'{} should be an instance of systems.Jail'.format(jail.name))
+        _jail = copy.deepcopy(jail)
+        return self._add_jail(_jail)
 
     @lazy
     def ezjail_admin_binary(self):
