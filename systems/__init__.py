@@ -79,10 +79,10 @@ class Master(System):
         self.jails = {}
         self._set_properties(kwargs, ['jlo_if', 'jail_root_path'])
 
-    def add_jail(self, _jail, _new=False):
+    def _add_jail(self, _jail, clone=False):
         if not isinstance(_jail, Jail):
             raise EzjailError(u'{} should be an instance of systems.Jail'.format(_jail.name))
-        jail = _jail if _new else copy.deepcopy(_jail)
+        jail = copy.deepcopy(_jail) if clone else _jail
         if jail.name not in self.jails:
             m = self.ip_pool
             j = jail.ip_pool
@@ -95,6 +95,10 @@ class Master(System):
             jail.path = self.jail_root.child(jail.name)
             self.jails[jail.name] = jail
             jail.master = self
+        return jail
+
+    def clone(self, jail):
+        return self._add_jail(jail, clone=True)
 
     @lazy
     def ezjail_admin_binary(self):
@@ -250,7 +254,7 @@ class Jail(System):
         super(Jail, self).__init__(name, **kwargs)
         self.set_main_ip(**kwargs)
         if master:
-            master.add_jail(self, _new=True)
+            master._add_jail(self)
         else:
             self.path = unipath.Path('foo', name)
 
