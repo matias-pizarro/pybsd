@@ -238,7 +238,7 @@ class MasterTestCase(SystemTestCase):
         jail = Jail('jail', ext_ipv4='8.8.8.8/24')
         _jail = master.clone(jail)
         self.assertIn('jail', master.jails,
-                        'master.jails should have a \'jail\' key')
+                        'master.jails should have a `jail` key')
 
     def test_clone_new(self):
         master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')

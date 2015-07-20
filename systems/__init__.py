@@ -80,27 +80,26 @@ class Master(System):
         self._set_properties(kwargs, ['jlo_if', 'jail_root_path'])
 
     def _add_jail(self, jail, clone=False):
-        if jail.name in self.jails:
-            raise EzjailError('a jail called `{}` is already attached to `{}`'.format(jail.name, self.name))
         if not isinstance(jail, Jail):
             raise EzjailError(u'{} should be an instance of systems.Jail'.format(jail.name))
+        if jail.name in self.jails:
+            raise EzjailError('a jail called `{}` is already attached to `{}`'.format(jail.name, self.name))
         if clone:
             jail = copy.deepcopy(jail)
-        if jail.name not in self.jails:
-            m = self.ip_pool
-            j = jail.ip_pool
-            intersec = m.intersection(j)
-            if len(intersec):
-                raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-            m.update(j)
-            for _if in ['ext_if', 'int_if', 'lo_if']:
-                jail.__setattr__(_if, self.__getattribute__(_if))
-            jail.path = self.jail_root.child(jail.name)
-            self.jails[jail.name] = jail
-            jail.master = self
+        m = self.ip_pool
+        j = jail.ip_pool
+        intersec = m.intersection(j)
+        if len(intersec):
+            raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+        m.update(j)
+        for _if in ['ext_if', 'int_if', 'lo_if']:
+            jail.__setattr__(_if, self.__getattribute__(_if))
+        jail.path = self.jail_root.child(jail.name)
+        self.jails[jail.name] = jail
+        jail.master = self
         return jail
 
-    def clone(self, jail): 
+    def clone(self, jail):
         return self._add_jail(jail, clone=True)
 
     @lazy
@@ -149,7 +148,7 @@ class Master(System):
             if command == 'console' and k == 'cmd':
                 continue
             if len(v.split()) != 1:
-                log.error("The value '%s' of kwarg '%s' contains whitespace", v, k)
+                log.error('The value `%s` of kwarg `%s` contains whitespace', v, k)
                 sys.exit(1)
         if command == 'console':
             return self._ezjail_admin(
@@ -216,7 +215,7 @@ class Master(System):
             if rc:
                 raise EzjailError(err.strip())
         else:
-            raise ValueError("Unknown command '%s'" % command)
+            raise ValueError('Unknown command `%s`' % command)
 
 
 class DummyMaster(Master):
@@ -240,17 +239,18 @@ class Jail(System):
     path = None
 
     def __init__(self, name, master=None, **kwargs):
-        if master and not isinstance(master, Master):
-            raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
         for _if in ['ext_if', 'int_if', 'lo_if']:
             if _if in kwargs:
                 raise EzjailError('A Jail cannot define its own interfaces')
+        if not isinstance(master, (Master, type(None))):
+            raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
+        if master and name in master.jails:
+            raise EzjailError('a jail called `{}` is already attached to `{}`'.format(name, master.name))
         super(Jail, self).__init__(name, **kwargs)
         self.set_main_ip(**kwargs)
+        self.path = unipath.Path('foo', name)
         if master:
             master._add_jail(self)
-        else:
-            self.path = unipath.Path('foo', name)
 
     def set_main_ip(self, **kwargs):
         if 'main_ip' in kwargs:
