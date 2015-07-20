@@ -16,18 +16,18 @@ class SystemTestCase(unittest.TestCase):
 
     def test_empty_ip_pool(self):
         system = self.system_class('system')
-        self.assertEqual(system.ip_pool, [],
+        self.assertEqual(system.ip_pool, set(),
                         'incorrect ip_pool')
 
     def test_ip_pool(self):
         system = self.system_class('system', ext_ipv4='8.8.8.8/24')
-        self.assertEqual(system.ip_pool, ['8.8.8.8'],
+        self.assertSetEqual(system.ip_pool, set(['8.8.8.8']),
                         'incorrect ip_pool')
 
     def test_ip_pool_2(self):
         system = self.system_class('system', ext_ipv4='8.8.8.8/24',
             int_ipv4='8.8.8.9/24')
-        self.assertEqual(system.ip_pool, ['8.8.8.8', '8.8.8.9'],
+        self.assertSetEqual(system.ip_pool, set(['8.8.8.8', '8.8.8.9']),
                         'incorrect ip_pool')
 
     def test_duplicate_ip(self):
@@ -230,34 +230,28 @@ class JailTestCase(SystemTestCase):
 
     def test_empty_ip_pool(self):
         jail = self.system_class('jail')
-        self.assertEqual(jail.ip_pool, None,
-                        'incorrect ip_pool')
-        self.assertEqual(jail.jail_ip_pool, [],
+        self.assertSetEqual(jail.ip_pool, set(),
                         'incorrect ip_pool')
 
     def test_ip_pool(self):
         jail = self.system_class('jail', ext_ipv4='8.8.8.8/24')
-        self.assertEqual(jail.ip_pool, None,
-                        'incorrect ip_pool')
-        self.assertEqual(jail.jail_ip_pool, ['8.8.8.8'],
+        self.assertSetEqual(jail.ip_pool, set(['8.8.8.8']),
                         'incorrect ip_pool')
 
 
     def test_ip_pool_2(self):
         jail = self.system_class('jail', ext_ipv4='8.8.8.8/24',
             int_ipv4='8.8.8.9/24')
-        self.assertEqual(jail.ip_pool, None,
-                        'incorrect ip_pool')
-        self.assertEqual(jail.jail_ip_pool, ['8.8.8.8', '8.8.8.9'],
+        self.assertSetEqual(jail.ip_pool, set(['8.8.8.8', '8.8.8.9']),
                         'incorrect ip_pool')
 
     def test_non_duplicate_master_ip(self):
         master = DummyMaster('master', ext_if='re0', ext_ipv4='9.9.9.9')
         jail = self.system_class('jail', master=master, ext_ipv4='8.8.8.8/24',
             int_ipv4='8.8.8.9/24')
-        self.assertEqual(jail.master.ip_pool, ['9.9.9.9', '8.8.8.8', '8.8.8.9'],
+        self.assertSetEqual(jail.master.ip_pool, set(['9.9.9.9', '8.8.8.8', '8.8.8.9']),
                         'incorrect ip_pool')
-        self.assertEqual(jail.jail_ip_pool, ['8.8.8.8', '8.8.8.9'],
+        self.assertSetEqual(jail.ip_pool, set(['8.8.8.8', '8.8.8.9']),
                         'incorrect ip_pool')
 
     def test_duplicate_master_ip(self):
@@ -265,8 +259,8 @@ class JailTestCase(SystemTestCase):
         with self.assertRaises(EzjailError) as cm:
             jail = self.system_class('jail', master=master, ext_ipv4='8.8.8.8/24',
                 int_ipv4='9.9.9.9/24')
-        self.assertEqual(cm.exception.message, u'IP address 9.9.9.9 has already been attributed')
-        self.assertEqual(master.ip_pool, ['9.9.9.9'],
+        self.assertEqual(cm.exception.message, u'Already attributed IPs: [9.9.9.9]')
+        self.assertSetEqual(master.ip_pool, set(['9.9.9.9']),
                         'incorrect ip_pool')
 
     def test_none_master(self):
@@ -300,6 +294,39 @@ class JailTestCase(SystemTestCase):
         with self.assertRaises(EzjailError) as cm:
             super(JailTestCase, self).test_lo_if()
         self.assertEqual(cm.exception.message, u'A Jail cannot define its own interfaces')
+
+    def test_ext_if_2(self):
+        master = DummyMaster('master', ext_if='re0')
+        jail = self.system_class('jail', master=master)
+        self.assertEqual(jail.ext_if, 're0',
+                        'incorrect ext_if')
+
+    def test_int_if_2(self):
+        master = DummyMaster('master', int_if='re0')
+        jail = self.system_class('jail', master=master)
+        self.assertEqual(jail.int_if, 're0',
+                        'incorrect int_if')
+
+    def test_lo_if_2(self):
+        master = DummyMaster('master', lo_if='re0')
+        jail = self.system_class('jail', master=master)
+        self.assertEqual(jail.lo_if, 're0',
+                        'incorrect lo_if')
+
+    def test_no_ext_if(self):
+        jail = self.system_class('jail')
+        self.assertEqual(jail.ext_if, None,
+                        'incorrect ext_if')
+
+    def test_no_int_if(self):
+        jail = self.system_class('jail')
+        self.assertEqual(jail.int_if, None,
+                        'incorrect int_if')
+
+    def test_no_lo_if(self):
+        jail = self.system_class('jail')
+        self.assertEqual(jail.lo_if, None,
+                        'incorrect lo_if')
 
     # MAIN IP IS DEFINED
     ### IT IS AN ALLOWED MAIN IP

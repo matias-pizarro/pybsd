@@ -38,14 +38,14 @@ class System(object):
     def __init__(self, name, **kwargs):
         super(System, self).__init__()
         self.name = name
-        self.ip_pool = []
+        self.ip_pool = set()
         self._set_properties(kwargs, ['hostname', 'ext_if', 'int_if', 'lo_if', 'ext_ipv4',
             'ext_ipv6', 'int_ipv4', 'int_ipv6', 'lo_ipv4', 'lo_ipv6'])
 
     def ip_pool_check(self, ip):
         if ip in self.ip_pool:
             raise EzjailError('IP address {} has already been attributed'.format(ip))
-        self.ip_pool.append(ip)
+        self.ip_pool.add(ip)
         return True
 
     def _set_properties(self, kwargs, kws):
@@ -77,6 +77,20 @@ class Master(System):
             self._exec = Executor(prefix_args=prefix_args)
         self.jails = {}
         self._set_properties(kwargs, ['jlo_if', 'jail_root_path'])
+
+    def add_jail(self, jail):
+        if jail.name not in self.jails:
+            m = self.ip_pool
+            j = jail.ip_pool
+            intersec = m.intersection(j)
+            if len(intersec):
+                raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+            m.update(j)
+            for _if in ['ext_if', 'int_if', 'lo_if']:
+                jail.__setattr__(_if, self.__getattribute__(_if))
+            jail.path = self.jail_root.child(jail.name)
+            self.jails[jail.name] = jail
+            jail.master =self
 
     @lazy
     def ezjail_admin_binary(self):
@@ -211,41 +225,20 @@ class Jail(System):
     jid = None
     allowed_main_ips = ('ext_ipv4', 'ext_ipv6', 'int_ipv4', 'int_ipv6')
     main_ip = None
-    jail_ip_pool = None
     ip = None
     path = None
 
     def __init__(self, name, master=None, **kwargs):
-        self.jail_ip_pool = []
-        if master and not isinstance(master, Master):
-            raise EzjailError('{} must be an instance of systems.Master'.format(master.name))
-        self.master = master
-        super(Jail, self).__init__(name, **kwargs)
-        self.ip_pool = None
         for _if in ['ext_if', 'int_if', 'lo_if']:
             if _if in kwargs:
                 raise EzjailError('A Jail cannot define its own interfaces')
-            if self.master:
-                self.__setattr__(_if, self.master.__getattribute__(_if))
+        super(Jail, self).__init__(name, **kwargs)
         self.set_main_ip(**kwargs)
-        if self.master:
-            self.path = self.master.jail_root.child(self.name)
-            self.master.jails[self.name] = self
-        else:
-            self.path = unipath.Path('foo', name)
-
-    def ip_pool_check(self, ip):
-        if ((self.master and ip in self.master.ip_pool)
-            or ip in self.jail_ip_pool):
-            # Before we die, we clear our tracks
-            if self.master:
-                for previous_ip in self.jail_ip_pool:
-                    self.master.ip_pool[:] = [value for value in self.master.ip_pool if value != previous_ip]
-            raise EzjailError('IP address {} has already been attributed'.format(ip))
-        elif self.master:
-            self.master.ip_pool.append(ip)
-        self.jail_ip_pool.append(ip)
-        return True
+        self.path = unipath.Path('foo', name)
+        if master:
+            if not isinstance(master, Master):
+                raise EzjailError('{} must be an instance of systems.Master'.format(master.name))
+            master.add_jail(self)
 
     def set_main_ip(self, **kwargs):
         if 'main_ip' in kwargs:
