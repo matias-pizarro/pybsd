@@ -232,17 +232,27 @@ class Jail(System):
     ip = None
     path = None
 
+    def __new__(cls, *args, **kwargs):
+        if 'master' in kwargs:
+            master = kwargs['master']
+            if not isinstance(master, Master):
+                raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
+            if len(args):
+                name = args[0]
+                if name in master.jails:
+                    return master.jails[name]
+        return super(Jail, cls).__new__(cls, *args, **kwargs)
+
     def __init__(self, name, master=None, **kwargs):
         for _if in ['ext_if', 'int_if', 'lo_if']:
             if _if in kwargs:
                 raise EzjailError('A Jail cannot define its own interfaces')
         super(Jail, self).__init__(name, **kwargs)
         self.set_main_ip(**kwargs)
-        self.path = unipath.Path('foo', name)
         if master:
-            if not isinstance(master, Master):
-                raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
             master.add_jail(self, _new=True)
+        else:
+            self.path = unipath.Path('foo', name)
 
     def set_main_ip(self, **kwargs):
         if 'main_ip' in kwargs:

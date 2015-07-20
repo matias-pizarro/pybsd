@@ -335,6 +335,14 @@ class MasterTestCase(SystemTestCase):
         _jail = master.jails['jail']
         self.expected_values(master, _jail)
 
+    def test_add_jail_omnipotency_6(self):
+        master = self.system_class('master', ext_if='re0', ext_ipv4='9.9.9.9')
+        jail_1 = Jail('jail', master=master, ext_ipv4='8.8.8.8/24')
+        jail_2 = Jail('jail', master=master, ext_ipv4='8.8.8.8/24')
+        self.assertEqual(jail_1, jail_2,
+                        'jail_2 and jail_1 should be the same object')
+        self.expected_values(master, jail_1)
+
     def expected_values(self, master, jail):
         self.assertDictEqual(master.jails, {jail.name: jail},
                         'corrupt master.jails')
