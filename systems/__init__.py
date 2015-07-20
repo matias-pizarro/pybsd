@@ -79,10 +79,13 @@ class Master(System):
         self.jails = {}
         self._set_properties(kwargs, ['jlo_if', 'jail_root_path'])
 
-    def _add_jail(self, _jail, clone=False):
-        if not isinstance(_jail, Jail):
-            raise EzjailError(u'{} should be an instance of systems.Jail'.format(_jail.name))
-        jail = copy.deepcopy(_jail) if clone else _jail
+    def _add_jail(self, jail, clone=False):
+        if jail.name in self.jails:
+            raise EzjailError('a jail called `{}` is already attached to `{}`'.format(jail.name, self.name))
+        if not isinstance(jail, Jail):
+            raise EzjailError(u'{} should be an instance of systems.Jail'.format(jail.name))
+        if clone:
+            jail = copy.deepcopy(jail)
         if jail.name not in self.jails:
             m = self.ip_pool
             j = jail.ip_pool
@@ -97,7 +100,7 @@ class Master(System):
             jail.master = self
         return jail
 
-    def clone(self, jail):
+    def clone(self, jail): 
         return self._add_jail(jail, clone=True)
 
     @lazy
@@ -236,18 +239,9 @@ class Jail(System):
     ip = None
     path = None
 
-    def __new__(cls, *args, **kwargs):
-        if 'master' in kwargs:
-            master = kwargs['master']
-            if not isinstance(master, Master):
-                raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
-            if len(args):
-                name = args[0]
-                if name in master.jails:
-                    return master.jails[name]
-        return super(Jail, cls).__new__(cls, *args, **kwargs)
-
     def __init__(self, name, master=None, **kwargs):
+        if master and not isinstance(master, Master):
+            raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
         for _if in ['ext_if', 'int_if', 'lo_if']:
             if _if in kwargs:
                 raise EzjailError('A Jail cannot define its own interfaces')
