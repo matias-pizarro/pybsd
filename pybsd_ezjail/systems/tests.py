@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
-import ipaddr
+import ipaddress
 import unipath
 import unittest
 from . import System, Master, DummyMaster, Jail, EzjailError
@@ -65,88 +65,88 @@ class SystemTestCase(unittest.TestCase):
 
     def test_ext_ipv4(self):
         system = self.system_class('system', ext_ipv4='8.8.8.8')
-        self.assertIsInstance(system.ext_ipv4, ipaddr.IPv4Network,
+        self.assertIsInstance(system.ext_ipv4, ipaddress.IPv4Interface,
                         'incorrect ext_ipv4')
-        self.assertIsInstance(system.ext_ipv4.ip, ipaddr.IPv4Address,
+        self.assertIsInstance(system.ext_ipv4.ip, ipaddress.IPv4Address,
                         'incorrect ext_ipv4')
-        self.assertEqual(system.ext_ipv4.prefixlen, 32,
+        self.assertEqual(system.ext_ipv4._prefixlen, 32,
                         'incorrect ext_ipv4')
         self.assertEqual(system.ext_ipv4.ip.compressed, '8.8.8.8',
                         'incorrect ext_ipv4')
 
     def test_ext_ipv4_masked(self):
         system = self.system_class('system', ext_ipv4='8.8.8.8/24')
-        self.assertIsInstance(system.ext_ipv4, ipaddr.IPv4Network,
+        self.assertIsInstance(system.ext_ipv4, ipaddress.IPv4Interface,
                         'incorrect ext_ipv4')
-        self.assertIsInstance(system.ext_ipv4.ip, ipaddr.IPv4Address,
+        self.assertIsInstance(system.ext_ipv4.ip, ipaddress.IPv4Address,
                         'incorrect ext_ipv4')
-        self.assertEqual(system.ext_ipv4.prefixlen, 24,
+        self.assertEqual(system.ext_ipv4._prefixlen, 24,
                         'incorrect ext_ipv4')
         self.assertEqual(system.ext_ipv4.ip.compressed, '8.8.8.8',
                         'incorrect ext_ipv4')
 
     def test_ext_ipv6(self):
         system = self.system_class('system', ext_ipv6='2a:2a::2a')
-        self.assertIsInstance(system.ext_ipv6, ipaddr.IPv6Network,
+        self.assertIsInstance(system.ext_ipv6, ipaddress.IPv6Interface,
                         'incorrect ext_ipv6')
-        self.assertIsInstance(system.ext_ipv6.ip, ipaddr.IPv6Address,
+        self.assertIsInstance(system.ext_ipv6.ip, ipaddress.IPv6Address,
                         'incorrect ext_ipv6')
-        self.assertEqual(system.ext_ipv6.prefixlen, 128,
+        self.assertEqual(system.ext_ipv6._prefixlen, 128,
                         'incorrect ext_ipv4')
         self.assertEqual(system.ext_ipv6.ip.compressed, '2a:2a::2a',
                         'incorrect ext_ipv6')
 
     def test_ext_ipv6_masked(self):
         system = self.system_class('system', ext_ipv6='2a:2a::2a/100')
-        self.assertIsInstance(system.ext_ipv6, ipaddr.IPv6Network,
+        self.assertIsInstance(system.ext_ipv6, ipaddress.IPv6Interface,
                         'incorrect ext_ipv6')
-        self.assertIsInstance(system.ext_ipv6.ip, ipaddr.IPv6Address,
+        self.assertIsInstance(system.ext_ipv6.ip, ipaddress.IPv6Address,
                         'incorrect ext_ipv6')
-        self.assertEqual(system.ext_ipv6.prefixlen, 100,
+        self.assertEqual(system.ext_ipv6._prefixlen, 100,
                         'incorrect ext_ipv4')
         self.assertEqual(system.ext_ipv6.ip.compressed, '2a:2a::2a',
                         'incorrect ext_ipv6')
 
     def test_int_ipv4(self):
         system = self.system_class('system', int_ipv4='8.8.8.8')
-        self.assertIsInstance(system.int_ipv4, ipaddr.IPv4Network,
+        self.assertIsInstance(system.int_ipv4, ipaddress.IPv4Interface,
                         'incorrect int_ipv4')
-        self.assertIsInstance(system.int_ipv4.ip, ipaddr.IPv4Address,
+        self.assertIsInstance(system.int_ipv4.ip, ipaddress.IPv4Address,
                         'incorrect int_ipv4')
-        self.assertEqual(system.int_ipv4.prefixlen, 32,
+        self.assertEqual(system.int_ipv4._prefixlen, 32,
                         'incorrect int_ipv4')
         self.assertEqual(system.int_ipv4.ip.compressed, '8.8.8.8',
                         'incorrect int_ipv4')
 
     def test_int_ipv4_masked(self):
         system = self.system_class('system', int_ipv4='8.8.8.8/24')
-        self.assertIsInstance(system.int_ipv4, ipaddr.IPv4Network,
+        self.assertIsInstance(system.int_ipv4, ipaddress.IPv4Interface,
                         'incorrect int_ipv4')
-        self.assertIsInstance(system.int_ipv4.ip, ipaddr.IPv4Address,
+        self.assertIsInstance(system.int_ipv4.ip, ipaddress.IPv4Address,
                         'incorrect int_ipv4')
-        self.assertEqual(system.int_ipv4.prefixlen, 24,
+        self.assertEqual(system.int_ipv4._prefixlen, 24,
                         'incorrect int_ipv4')
         self.assertEqual(system.int_ipv4.ip.compressed, '8.8.8.8',
                         'incorrect int_ipv4')
 
     def test_int_ipv6(self):
         system = self.system_class('system', int_ipv6='2a:2a::2a')
-        self.assertIsInstance(system.int_ipv6, ipaddr.IPv6Network,
+        self.assertIsInstance(system.int_ipv6, ipaddress.IPv6Interface,
                         'incorrect int_ipv6')
-        self.assertIsInstance(system.int_ipv6.ip, ipaddr.IPv6Address,
+        self.assertIsInstance(system.int_ipv6.ip, ipaddress.IPv6Address,
                         'incorrect int_ipv6')
-        self.assertEqual(system.int_ipv6.prefixlen, 128,
+        self.assertEqual(system.int_ipv6._prefixlen, 128,
                         'incorrect int_ipv4')
         self.assertEqual(system.int_ipv6.ip.compressed, '2a:2a::2a',
                         'incorrect int_ipv6')
 
     def test_int_ipv6_masked(self):
         system = self.system_class('system', int_ipv6='2a:2a::2a/100')
-        self.assertIsInstance(system.int_ipv6, ipaddr.IPv6Network,
+        self.assertIsInstance(system.int_ipv6, ipaddress.IPv6Interface,
                         'incorrect int_ipv6')
-        self.assertIsInstance(system.int_ipv6.ip, ipaddr.IPv6Address,
+        self.assertIsInstance(system.int_ipv6.ip, ipaddress.IPv6Address,
                         'incorrect int_ipv6')
-        self.assertEqual(system.int_ipv6.prefixlen, 100,
+        self.assertEqual(system.int_ipv6._prefixlen, 100,
                         'incorrect int_ipv4')
         self.assertEqual(system.int_ipv6.ip.compressed, '2a:2a::2a',
                         'incorrect int_ipv6')
@@ -154,11 +154,11 @@ class SystemTestCase(unittest.TestCase):
     def test_lo_ipv4(self):
         system = self.system_class('system', int_ipv6='2a:2a::2a/100',
             lo_ipv4='8.8.8.8')
-        self.assertIsInstance(system.lo_ipv4, ipaddr.IPv4Network,
+        self.assertIsInstance(system.lo_ipv4, ipaddress.IPv4Interface,
                         'incorrect lo_ipv4')
-        self.assertIsInstance(system.lo_ipv4.ip, ipaddr.IPv4Address,
+        self.assertIsInstance(system.lo_ipv4.ip, ipaddress.IPv4Address,
                         'incorrect lo_ipv4')
-        self.assertEqual(system.lo_ipv4.prefixlen, 32,
+        self.assertEqual(system.lo_ipv4._prefixlen, 32,
                         'incorrect lo_ipv4')
         self.assertEqual(system.lo_ipv4.ip.compressed, '8.8.8.8',
                         'incorrect lo_ipv4')
@@ -166,11 +166,11 @@ class SystemTestCase(unittest.TestCase):
     def test_lo_ipv4_masked(self):
         system = self.system_class('system', int_ipv6='2a:2a::2a/100',
             lo_ipv4='8.8.8.8/24')
-        self.assertIsInstance(system.lo_ipv4, ipaddr.IPv4Network,
+        self.assertIsInstance(system.lo_ipv4, ipaddress.IPv4Interface,
                         'incorrect lo_ipv4')
-        self.assertIsInstance(system.lo_ipv4.ip, ipaddr.IPv4Address,
+        self.assertIsInstance(system.lo_ipv4.ip, ipaddress.IPv4Address,
                         'incorrect lo_ipv4')
-        self.assertEqual(system.lo_ipv4.prefixlen, 24,
+        self.assertEqual(system.lo_ipv4._prefixlen, 24,
                         'incorrect lo_ipv4')
         self.assertEqual(system.lo_ipv4.ip.compressed, '8.8.8.8',
                         'incorrect lo_ipv4')
@@ -178,11 +178,11 @@ class SystemTestCase(unittest.TestCase):
     def test_lo_ipv6(self):
         system = self.system_class('system', int_ipv6='2a:2a::2a/100',
             lo_ipv6='2a:2a::3a')
-        self.assertIsInstance(system.lo_ipv6, ipaddr.IPv6Network,
+        self.assertIsInstance(system.lo_ipv6, ipaddress.IPv6Interface,
                         'incorrect lo_ipv6')
-        self.assertIsInstance(system.lo_ipv6.ip, ipaddr.IPv6Address,
+        self.assertIsInstance(system.lo_ipv6.ip, ipaddress.IPv6Address,
                         'incorrect lo_ipv6')
-        self.assertEqual(system.lo_ipv6.prefixlen, 128,
+        self.assertEqual(system.lo_ipv6._prefixlen, 128,
                         'incorrect lo_ipv4')
         self.assertEqual(system.lo_ipv6.ip.compressed, '2a:2a::3a',
                         'incorrect lo_ipv6')
@@ -190,11 +190,11 @@ class SystemTestCase(unittest.TestCase):
     def test_lo_ipv6_masked(self):
         system = self.system_class('system', int_ipv6='2a:2a::2a/100',
             lo_ipv6='2a:2a::3a/100')
-        self.assertIsInstance(system.lo_ipv6, ipaddr.IPv6Network,
+        self.assertIsInstance(system.lo_ipv6, ipaddress.IPv6Interface,
                         'incorrect lo_ipv6')
-        self.assertIsInstance(system.lo_ipv6.ip, ipaddr.IPv6Address,
+        self.assertIsInstance(system.lo_ipv6.ip, ipaddress.IPv6Address,
                         'incorrect lo_ipv6')
-        self.assertEqual(system.lo_ipv6.prefixlen, 100,
+        self.assertEqual(system.lo_ipv6._prefixlen, 100,
                         'incorrect lo_ipv4')
         self.assertEqual(system.lo_ipv6.ip.compressed, '2a:2a::3a',
                         'incorrect lo_ipv6')

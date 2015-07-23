@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
+import six
 import copy
-import ipaddr
+import ipaddress
 from lazy import lazy
 import logging
 import re
@@ -31,7 +32,10 @@ TBD:
 """
 
 class EzjailError(Exception):
-    pass
+    def __init__(self, *args, **kwargs):
+        super(EzjailError, self).__init__(*args, **kwargs)
+        if six.PY3:
+            self.message = args[0]
 
 
 class System(object):
@@ -56,7 +60,8 @@ class System(object):
         self._set_properties(kwargs, ['hostname', 'ext_if', 'int_if', 'lo_if', 'ext_ipv4',
             'ext_ipv6', 'int_ipv4', 'int_ipv6', 'lo_ipv4', 'lo_ipv6'])
 
-    def ip_pool_check(self, ip):
+    def ip_pool_check(self, _if):
+        ip = str(_if.ip)
         if ip in self.ip_pool:
             raise EzjailError('IP address {} has already been attributed'.format(ip))
         self.ip_pool.add(ip)
@@ -67,8 +72,8 @@ class System(object):
             val = kwargs[kw] if kw in kwargs else self.__getattribute__(kw)
             if val:
                 if IP_PROPERTY.match(kw):
-                    val = ipaddr.IPNetwork(val)
-                    self.ip_pool_check(val.ip.compressed)
+                    val = ipaddress.ip_interface(val)
+                    self.ip_pool_check(val)
                 path = PATH_PROPERTY.match(kw)
                 if path:
                     kw = path.group()
