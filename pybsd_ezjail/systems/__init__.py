@@ -11,6 +11,7 @@ import sys
 import time
 import unipath
 from .common import Executor
+from .handlers import BaseJailHandler
 
 
 log = logging.getLogger('py_ezjail')
@@ -21,7 +22,7 @@ PATH_PROPERTY = re.compile(r'\w*(?=_path$)')
 check all system ips have an interface
 jails cannot define ips. They are attributed to them by their master
 through an ifconfig backend provided by systems.ipconfig. We will provide
-a BaseIFConfigurator than can be subclassed
+a BaseJailHandler than can be subclassed
 TBD:
     - implement check that every ip has an if
     - implement jail id
@@ -88,13 +89,17 @@ class Master(System):
     jlo_if = None
     jail_root_path = '/usr/jails'
     jails = None
+    _JailHandlerClass = BaseJailHandler
+    _jail_handler = None
 
     def __init__(self, name, **kwargs):
         super(Master, self).__init__(name, **kwargs)
         prefix_args = ()
+        self.jails = {}
         if self._exec is None:
             self._exec = Executor(prefix_args=prefix_args)
-        self.jails = {}
+        if self._jail_handler is None:
+            self._jail_handler = self._JailHandlerClass(master=self)
         self._set_properties(kwargs, ['jlo_if', 'jail_root_path'])
 
     def _add_jail(self, jail):
@@ -109,7 +114,6 @@ class Master(System):
             raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
         m.update(j)
         self.jail_ifconfig(jail)
-        jail.path = self.jail_root.child(jail.name)
         self.jails[jail.name] = jail
         jail.master = self
         return jail
@@ -270,12 +274,15 @@ class Jail(System):
             raise EzjailError('a jail called `{}` is already attached to `{}`'.format(name, master.name))
         super(Jail, self).__init__(name, **kwargs)
         self.set_main_ip(**kwargs)
-        self.path = unipath.Path('foo', name)
         if master:
             master._add_jail(self)
 
+    @property
+    def path(self, **kwargs):
+        return self.master._jail_handler.get_jail_path(self)
+
     """
-    TBD: move to the ipconfigurator
+    TBD: move to the jail handler
     """
     def set_main_ip(self, **kwargs):
         if 'main_ip' in kwargs:
