@@ -279,7 +279,9 @@ class Jail(System):
 
     @property
     def path(self, **kwargs):
-        return self.master._jail_handler.get_jail_path(self)
+        if self.master:
+            return self.master._jail_handler.get_jail_path(self)
+        return None
 
     """
     TBD: move to the jail handler

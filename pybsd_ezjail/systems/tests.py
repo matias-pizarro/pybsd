@@ -201,7 +201,7 @@ class SystemTestCase(unittest.TestCase):
 
 
 class MasterTestCase(SystemTestCase):
-    system_class = Master
+    system_class = DummyMaster
 
     def test_default_jail_root(self):
         system = self.system_class('system')
@@ -284,6 +284,11 @@ class MasterTestCase(SystemTestCase):
         self.assertEqual(str(_jail.path), '/usr/jails/jail',
                         'incorrect jail path')
 
+    def test_path(self):
+        jail = Jail('jail')
+        self.assertEqual(jail.path, None,
+                        'incorrect jail path')
+
     def test_clone_return(self):
         master = self.system_class('master', ext_if='re0', ext_ifv4='9.9.9.9')
         jail = Jail('jail', ext_ifv4='8.8.8.8/24')
@@ -313,10 +318,6 @@ class MasterTestCase(SystemTestCase):
         with self.assertRaises(EzjailError) as cm:
             jail_2 = Jail('jail', master=master, ext_ifv4='8.8.8.8/24')
         self.assertEqual(cm.exception.message, u'a jail called `jail` is already attached to `master`')
-
-
-class DummyMasterTestCase(MasterTestCase):
-    system_class = DummyMaster
 
 
 class JailTestCase(SystemTestCase):
