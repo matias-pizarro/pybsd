@@ -14,14 +14,14 @@ from .common import Executor
 
 
 log = logging.getLogger('py_ezjail')
-IP_PROPERTY = re.compile(r'\w*_ipv(4|6)$')
+IP_PROPERTY = re.compile(r'\w*_ifv(4|6)$')
 PATH_PROPERTY = re.compile(r'\w*(?=_path$)')
 
 """
 check all system ips have an interface
 jails cannot define ips. They are attributed to them by their master
 through an ifconfig backend provided by systems.ipconfig. We will provide
-a BaseIPConfigurator than can be subclassed
+a BaseIFConfigurator than can be subclassed
 TBD:
     - implement check that every ip has an if
     - implement jail id
@@ -46,19 +46,19 @@ class System(object):
     int_if = None
     lo_if = None
     ip_pool = None
-    ext_ipv4 = None
-    ext_ipv6 = None
-    int_ipv4 = None
-    int_ipv6 = None
-    lo_ipv4 = None
-    lo_ipv6 = None
+    ext_ifv4 = None
+    ext_ifv6 = None
+    int_ifv4 = None
+    int_ifv6 = None
+    lo_ifv4 = None
+    lo_ifv6 = None
 
     def __init__(self, name, **kwargs):
         super(System, self).__init__()
         self.name = name
         self.ip_pool = set()
-        self._set_properties(kwargs, ['hostname', 'ext_if', 'int_if', 'lo_if', 'ext_ipv4',
-            'ext_ipv6', 'int_ipv4', 'int_ipv6', 'lo_ipv4', 'lo_ipv6'])
+        self._set_properties(kwargs, ['hostname', 'ext_if', 'int_if', 'lo_if', 'ext_ifv4',
+            'ext_ifv6', 'int_ifv4', 'int_ifv6', 'lo_ifv4', 'lo_ifv6'])
 
     def ip_pool_check(self, _if):
         ip = str(_if.ip)
@@ -255,7 +255,7 @@ class Jail(System):
     master = None
     state = None
     jid = None
-    allowed_main_ips = ('ext_ipv4', 'ext_ipv6', 'int_ipv4', 'int_ipv6')
+    allowed_main_ips = ('ext_ifv4', 'ext_ifv6', 'int_ifv4', 'int_ifv6')
     main_ip = None
     ip = None
     path = None
