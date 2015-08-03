@@ -10,12 +10,17 @@ import socket
 import sys
 import time
 import unipath
-from .common import Executor
+from .common import Interface, Executor
 from .handlers import BaseJailHandler
+
+try:
+    unicode
+except NameError:  # pragma: nocover
+    unicode = str
 
 
 log = logging.getLogger('py_ezjail')
-IP_PROPERTY = re.compile(r'\w*_ifv(4|6)$')
+IF_PROPERTY = re.compile(r'^_\w*_if$')
 PATH_PROPERTY = re.compile(r'\w*(?=_path$)')
 
 """
@@ -39,68 +44,135 @@ class EzjailError(Exception):
             self.message = args[0]
 
 
-class System(object):
-    """Describes an OS instance, as a computer, a virtualized system or a jail"""
-    name = None
-    hostname = None
-    ext_if = None
-    int_if = None
-    lo_if = None
-    ip_pool = None
-    ext_ifv4 = None
-    ext_ifv6 = None
-    int_ifv4 = None
-    int_ifv6 = None
-    lo_ifv4 = None
-    lo_ifv6 = None
+class BaseSystem(object):
+    """Describes a base OS instance, as a computer, a virtualized system or a jail"""
 
-    def __init__(self, name, **kwargs):
-        super(System, self).__init__()
+    def __init__(self, name, hostname=None):
+        super(BaseSystem, self).__init__()
         self.name = name
-        self.ip_pool = set()
-        self._set_properties(kwargs, ['hostname', 'ext_if', 'int_if', 'lo_if', 'ext_ifv4',
-            'ext_ifv6', 'int_ifv4', 'int_ifv6', 'lo_ifv4', 'lo_ifv6'])
+        self.hostname = (hostname or name)
 
-    def ip_pool_check(self, _if):
-        ip = str(_if.ip)
-        if ip in self.ip_pool:
-            raise EzjailError('IP address {} has already been attributed'.format(ip))
-        self.ip_pool.add(ip)
-        return True
 
-    def _set_properties(self, kwargs, kws):
-        for kw in kws:
-            val = kwargs[kw] if kw in kwargs else self.__getattribute__(kw)
-            if val:
-                if IP_PROPERTY.match(kw):
-                    val = ipaddress.ip_interface(val)
-                    self.ip_pool_check(val)
-                path = PATH_PROPERTY.match(kw)
-                if path:
-                    kw = path.group()
-                    val = unipath.Path(val)
-                # print(kw, val)
-                self.__setattr__(kw, val)
+class System(BaseSystem):
+    """Describes a full OS instance"""
+
+    def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None, **kwargs):
+        super(System, self).__init__(name=name, hostname=hostname)
+        self.ext_if = ext_if
+        self.int_if = int_if
+        self.lo_if = lo_if
+
+    @property
+    def ext_if(self):
+        return self._ext_if
+
+    @ext_if.setter
+    def ext_if(self, _if):
+        if_name, if_ips = _if
+        _ext_if = Interface(name=if_name, ips=if_ips)
+        intersec = _ext_if.ips.intersection(self.ips)
+        if len(intersec):
+            raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+        self._ext_if = _ext_if
+
+    @property
+    def int_if(self):
+        return self._int_if or self.ext_if
+
+    @int_if.setter
+    def int_if(self, _if):
+        if _if:
+            if_name, if_ips = _if
+            _int_if = Interface(name=if_name, ips=if_ips)
+            intersec = _int_if.ips.intersection(self.ips)
+            if len(intersec):
+                raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+            if _int_if != self.ext_if:
+                self._int_if = _int_if
+        else:
+            self._int_if = None
+
+    @property
+    def lo_if(self):
+        return self._lo_if
+
+    @lo_if.setter
+    def lo_if(self, _if):
+        if _if:
+            if_name, if_ips = _if
+        else:
+            if_name = 'lo0'
+            if_ips = ['127.0.0.1/8', '::1/128']
+        _lo_if = Interface(name=if_name, ips=if_ips)
+        intersec = _lo_if.ips.intersection(self.ips)
+        if len(intersec):
+            raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+        self._lo_if = _lo_if
+
+    @property
+    def ips_v4(self):
+        ips = set()
+        for prop, interface in six.iteritems(self.__dict__):
+            if IF_PROPERTY.match(prop):
+                ips.update([x.ip.compressed for x in interface.ifsv4])
+        return ips
+
+    @property
+    def ips_v6(self):
+        ips = set()
+        for prop, interface in six.iteritems(self.__dict__):
+            if IF_PROPERTY.match(prop):
+                ips.update([x.ip.compressed for x in interface.ifsv6])
+        return ips
+
+    @property
+    def ips(self):
+        ips = set()
+        for prop, interface in six.iteritems(self.__dict__):
+            if IF_PROPERTY.match(prop) and interface:
+                ips.update([x.ip.compressed for x in interface.ifsv4])
+                ips.update([x.ip.compressed for x in interface.ifsv6])
+        return ips
+
+                # path = PATH_PROPERTY.match(kw)
+                # if path:
+                #     kw = path.group()
+                #     val = unipath.Path(val)
+                # # print(kw, val)
+                # self.__setattr__(kw, val)
 
 
 class Master(System):
     """Describes a system that will host jails"""
-    _exec = None
-    jlo_if = None
     jail_root_path = '/usr/jails'
-    jails = None
     _JailHandlerClass = BaseJailHandler
-    _jail_handler = None
 
-    def __init__(self, name, **kwargs):
-        super(Master, self).__init__(name, **kwargs)
-        prefix_args = ()
+    def __init__(self, name, ext_if, int_if=None, lo_if=None, jlo_if=None, hostname=None, **kwargs):
+        super(Master, self).__init__(name, ext_if, int_if, lo_if, hostname, **kwargs)
+        self.jlo_if = jlo_if
         self.jails = {}
-        if self._exec is None:
-            self._exec = Executor(prefix_args=prefix_args)
-        if self._jail_handler is None:
+        if not hasattr(self, '_exec'):
+            self._exec = Executor(prefix_args=())
+        if not hasattr(self, '_jail_handler'):
             self._jail_handler = self._JailHandlerClass(master=self)
-        self._set_properties(kwargs, ['jlo_if', 'jail_root_path'])
+        # self._set_properties(kwargs, ['jlo_if', 'jail_root_path'])
+
+    @property
+    def jlo_if(self):
+        return self._jlo_if or self.lo_if
+
+    @jlo_if.setter
+    def jlo_if(self, _if):
+        if _if:
+            if_name, if_ips = _if
+            _jlo_if = Interface(name=if_name, ips=if_ips)
+            intersec = _jlo_if.ips.intersection(self.ips)
+            if len(intersec):
+                raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+            if _jlo_if != self.lo_if:
+                self._jlo_if = _jlo_if
+        else:
+            self._jlo_if = None
 
     def _add_jail(self, jail):
         if not isinstance(jail, Jail):
@@ -254,7 +326,7 @@ class DummyMaster(Master):
                  '')
 
 
-class Jail(System):
+class Jail(BaseSystem):
     """Describes a jailed system"""
     master = None
     state = None
@@ -264,7 +336,7 @@ class Jail(System):
     ip = None
     path = None
 
-    def __init__(self, name, master=None, **kwargs):
+    def __init__(self, name, hostname=None, master=None, **kwargs):
         for _if in ['ext_if', 'int_if', 'lo_if']:
             if _if in kwargs:
                 raise EzjailError('A Jail cannot define its own interfaces')
@@ -272,8 +344,8 @@ class Jail(System):
             raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
         if master and name in master.jails:
             raise EzjailError('a jail called `{}` is already attached to `{}`'.format(name, master.name))
-        super(Jail, self).__init__(name, **kwargs)
-        self.set_main_ip(**kwargs)
+        super(Jail, self).__init__(name=name, hostname=hostname)
+        # self.set_main_ip(**kwargs)
         if master:
             master._add_jail(self)
 
