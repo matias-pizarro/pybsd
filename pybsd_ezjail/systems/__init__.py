@@ -110,22 +110,6 @@ class System(BaseSystem):
         self._lo_if = _lo_if
 
     @property
-    def ips_v4(self):
-        ips = set()
-        for prop, interface in six.iteritems(self.__dict__):
-            if IF_PROPERTY.match(prop):
-                ips.update([x.ip.compressed for x in interface.ifsv4])
-        return ips
-
-    @property
-    def ips_v6(self):
-        ips = set()
-        for prop, interface in six.iteritems(self.__dict__):
-            if IF_PROPERTY.match(prop):
-                ips.update([x.ip.compressed for x in interface.ifsv6])
-        return ips
-
-    @property
     def ips(self):
         ips = set()
         for prop, interface in six.iteritems(self.__dict__):
