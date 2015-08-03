@@ -9,7 +9,6 @@ import re
 import socket
 import sys
 import time
-import unipath
 from .common import Interface, Executor
 from .handlers import BaseJailHandler
 
@@ -118,17 +117,9 @@ class System(BaseSystem):
                 ips.update([x.ip.compressed for x in interface.ifsv6])
         return ips
 
-                # path = PATH_PROPERTY.match(kw)
-                # if path:
-                #     kw = path.group()
-                #     val = unipath.Path(val)
-                # # print(kw, val)
-                # self.__setattr__(kw, val)
-
 
 class Master(System):
     """Describes a system that will host jails"""
-    jail_root_path = '/usr/jails'
     _JailHandlerClass = BaseJailHandler
 
     def __init__(self, name, ext_if, int_if=None, lo_if=None, jlo_if=None, hostname=None, **kwargs):
@@ -139,7 +130,6 @@ class Master(System):
             self._exec = Executor(prefix_args=())
         if not hasattr(self, '_jail_handler'):
             self._jail_handler = self._JailHandlerClass(master=self)
-        # self._set_properties(kwargs, ['jlo_if', 'jail_root_path'])
 
     @property
     def jlo_if(self):

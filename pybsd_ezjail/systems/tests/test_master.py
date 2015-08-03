@@ -3,6 +3,7 @@ from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import six
 from .. import Master, EzjailError
+from ..handlers import BaseJailHandler
 from .test_system import SystemTestCase
 
 
@@ -49,3 +50,9 @@ class MasterTestCase(SystemTestCase):
         with self.assertRaises(EzjailError) as cm:
             system = self.system_class(**params)
         self.assertEqual(cm.exception.message, u'Already attributed IPs: [127.0.0.1]')
+
+    def test_jail_handler(self):
+        self.assertIsInstance(self.system._jail_handler, BaseJailHandler,
+                        'incorrect jail_handler')
+        self.assertEqual(self.system._jail_handler.master, self.system,
+                        'incorrect jail_handler')
