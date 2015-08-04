@@ -18,7 +18,7 @@ except NameError:  # pragma: nocover
     unicode = str
 
 
-log = logging.getLogger('py_ezjail')
+log = logging.getLogger('pybsd')
 IF_PROPERTY = re.compile(r'^_\w*_if$')
 PATH_PROPERTY = re.compile(r'\w*(?=_path$)')
 

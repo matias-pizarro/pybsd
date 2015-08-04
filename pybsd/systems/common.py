@@ -5,13 +5,14 @@ import logging
 from sortedcontainers import SortedListWithKey
 import six
 import subprocess
+
 try:
     unicode
 except NameError:  # pragma: nocover
     unicode = str
 
 
-log = logging.getLogger('py_ezjail')
+log = logging.getLogger('pybsd')
 
 
 class Interface(object):

@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
+import logging
 import unipath
+
+try:
+    unicode
+except NameError:  # pragma: nocover
+    unicode = str
+
+
+log = logging.getLogger('pybsd')
 
 
 class BaseJailHandler(object):
