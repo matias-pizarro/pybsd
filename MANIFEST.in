@@ -1,0 +1,2 @@
+include COPYRIGHT
+recursive-include requirements stable-*.txt
