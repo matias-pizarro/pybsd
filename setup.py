@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
-import os
+import os, sys
 from setuptools import find_packages, setup
+
+
+requirements = [
+    'lazy',
+    'six',
+    'sortedcontainers',
+    'Unipath',
+]
+
+if sys.version_info.major == 2:
+    requirements.append('py2-ipaddress')
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -15,13 +26,7 @@ setup(
     license="BSD",
     keywords="FreeBSD jails provisioning ansible fabric ezjail python",
     url="https://github.com/rebost/pybsd",
-    install_requires=[
-        'lazy',
-        'py2-ipaddress',
-        'six',
-        'sortedcontainers',
-        'Unipath',
-    ],
+    install_requires=requirements,
     packages=find_packages(exclude=['tests']),
     long_description=read('utils/README.rst'),
     classifiers=[

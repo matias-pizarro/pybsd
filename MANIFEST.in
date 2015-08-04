@@ -1,2 +1,2 @@
-include COPYRIGHT
+include COPYRIGHT VERSION utils/README.rst
 recursive-include requirements stable-*.txt
