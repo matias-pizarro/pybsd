@@ -55,3 +55,9 @@ Example:
         u'status': u'ZR'
       }
     }
+
+
+Tests can be run like so:
+
+
+    python tests/run.py

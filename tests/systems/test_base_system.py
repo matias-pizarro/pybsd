@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import unittest
-from .. import BaseSystem, EzjailError
+from pybsd.systems import BaseSystem, EzjailError
 
 
 class BaseSystemTestCase(unittest.TestCase):

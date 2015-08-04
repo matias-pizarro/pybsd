@@ -2,8 +2,8 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import six
-from .. import Master, EzjailError
-from ..handlers import BaseJailHandler
+from pybsd.systems import Master, EzjailError
+from pybsd.systems.handlers import BaseJailHandler
 from .test_system import SystemTestCase
 
 

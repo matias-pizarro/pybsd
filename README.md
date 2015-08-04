@@ -56,4 +56,4 @@ Example:
 
 Tests can be run like so:
 
-    python -m unittest discover pybsd.systems
+    python tests/run.py

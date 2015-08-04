@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import six
-from .. import System, EzjailError
+from pybsd.systems import System, EzjailError
 from .test_base_system import BaseSystemTestCase
 
 

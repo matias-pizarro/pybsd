@@ -3,7 +3,7 @@ from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import six
 import unittest
-from ..common import Interface
+from pybsd.systems.common import Interface
 
 
 class InterfaceTestCase(unittest.TestCase):

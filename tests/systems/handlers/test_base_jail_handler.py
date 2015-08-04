@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import unittest
 import unipath
-from ..handlers import BaseJailHandler
+from pybsd.systems.handlers import BaseJailHandler
 
 
 class BaseJailHandlerTestCase(unittest.TestCase):

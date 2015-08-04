@@ -1,5 +1,5 @@
-click==4.1
-first==2.0.1
+click==4.1                # via pip-tools
+first==2.0.1              # via pip-tools
 ipython==3.2.1
 lazy==1.2
 pip-tools==1.1.3
