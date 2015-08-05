@@ -2,6 +2,59 @@
 PyBSD
 =====
 
+.. list-table::
+    :stub-columns: 1
+
+    * - docs
+      - |docs|
+    * - tests
+      - | |travis| |appveyor|
+        | |coveralls| |codecov| |landscape| |scrutinizer|
+    * - package
+      - |version| |downloads|
+
+.. |docs| image:: https://readthedocs.org/projects/pybsd/badge/?style=flat
+    :target: https://readthedocs.org/projects/pybsd
+    :alt: Documentation Status
+
+.. |travis| image:: http://img.shields.io/travis/rebost/pybsd/master.svg?style=flat&label=Travis
+    :alt: Travis-CI Build Status
+    :target: https://travis-ci.org/rebost/pybsd
+
+.. |appveyor| image:: https://img.shields.io/appveyor/ci/rebost/pybsd/master.svg?style=flat&label=AppVeyor
+    :alt: AppVeyor Build Status
+    :target: https://ci.appveyor.com/project/rebost/pybsd
+
+.. |coveralls| image:: http://img.shields.io/coveralls/rebost/pybsd/master.svg?style=flat&label=Coveralls
+    :alt: Coverage Status
+    :target: https://coveralls.io/r/rebost/pybsd
+
+
+.. |codecov| image:: http://img.shields.io/codecov/c/github/rebost/pybsd/master.svg?style=flat&label=Codecov
+    :alt: Coverage Status
+    :target: https://codecov.io/github/rebost/pybsd
+
+
+.. |landscape| image:: https://landscape.io/github/rebost/pybsd/master/landscape.svg?style=flat
+    :target: https://landscape.io/github/rebost/pybsd/master
+    :alt: Code Quality Status
+
+.. |version| image:: http://img.shields.io/pypi/v/pybsd.svg?style=flat
+    :alt: PyPI Package latest release
+    :target: https://pypi.python.org/pypi/pybsd
+
+.. |downloads| image:: http://img.shields.io/pypi/dm/pybsd.svg?style=flat
+    :alt: PyPI Package monthly downloads
+    :target: https://pypi.python.org/pypi/pybsd
+
+.. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/rebost/pybsd/master.svg?style=flat
+    :alt: Scrutinizer Status
+    :target: https://scrutinizer-ci.com/g/rebost/pybsd/
+
+a Python tool to provision, keep in sync and manage FreeBSD boxes and jails
+
+* Free software: BSD license
+
 Provisioning, keeping in sync and maintaining even a medium-sized pool of `FreeBSD <https://www.freebsd.org/>`_ boxes and jails can quickly become a time-consuming and complex task. Tools like `Ansible <http://ansible.com/>`_ , `Fabric <http://www.fabfile.org/>`_ and `ezjail <http://erdgeist.org/arts/software/ezjail/>`_ provide welcome help in one aspect or another and it makes sense to integrate them into a `Python <https://www.python.org/>`_-based interface that allows centralized, push-oriented and automated interaction.
 
 A project like `bsdploy <https://github.com/ployground/bsdploy>`_ already leverages these tools to great effect albeit in a very inflexible way that cannot easily be applied to an existing deployment. PyBSD-Project aims at providing a fully customizable Python tool that can be used to maintain an existing array of servers as well as set one up and at making available as well as safely, easily and quickly deployable a wide array of pre-configured, clonable and configurable jails to implement, in a DevOps spirit, tools such as:
@@ -36,29 +89,22 @@ A project like `bsdploy <https://github.com/ployground/bsdploy>`_ already levera
 
 Somewhere down the line interfacing with `tsuru <https://tsuru.io/>`_ or an equivalent is a goal. On the other hand, once the above shopping list is completed, `Docker <http://www.docker.com>`_ on FreeBSD will probably be a reality 8P.
 
-Example:
+Installation
+============
 
+::
 
-    >>> from pybsd import box_01
-    >>> box_01.ezjail_admin('list')
-    {
-      u'nginx': {
-        u'ip': u'10.0.1.41/24',
-        u'ips': [
-          u'10.0.1.41/24',
-          u'2a01:4f8:210:41e6::1:41:1',
-          u'127.0.1.41',
-          u'::1:41'
-        ],
-        u'jid': u'1',
-        u'root': u'/usr/jails/nginx',
-        u'status': u'ZR'
-      }
-    }
+    pip install pybsd
 
+Documentation
+=============
 
-Tests can be run like so:
+https://pybsd.readthedocs.org/
 
+Development
+===========
+
+To run the all tests run::
 
     py.test --pdb
     # or

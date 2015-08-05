@@ -1,7 +1,26 @@
-# -*- coding: utf-8 -*-
-import os, sys
-from setuptools import find_packages, setup
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+from __future__ import absolute_import, print_function
 
+import io
+import os
+import re
+import sys
+from glob import glob
+from os.path import basename
+from os.path import dirname
+from os.path import join
+from os.path import relpath
+from os.path import splitext
+
+from setuptools import find_packages
+from setuptools import setup
+
+def read(*names, **kwargs):
+    return io.open(
+        join(dirname(__file__), *names),
+        encoding=kwargs.get('encoding', 'utf8')
+    ).read()
 
 requirements = [
     'lazy',
@@ -9,27 +28,25 @@ requirements = [
     'sortedcontainers',
     'Unipath',
 ]
-
 if sys.version_info.major == 2:
     requirements.append('py2-ipaddress')
 
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
 setup(
     name="PyBSD",
-    version=read('VERSION'),
-    author="Matías Pizarro",
-    author_email="matias@pizarro net",
-    description=("a Python tool to provision, keep in sync and manage "
-                   "FreeBSD boxes and jails."),
-    license="BSD",
-    keywords="FreeBSD jails provisioning ansible fabric ezjail python",
-    url="https://github.com/rebost/pybsd",
-    install_requires=requirements,
-    packages=find_packages(exclude=['tests']),
-    long_description=read('utils/README.rst'),
+    version='0.0.1',
+    license='BSD',
+    description='a Python tool to provision, keep in sync and manage FreeBSD boxes and jails',
+    long_description='%s\n%s' % (read('README.rst'), re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))),
+	author="Matías Pizarro",
+    author_email='matias@pizarro.net',
+    url='https://github.com/rebost/pybsd',
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
+    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
+    include_package_data=True,
+    zip_safe=False,
     classifiers=[
+        # complete classifier list: http://pypi.python.org/pypi?%3Aaction=list_classifiers
         "Development Status :: 2 - Pre-Alpha",
         "Environment :: Console",
         "Environment :: Other Environment",
@@ -48,4 +65,8 @@ setup(
         "Topic :: System :: Monitoring",
         "Topic :: System :: Systems Administration",
     ],
+    keywords=[
+        'FreeBSD', 'jails', 'provisioning', 'ansible', 'fabric', 'ezjail', 'python',
+    ],
+    install_requires=requirements,
 )

@@ -1,2 +1,21 @@
-include COPYRIGHT VERSION utils/README.rst
-recursive-include requirements stable-*.txt
+graft docs
+graft examples
+graft src
+graft ci
+graft tests
+
+include .bumpversion.cfg
+include .coveragerc
+include .cookiecutterrc
+include .isort.cfg
+include .pylintrc
+
+include AUTHORS.rst
+include CHANGELOG.rst
+include CONTRIBUTING.rst
+include COPYRIGHT
+include README.rst
+
+include tox.ini .travis.yml appveyor.yml
+
+global-exclude *.py[cod] __pycache__ *.so *.dylib
