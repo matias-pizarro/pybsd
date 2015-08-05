@@ -4,7 +4,7 @@ Provisioning, keeping in sync and maintaining even a medium-sized pool of [FreeB
 
 A project like [bsdploy](https://github.com/ployground/bsdploy) [<img src="https://cloud.githubusercontent.com/assets/644815/8814137/862c35b6-3009-11e5-9260-7bc6ec22ab1c.png" alt="source"/>](https://github.com/ployground/bsdploy) already leverages these tools to great effect albeit in a very inflexible way that cannot easily be applied to an existing deployment. PyBSD-Project aims at providing a fully customizable Python tool that can be used to maintain an existing array of servers as well as set one up and at making available as well as safely, easily and quickly deployable a wide array of pre-configured, clonable and configurable jails to implement, in a DevOps spirit, tools such as:
 
-   * [nginx](http://nginx.org/) [<img src="https://cloud.githubusercontent.com/assets/644815/8814137/862c35b6-3009-11e5-9260-7bc6ec22ab1c.png" alt="source"/>](http://hg.nginx.org/nginx)
+   * [nginx](http://nginx.org/) [<img src="https://cloud.githubusercontent.com/assets/644815/8838883/aec0b5b6-30d0-11e5-8f36-3bd9346149f7.png" alt="source"/>](http://hg.nginx.org/nginx)
    * [Django](https://www.djangoproject.com/) [<img src="https://cloud.githubusercontent.com/assets/644815/8814137/862c35b6-3009-11e5-9260-7bc6ec22ab1c.png" alt="source"/>](https://github.com/django/django)
    * [Flask](http://flask.pocoo.org/) [<img src="https://cloud.githubusercontent.com/assets/644815/8814137/862c35b6-3009-11e5-9260-7bc6ec22ab1c.png" alt="source"/>](https://github.com/mitsuhiko/flask)
    * [JSON Web Tokens](https://en.wikipedia.org/wiki/JSON_Web_Token) [[libraries]](http://jwt.io/#libraries)
