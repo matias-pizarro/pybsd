@@ -1,0 +1,6 @@
+-r requirements.txt
+ipdb
+ipython
+pip-tools
+tox
+pytest
