@@ -10,11 +10,14 @@ include .cookiecutterrc
 include .isort.cfg
 include .pylintrc
 
+include *requirements.txt
+
 include AUTHORS.rst
 include CHANGELOG.rst
 include CONTRIBUTING.rst
 include COPYRIGHT
 include README.rst
+include TODO.rst
 
 include tox.ini .travis.yml appveyor.yml
 

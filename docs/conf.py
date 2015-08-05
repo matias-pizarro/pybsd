@@ -28,9 +28,6 @@ version = release = u'0.0.1'
 import sphinx_rtd_theme
 html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-html_theme_options = {
-    'githuburl': 'https://github.com/rebost/pybsd/'
-}
 
 pygments_style = 'trac'
 templates_path = ['.']

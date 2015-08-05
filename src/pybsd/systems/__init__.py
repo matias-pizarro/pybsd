@@ -2,13 +2,11 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import six
 import copy
-import ipaddress
 from lazy import lazy
 import logging
 import re
 import socket
 import sys
-import time
 from .common import Interface, Executor
 from .handlers import BaseJailHandler
 
@@ -35,6 +33,7 @@ TBD:
     - rename systems.Master.clone clone_jail
     - organise projects
 """
+
 
 class EzjailError(Exception):
     def __init__(self, *args, **kwargs):
@@ -182,7 +181,7 @@ class Master(System):
     def _ezjail_admin(self, *args):
         try:
             return self._exec(self.ezjail_admin_binary, *args)
-        except socket.error as e:
+        except socket.error:
             raise EzjailError('Could not connect')
 
     @lazy
@@ -296,8 +295,11 @@ class DummyMaster(Master):
     def _exec(ezjail_admin_binary, *args):
         if args[1] == 'list':
             return (0,
-                 'STA JID  IP              Hostname                       Root Directory\n--- ---- --------------- ------------------------------ ------------------------\nZR  1    10.0.1.41/24    agencia_tributaria             /usr/jails/agencia_tributaria\n    1    re0|2a01:4f8:210:41e6::1:41:1\n    1    lo1|127.0.1.41\n    1    lo1|::1:41\n',
-                 '')
+                    'STA JID  IP              Hostname                       Root Directory\n--- ---- --------------- '
+                    '------------------------------ ------------------------\nZR  1    10.0.1.41/24    agencia_tributa'
+                    'ria             /usr/jails/agencia_tributaria\n    1    re0|2a01:4f8:210:41e6::1:41:1\n    1    l'
+                    'o1|127.0.1.41\n    1    lo1|::1:41\n',
+                    '')
 
 
 class Jail(BaseSystem):
