@@ -4,3 +4,5 @@ ipython
 pip-tools
 tox
 pytest
+pygments
+-e hg+https://bitbucket.org/antocuni/pdb/@default#egg=pdb

@@ -56,8 +56,6 @@ Example:
 
 Tests can be run like so:
 
-    python -m unittest discover tests --failfast
-    # or
-    python tests/run.py
+    py.test --pdb
     # or
     tox
