@@ -27,7 +27,7 @@ PyBSD
 
 .. |coveralls| image:: http://img.shields.io/coveralls/rebost/pybsd/master.svg?style=flat&label=Coveralls
     :alt: Coverage Status
-    :target: https://coveralls.io/r/rebost/pybsd
+    :target: https://coveralls.io/github/rebost/pybsd
 
 
 .. |codecov| image:: http://img.shields.io/codecov/c/github/rebost/pybsd/master.svg?style=flat&label=Codecov
