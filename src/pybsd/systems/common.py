@@ -59,7 +59,7 @@ class Interface(object):
         return self.ifsv6[1:]
 
 
-class Executor:
+class Executor(object):
     """Adapted from https://github.com/ployground/ploy"""
     def __init__(self, prefix_args=(), splitlines=False):
         self.prefix_args = tuple(prefix_args)

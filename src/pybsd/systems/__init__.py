@@ -15,20 +15,6 @@ __logger__ = logging.getLogger('pybsd')
 IF_PROPERTY = re.compile(r'^_\w*_if$')
 PATH_PROPERTY = re.compile(r'\w*(?=_path$)')
 
-"""
-check all system ips have an interface
-jails cannot define ips. They are attributed to them by their master
-through an ifconfig backend provided by systems.ipconfig. We will provide
-a BaseJailHandler than can be subclassed
-TBD:
-    - implement check that every ip has an if
-    - implement jail id
-    - implement BaseIPConfigurator
-    - implement systems.Master.remove_jail
-    - rename systems.Master.clone clone_jail
-    - organise projects
-"""
-
 
 class EzjailError(Exception):
     def __init__(self, *args, **kwargs):
@@ -116,14 +102,35 @@ class Master(System):
     """Describes a system that will host jails"""
     _JailHandlerClass = BaseJailHandler
 
-    def __init__(self, name, ext_if, int_if=None, lo_if=None, jlo_if=None, hostname=None):
+    def __init__(self, name, ext_if, int_if=None, lo_if=None, j_if=None, jlo_if=None, hostname=None):
         super(Master, self).__init__(name, ext_if, int_if, lo_if, hostname)
+        self.j_if = j_if
         self.jlo_if = jlo_if
         self.jails = {}
         if not hasattr(self, '_exec'):
             self._exec = Executor(prefix_args=())
         if not hasattr(self, 'jail_handler'):
             self.jail_handler = self._JailHandlerClass(master=self)
+
+    @property
+    def j_if(self):
+        """
+        By default, a master uses its own ext_if as jails ext_if
+        """
+        return self._j_if or self.ext_if
+
+    @j_if.setter
+    def j_if(self, _if):
+        if _if:
+            if_name, if_ips = _if
+            _j_if = Interface(name=if_name, ips=if_ips)
+            intersec = _j_if.ips.intersection(self.ips)
+            if len(intersec):
+                raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+            if _j_if != self.ext_if:
+                self._j_if = _j_if
+        else:
+            self._j_if = None
 
     @property
     def jlo_if(self):
@@ -194,8 +201,8 @@ class Master(System):
             raise EzjailError('ezjail-admin list output too short:\n%s' % out.strip())
         headers = []
         current = ''
-        for i, c in enumerate(lines[1]):
-            if c != '-' or i >= len(lines[0]):
+        for i, cc in enumerate(lines[1]):
+            if cc != '-' or i >= len(lines[0]):
                 headers.append(current.strip())
                 if i >= len(lines[0]):
                     break
@@ -290,60 +297,90 @@ class DummyMaster(Master):
     def _exec(ezjail_admin_binary, *args):
         if args[1] == 'list':
             return (0,
-                    'STA JID  IP              Hostname                       Root Directory\n--- ---- --------------- '
-                    '------------------------------ ------------------------\nZR  1    10.0.1.41/24    agencia_tributa'
-                    'ria             /usr/jails/agencia_tributaria\n    1    re0|2a01:4f8:210:41e6::1:41:1\n    1    l'
-                    'o1|127.0.1.41\n    1    lo1|::1:41\n',
+                    """STA JID  IP              Hostname                       Root Directory\n"""
+                    """--- ---- --------------- ------------------------------ ------------------------\n"""
+                    """ZR  1    10.0.1.41/24    system             /usr/jails/system\n"""
+                    """    1    re0|2a01:4f8:210:41e6::1:41:1/100\n"""
+                    """    1    lo1|127.0.1.41/24\n"""
+                    """    1    lo1|::1:41/100\n""",
                     '')
 
 
 class Jail(BaseSystem):
     """Describes a jailed system"""
-    master = None
-    state = None
-    jid = None
-    allowed_main_ips = ('ext_ifv4', 'ext_ifv6', 'int_ifv4', 'int_ifv6')
-    main_ip = None
-    ip = None
 
-    def __init__(self, name, hostname=None, master=None, **kwargs):
-        for _if in ['ext_if', 'int_if', 'lo_if']:
-            if _if in kwargs:
-                raise EzjailError('A Jail cannot define its own interfaces')
-        if not isinstance(master, (Master, type(None))):
-            raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
-        if master and name in master.jails:
-            raise EzjailError('a jail called `{}` is already attached to `{}`'.format(name, master.name))
+    def __init__(self, name, uid, hostname=None, master=None, jail_type=None, auto_start=False):
         super(Jail, self).__init__(name=name, hostname=hostname)
-        # self.set_main_ip(**kwargs)
-        if master:
-            master.add_jail(self)
+        """
+        Possible types
+        D     Directory tree based jail.
+        I     File-based jail.
+        E     Geli encrypted file-based jail.
+        B     Bde encrypted file-based jail.
+        Z     ZFS filesystem-based jail.
+        """
+        self.uid = uid
+        self.jail_type = jail_type
+        self.auto_start = auto_start
+        # if master:
+            # if not isinstance(master, Master):
+            #     raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
+            # if name in master.jails:
+            #     raise EzjailError('a jail called `{}` is already attached to `{}`'.format(name, master.name))
+            # if ids in master.ids:
+            #     raise EzjailError('a jail with id `{}` is already attached to `{}`'.format(id, master.name))
+            # master.add_jail(self)
+
+    @property
+    def status(self):
+        return getattr(self, '_status', 'S')
+
+    @status.setter
+    def status(self, _status):
+        """ Here we shall later hook polling of real jails if applicable"""
+        """
+        Possible status
+        R     The jail is running.
+        A     The image of the jail is mounted, but the jail is not running.
+        S     The jail is stopped.
+        """
+        if _status not in 'RAS':
+            raise EzjailError('`{}` is not a valid status (it must be one of R, A or S)'.format(_status))
+        self._status = _status
+
+    @property
+    def jid(self):
+        return getattr(self, '_jid', None)
+
+    @jid.setter
+    def jid(self, _jid):
+        """ Here we shall later hook polling of real jails if applicable"""
+        if not isinstance(_jid, six.integer_types):
+            raise EzjailError('`{}` is not a valid jid (it must be an integer)'.format(_jid))
+        self._jid = _jid
 
     @property
     def path(self):
-        if self.master:
-            return self.master.jail_handler.get_jail_path(self)
+        # if self.master:
+        #     return self.master.jail_handler.get_jail_path(self)
         return None
 
-    """
-    TBD: move to the jail handler
-    """
-    def set_main_ip(self, **kwargs):
-        if 'main_ip' in kwargs:
-            main_ip = kwargs['main_ip']
-            if main_ip not in kwargs:
-                raise EzjailError('Chosen main ip is not defined')
-            if main_ip not in self.allowed_main_ips:
-                raise EzjailError('Chosen main ip is not allowed')
-        else:
-            default_ip = self.allowed_main_ips[0]
-            if default_ip in kwargs:
-                main_ip = default_ip
-            else:
-                defined_ips = 0
-                for main_ip in self.allowed_main_ips:
-                    if main_ip in kwargs:
-                        defined_ips += 1
-                        if defined_ips > 1:
-                            raise EzjailError('Main ip cannot be determined')
-        self.ip = self.__getattribute__(main_ip)
+    @property
+    def ext_if(self):
+        # if self.master:
+        #     return self.master.jail_handler.get_jail_ext_if(self)
+        return None
+
+    @ext_if.setter
+    def ext_if(self, _if):
+        raise EzjailError('Jail interfaces cannot be directly set')
+
+    @property
+    def lo_if(self):
+        # if self.master:
+        #     return self.master.jail_handler.get_jail_lo_if(self)
+        return None
+
+    @lo_if.setter
+    def lo_if(self, _if):
+        raise EzjailError('Jail interfaces cannot be directly set')

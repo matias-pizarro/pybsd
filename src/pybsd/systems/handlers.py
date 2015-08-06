@@ -18,3 +18,9 @@ class BaseJailHandler(object):
 
     def get_jail_path(self, jail):
         return self.jail_root.child(jail.name)
+
+    def get_jail_ext_if(self, jail):
+        return 'dummy ext_if'
+
+    def get_jail_lo_if(self, jail):
+        return 'dummy lo_if'
