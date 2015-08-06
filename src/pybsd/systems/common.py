@@ -6,11 +6,6 @@ from sortedcontainers import SortedListWithKey
 import six
 import subprocess
 
-try:
-    unicode
-except NameError:  # pragma: nocover
-    unicode = str
-
 
 __logger__ = logging.getLogger('pybsd')
 
