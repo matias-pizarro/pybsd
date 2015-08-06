@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
-import six
 import unittest
 from pybsd.systems.common import Interface
 
@@ -23,7 +22,7 @@ class InterfaceTestCase(unittest.TestCase):
 
     def test_eq_1(self):
         interface_1 = Interface(name='re0', ips=['8.8.8.8/32', '1:1:1::', '1:1:1::2/110'])
-        interface_2 = Interface(name='re0', ips=['1:1:1::2/110',  '1:1:1::/128', '8.8.8.8'])
+        interface_2 = Interface(name='re0', ips=['1:1:1::2/110', '1:1:1::/128', '8.8.8.8'])
         self.assertTrue(interface_1 == interface_2,
                         'incorrect name')
 
@@ -41,13 +40,13 @@ class InterfaceTestCase(unittest.TestCase):
 
     def test_not_eq_if4(self):
         interface_1 = Interface(name='re0', ips=['8.8.8.7', '1:1:1::', '1:1:1::2/110'])
-        interface_2 = Interface(name='re0', ips=['1:1:1::2/110',  '1:1:1::/128', '8.8.8.8'])
+        interface_2 = Interface(name='re0', ips=['1:1:1::2/110', '1:1:1::/128', '8.8.8.8'])
         self.assertFalse(interface_1 == interface_2,
                         'incorrect name')
 
     def test_not_eq_if6(self):
         interface_1 = Interface(name='re0', ips=['8.8.8.8/32', '1:1:1::', '1:1:1::1/110'])
-        interface_2 = Interface(name='re0', ips=['1:1:1::2/110',  '1:1:1::/128', '8.8.8.8'])
+        interface_2 = Interface(name='re0', ips=['1:1:1::2/110', '1:1:1::/128', '8.8.8.8'])
         self.assertFalse(interface_1 == interface_2,
                         'incorrect name')
 

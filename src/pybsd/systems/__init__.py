@@ -16,7 +16,7 @@ except NameError:  # pragma: nocover
     unicode = str
 
 
-logger = logging.getLogger('pybsd')
+__logger__ = logging.getLogger('pybsd')
 IF_PROPERTY = re.compile(r'^_\w*_if$')
 PATH_PROPERTY = re.compile(r'\w*(?=_path$)')
 
@@ -219,7 +219,7 @@ class Master(System):
             if command == 'console' and k == 'cmd':
                 continue
             if len(v.split()) != 1:
-                logger.error('The value `%s` of kwarg `%s` contains whitespace', v, k)
+                __logger__.error('The value `%s` of kwarg `%s` contains whitespace', v, k)
                 sys.exit(1)
         if command == 'console':
             return self._ezjail_admin(

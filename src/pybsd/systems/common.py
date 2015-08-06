@@ -12,7 +12,7 @@ except NameError:  # pragma: nocover
     unicode = str
 
 
-logger = logging.getLogger('pybsd')
+__logger__ = logging.getLogger('pybsd')
 
 
 class Interface(object):
@@ -26,8 +26,8 @@ class Interface(object):
     def add_ips(self, ips):
         if isinstance(ips, six.string_types):
             ips = [ips]
-        for ip in ips:
-            _if = ipaddress.ip_interface(ip)
+        for _ip in ips:
+            _if = ipaddress.ip_interface(_ip)
             if _if.ip.compressed not in self.ips:
                 if _if.version == 4:
                     self.ifsv4.add(_if)
@@ -76,7 +76,7 @@ class Executor:
         out = kwargs.pop('out', None)
         err = kwargs.pop('err', None)
         stdin = kwargs.pop('stdin', None)
-        logger.debug('Executing locally:\n%s', args)
+        __logger__.debug('Executing locally:\n%s', args)
         popen_kwargs = dict(stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if stdin is not None:
             popen_kwargs['stdin'] = subprocess.PIPE
@@ -101,7 +101,7 @@ class Executor:
         else:
             if out != _out:
                 if _rc == 0:
-                    logger.error(_out)
+                    __logger__.error(_out)
                 raise subprocess.CalledProcessError(_rc, ' '.join(args), _err)
         if err is None:
             if self.splitlines:
@@ -110,7 +110,7 @@ class Executor:
         else:
             if err != _err:
                 if _rc == 0:
-                    logger.error(_err)
+                    __logger__.error(_err)
                 raise subprocess.CalledProcessError(_rc, ' '.join(args), _err)
         if len(result) == 0:
             return
