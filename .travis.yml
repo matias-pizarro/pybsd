@@ -2,26 +2,26 @@ language: python
 python: 2.7
 sudo: false
 env:
-  global:
-    LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+  global: LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
   matrix:
-    - TOXENV=check
-    - TOXENV=2.7,coveralls,codecov
-    - TOXENV=2.7-nocover
-    - TOXENV=3.4,coveralls,codecov
-    - TOXENV=3.4-nocover
+  - TOXENV=check
+  - TOXENV=2.7,coveralls,codecov
+  - TOXENV=2.7-nocover
+  - TOXENV=3.4,coveralls,codecov
+  - TOXENV=3.4-nocover
 before_install:
-  - python --version
-  - virtualenv --version
-  - pip --version
-  - uname -a
-  - lsb_release -a
+- python --version
+- virtualenv --version
+- pip --version
+- uname -a
+- lsb_release -a
 install:
-  - pip install six tox
+- pip install six tox
 script:
-  - tox -v
+- tox -v
 notifications:
   email:
     on_success: never
     on_failure: always
-
+  slack:
+    secure: f0vje2pngSoS2dj7kJZJHawr6iElESLctd7mKIUj3bPeVXjReLYfyN6EaNxG6hOxDYT6Pm0DqHovNsW4L0A8sHFmxPtQwfT1betVt10C7mvukrXxjW+WUQBeyOzGoYDR7yoBROd1gAaKqheMCSzWGbbUpFXNErvvNEeAm/6TF/rkawW6XglW2+NW9o8eozVim7dgCFPMUUHv9UeYf+WdEBDpqJZ3V5xvMMTo5FeDoWNVKviKsclasVdt40kR3BDUZqOGBpg5IdqAHQ+TzFgEjLYU5ZLAM1EOUAgyEJVPcOaptAiJctXzVKRWnIjC+alDFZ2OwwLd6QvBHgcGbqH6zVbK+DRVIzaTkO5Ayi3jPQy5AUhCiVwxtJhyP5yMYjU8s6LIzMyGTcyUIaOmMp27jM5YBdF0SYgRX2Ft9bYOVHs4zTofWx3iVatl1QWumxp3dWMUvO2MGiqa0XiSbf8uD3OW8ArfqtAlI8jkzrcCDq8ClP3CUfQZ0etvdlhq+ZR9EehXv/GgqA2kr9eSFSzMoEvc1qpJapUsZPDcR+0g39Nb00LHmiobVPdhXQ4IfSlFmNALuSM64A6pJ2qOW15YTHKkc03muyMulIkrbGviXhu5cyCvPjuy1R3mOnUL4TIfaKDgt0u5Hx5nVXoYsWpy+wMIsNPMlHE/6XKwjkZJlBs=
