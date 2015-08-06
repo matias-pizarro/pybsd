@@ -24,7 +24,7 @@ project = u'PyBSD'
 year = u'2015'
 author = u'Mat\xedas Pizarro'
 copyright = '{0}, {1}'.format(year, author)
-version = release = u'0.0.1'
+version = release = u'0.0.2'
 import sphinx_rtd_theme
 html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
