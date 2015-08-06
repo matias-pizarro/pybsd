@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
+import ipaddress
 import unittest
 import unipath
 from pybsd.systems import Master, Jail, EzjailError
@@ -89,7 +90,7 @@ class JailTestCase(BaseSystemTestCase):
 
     @unittest.skip('This cannot be tested until jails have a master')
     def test_path(self):
-        self.assertEqual(self.path, unipath.Path('/usr/jails/system'),
+        self.assertEqual(self.system.path, unipath.Path('/usr/jails/system'),
                         'incorrect path')
 
     @unittest.skip('This cannot be tested until jails have a master')

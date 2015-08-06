@@ -322,14 +322,16 @@ class Jail(BaseSystem):
         self.uid = uid
         self.jail_type = jail_type
         self.auto_start = auto_start
-        # if master:
-            # if not isinstance(master, Master):
-            #     raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
-            # if name in master.jails:
-            #     raise EzjailError('a jail called `{}` is already attached to `{}`'.format(name, master.name))
-            # if ids in master.ids:
-            #     raise EzjailError('a jail with id `{}` is already attached to `{}`'.format(id, master.name))
-            # master.add_jail(self)
+        """
+        if master:
+            if not isinstance(master, Master):
+                raise EzjailError('{} should be an instance of systems.Master'.format(master.name))
+            if name in master.jails:
+                raise EzjailError('a jail called `{}` is already attached to `{}`'.format(name, master.name))
+            if ids in master.ids:
+                raise EzjailError('a jail with id `{}` is already attached to `{}`'.format(id, master.name))
+            master.add_jail(self)
+        """
 
     @property
     def status(self):
@@ -361,14 +363,14 @@ class Jail(BaseSystem):
 
     @property
     def path(self):
-        # if self.master:
-        #     return self.master.jail_handler.get_jail_path(self)
+        if self.master:
+            return self.master.jail_handler.get_jail_path(self)
         return None
 
     @property
     def ext_if(self):
-        # if self.master:
-        #     return self.master.jail_handler.get_jail_ext_if(self)
+        if self.master:
+            return self.master.jail_handler.get_jail_ext_if(self)
         return None
 
     @ext_if.setter
@@ -377,8 +379,8 @@ class Jail(BaseSystem):
 
     @property
     def lo_if(self):
-        # if self.master:
-        #     return self.master.jail_handler.get_jail_lo_if(self)
+        if self.master:
+            return self.master.jail_handler.get_jail_lo_if(self)
         return None
 
     @lo_if.setter
