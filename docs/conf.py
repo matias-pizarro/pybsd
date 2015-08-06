@@ -22,7 +22,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = u'PyBSD'
 year = u'2015'
-author = u'Mat\xedas Pizarro'
+author = u'Matías Pizarro'
 copyright = '{0}, {1}'.format(year, author)
 version = release = u'0.0.2'
 import sphinx_rtd_theme

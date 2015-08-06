@@ -12,7 +12,7 @@ default_context:
     coveralls:                 'yes'
     distribution_name:         'pybsd'
     email:                     'matias@pizarro.net'
-    full_name:                 'Mat\xedas Pizarro'
+    full_name:                 'Matías Pizarro'
     github_username:           'rebost'
     landscape:                 'yes'
     package_name:              'pybsd'

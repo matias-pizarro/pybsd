@@ -3,6 +3,7 @@ bumpversion
 cookiecutter
 ipdb
 ipython
+isort
 pip-tools
 -e hg+https://bitbucket.org/antocuni/pdb/@default#egg=pdb
 pygments
