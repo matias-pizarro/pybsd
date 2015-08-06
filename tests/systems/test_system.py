@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
-import six
 from pybsd.systems import System, EzjailError
 from .test_base_system import BaseSystemTestCase
 
@@ -55,9 +54,9 @@ class SystemTestCase(BaseSystemTestCase):
     def test_duplicate_int_if(self):
         params = self.params.copy()
         params['int_if'] = ('eth0', ['8.8.8.8/24'])
-        with self.assertRaises(EzjailError) as cm:
-            system = self.system_class(**params)
-        self.assertEqual(cm.exception.message, u'Already attributed IPs: [8.8.8.8]')
+        with self.assertRaises(EzjailError) as context_manager:
+            self.system_class(**params)
+        self.assertEqual(context_manager.exception.message, u'Already attributed IPs: [8.8.8.8]')
 
     def test_no_lo_if_name(self):
         self.assertEqual(self.system.lo_if.name, 'lo0',
@@ -88,6 +87,6 @@ class SystemTestCase(BaseSystemTestCase):
     def test_duplicate_lo_if(self):
         params = self.params.copy()
         params['lo_if'] = ('lo0', ['8.8.8.8/24'])
-        with self.assertRaises(EzjailError) as cm:
-            system = self.system_class(**params)
-        self.assertEqual(cm.exception.message, u'Already attributed IPs: [8.8.8.8]')
+        with self.assertRaises(EzjailError) as context_manager:
+            self.system_class(**params)
+        self.assertEqual(context_manager.exception.message, u'Already attributed IPs: [8.8.8.8]')

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import unittest
-from pybsd.systems import BaseSystem, EzjailError
+from pybsd.systems import BaseSystem
 
 
 class BaseSystemTestCase(unittest.TestCase):
@@ -22,7 +22,7 @@ class BaseSystemTestCase(unittest.TestCase):
         params = self.params.copy()
         del params['name']
         with self.assertRaises(TypeError):
-            system = self.system_class(**params)
+            self.system_class(**params)
 
     def test_name(self):
         self.assertEqual(self.system.name, 'system',

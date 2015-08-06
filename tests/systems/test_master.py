@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
-import six
 from pybsd.systems import Master, EzjailError
 from pybsd.systems.handlers import BaseJailHandler
 from .test_system import SystemTestCase
@@ -47,9 +46,9 @@ class MasterTestCase(SystemTestCase):
     def test_duplicate_jlo_if(self):
         params = self.params.copy()
         params['jlo_if'] = ('lo0', ['127.0.0.1/24'])
-        with self.assertRaises(EzjailError) as cm:
-            system = self.system_class(**params)
-        self.assertEqual(cm.exception.message, u'Already attributed IPs: [127.0.0.1]')
+        with self.assertRaises(EzjailError) as context_manager:
+            self.system_class(**params)
+        self.assertEqual(context_manager.exception.message, u'Already attributed IPs: [127.0.0.1]')
 
     def test_jail_handler(self):
         self.assertIsInstance(self.system.jail_handler, BaseJailHandler,

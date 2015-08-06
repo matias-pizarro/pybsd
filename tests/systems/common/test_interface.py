@@ -10,7 +10,7 @@ class InterfaceTestCase(unittest.TestCase):
 
     def test_no_name(self):
         with self.assertRaises(TypeError):
-            interface = Interface(ips='8.8.8.8')
+            Interface(ips='8.8.8.8')
 
     def test_name(self):
         interface = Interface(name='re0', ips='8.8.8.8')
@@ -19,7 +19,7 @@ class InterfaceTestCase(unittest.TestCase):
 
     def test_no_ips(self):
         with self.assertRaises(TypeError):
-            interface = Interface(name='re0')
+            Interface(name='re0')
 
     def test_eq_1(self):
         interface_1 = Interface(name='re0', ips=['8.8.8.8/32', '1:1:1::', '1:1:1::2/110'])

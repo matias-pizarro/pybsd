@@ -12,7 +12,7 @@ except NameError:  # pragma: nocover
     unicode = str
 
 
-log = logging.getLogger('pybsd')
+logger = logging.getLogger('pybsd')
 
 
 class Interface(object):
@@ -76,7 +76,7 @@ class Executor:
         out = kwargs.pop('out', None)
         err = kwargs.pop('err', None)
         stdin = kwargs.pop('stdin', None)
-        log.debug('Executing locally:\n%s', args)
+        logger.debug('Executing locally:\n%s', args)
         popen_kwargs = dict(stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if stdin is not None:
             popen_kwargs['stdin'] = subprocess.PIPE
@@ -101,7 +101,7 @@ class Executor:
         else:
             if out != _out:
                 if _rc == 0:
-                    log.error(_out)
+                    logger.error(_out)
                 raise subprocess.CalledProcessError(_rc, ' '.join(args), _err)
         if err is None:
             if self.splitlines:
@@ -110,7 +110,7 @@ class Executor:
         else:
             if err != _err:
                 if _rc == 0:
-                    log.error(_err)
+                    logger.error(_err)
                 raise subprocess.CalledProcessError(_rc, ' '.join(args), _err)
         if len(result) == 0:
             return

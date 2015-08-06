@@ -9,7 +9,7 @@ except NameError:  # pragma: nocover
     unicode = str
 
 
-log = logging.getLogger('pybsd')
+logger = logging.getLogger('pybsd')
 
 
 class BaseJailHandler(object):
