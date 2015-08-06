@@ -5,7 +5,7 @@ from __future__ import absolute_import, print_function
 import io
 import os
 import re
-import six
+import sys
 from glob import glob
 from os.path import basename
 from os.path import dirname
@@ -28,12 +28,12 @@ requirements = [
     'sortedcontainers',
     'Unipath',
 ]
-if six.PY2:
+if sys.version_info.major == 2:
     requirements.append('py2-ipaddress')
 
 setup(
     name="PyBSD",
-    version='0.0.2',
+    version='0.0.1',
     license='BSD',
     description='a Python tool to provision, keep in sync and manage FreeBSD boxes and jails',
     long_description='%s\n%s' % (read('README.rst'), re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))),
