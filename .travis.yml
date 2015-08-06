@@ -16,7 +16,6 @@ before_install:
   - pip --version
   - uname -a
   - lsb_release -a
-  - pip install codecov
 install:
   - pip install tox
 script:
@@ -25,5 +24,4 @@ notifications:
   email:
     on_success: never
     on_failure: always
-after_success:
-  codecov
+
