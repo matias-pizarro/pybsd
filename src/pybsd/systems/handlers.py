@@ -3,11 +3,6 @@ from __future__ import unicode_literals, print_function, absolute_import
 import logging
 import unipath
 
-try:
-    unicode
-except NameError:  # pragma: nocover
-    unicode = str
-
 
 __logger__ = logging.getLogger('pybsd')
 

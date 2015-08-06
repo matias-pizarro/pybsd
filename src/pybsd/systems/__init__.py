@@ -10,11 +10,6 @@ import sys
 from .common import Interface, Executor
 from .handlers import BaseJailHandler
 
-try:
-    unicode
-except NameError:  # pragma: nocover
-    unicode = str
-
 
 __logger__ = logging.getLogger('pybsd')
 IF_PROPERTY = re.compile(r'^_\w*_if$')
@@ -54,7 +49,7 @@ class BaseSystem(object):
 class System(BaseSystem):
     """Describes a full OS instance"""
 
-    def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None, **kwargs):
+    def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None):
         super(System, self).__init__(name=name, hostname=hostname)
         self.ext_if = ext_if
         self.int_if = int_if
@@ -121,8 +116,8 @@ class Master(System):
     """Describes a system that will host jails"""
     _JailHandlerClass = BaseJailHandler
 
-    def __init__(self, name, ext_if, int_if=None, lo_if=None, jlo_if=None, hostname=None, **kwargs):
-        super(Master, self).__init__(name, ext_if, int_if, lo_if, hostname, **kwargs)
+    def __init__(self, name, ext_if, int_if=None, lo_if=None, jlo_if=None, hostname=None):
+        super(Master, self).__init__(name, ext_if, int_if, lo_if, hostname)
         self.jlo_if = jlo_if
         self.jails = {}
         if not hasattr(self, '_exec'):
@@ -147,7 +142,7 @@ class Master(System):
         else:
             self._jlo_if = None
 
-    def _add_jail(self, jail):
+    def add_jail(self, jail):
         if not isinstance(jail, Jail):
             raise EzjailError(u'{} should be an instance of systems.Jail'.format(jail.name))
         if jail.name in self.jails:
@@ -171,7 +166,7 @@ class Master(System):
         if not isinstance(jail, Jail):
             raise EzjailError(u'{} should be an instance of systems.Jail'.format(jail.name))
         _jail = copy.deepcopy(jail)
-        return self._add_jail(_jail)
+        return self.add_jail(_jail)
 
     @lazy
     def ezjail_admin_binary(self):
@@ -310,7 +305,6 @@ class Jail(BaseSystem):
     allowed_main_ips = ('ext_ifv4', 'ext_ifv6', 'int_ifv4', 'int_ifv6')
     main_ip = None
     ip = None
-    path = None
 
     def __init__(self, name, hostname=None, master=None, **kwargs):
         for _if in ['ext_if', 'int_if', 'lo_if']:
@@ -323,10 +317,10 @@ class Jail(BaseSystem):
         super(Jail, self).__init__(name=name, hostname=hostname)
         # self.set_main_ip(**kwargs)
         if master:
-            master._add_jail(self)
+            master.add_jail(self)
 
     @property
-    def path(self, **kwargs):
+    def path(self):
         if self.master:
             return self.master.jail_handler.get_jail_path(self)
         return None
