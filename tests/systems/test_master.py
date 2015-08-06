@@ -52,7 +52,7 @@ class MasterTestCase(SystemTestCase):
         self.assertEqual(cm.exception.message, u'Already attributed IPs: [127.0.0.1]')
 
     def test_jail_handler(self):
-        self.assertIsInstance(self.system._jail_handler, BaseJailHandler,
+        self.assertIsInstance(self.system.jail_handler, BaseJailHandler,
                         'incorrect jail_handler')
-        self.assertEqual(self.system._jail_handler.master, self.system,
+        self.assertEqual(self.system.jail_handler.master, self.system,
                         'incorrect jail_handler')

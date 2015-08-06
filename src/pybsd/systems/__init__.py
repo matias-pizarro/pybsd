@@ -127,8 +127,8 @@ class Master(System):
         self.jails = {}
         if not hasattr(self, '_exec'):
             self._exec = Executor(prefix_args=())
-        if not hasattr(self, '_jail_handler'):
-            self._jail_handler = self._JailHandlerClass(master=self)
+        if not hasattr(self, 'jail_handler'):
+            self.jail_handler = self._JailHandlerClass(master=self)
 
     @property
     def jlo_if(self):
@@ -328,7 +328,7 @@ class Jail(BaseSystem):
     @property
     def path(self, **kwargs):
         if self.master:
-            return self.master._jail_handler.get_jail_path(self)
+            return self.master.jail_handler.get_jail_path(self)
         return None
 
     """
