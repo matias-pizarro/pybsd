@@ -7,14 +7,18 @@ import subprocess
 __logger__ = logging.getLogger('pybsd')
 
 
-class Executor(object):
+class BaseExecutor(object):
     """Adapted from https://github.com/ployground/ploy"""
+
     def __init__(self, prefix_args=(), splitlines=False):
         self.prefix_args = tuple(prefix_args)
         self.splitlines = splitlines
 
-    def __call__(self, *cmd_args, **kwargs):
-        args = self.prefix_args + cmd_args
+
+class Executor(BaseExecutor):
+
+    def __call__(self, binary, subcommand, *cmd_args, **kwargs):
+        args = self.prefix_args + (binary, subcommand,) + cmd_args
         rc = kwargs.pop('rc', None)
         out = kwargs.pop('out', None)
         err = kwargs.pop('err', None)
@@ -60,3 +64,18 @@ class Executor(object):
         elif len(result) == 1:
             return result[0]
         return tuple(result)
+
+
+class DummyExecutor(BaseExecutor):
+
+    def __call__(self, binary, subcommand, *cmd_args, **kwargs):
+        # args = self.prefix_args + (binary, subcommand,) + cmd_args
+        if subcommand == 'list':
+            return (0,
+                    """STA JID  IP              Hostname                       Root Directory\n"""
+                    """--- ---- --------------- ------------------------------ ------------------------\n"""
+                    """ZR  1    10.0.1.41/24    system             /usr/jails/system\n"""
+                    """    1    re0|2a01:4f8:210:41e6::1:41:1/100\n"""
+                    """    1    lo1|127.0.1.41/24\n"""
+                    """    1    lo1|::1:41/100\n""",
+                    '')

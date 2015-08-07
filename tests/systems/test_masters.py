@@ -113,7 +113,8 @@ class MasterTestCase(SystemTestCase):
 
     def test_dummy_master__exec(self):
         system = DummyMaster(**self.params)
-        self.assertSequenceEqual(system.ezjail_admin('list'),
+        # system.ezjail_admin.list
+        self.assertSequenceEqual(system.ezjail_admin.list,
                                 {u'system': {u'status': u'ZR',
                                                          u'jid': u'1',
                                                          u'ip': u'10.0.1.41/24',
