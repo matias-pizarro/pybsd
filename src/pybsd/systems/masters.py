@@ -3,9 +3,8 @@ from __future__ import unicode_literals, print_function, absolute_import
 import copy
 from lazy import lazy
 import logging
-import sys
 from . import System, SystemError
-from .commands import EzjailAdmin
+from .commands.ezjail_admin import EzjailAdmin
 from .executors import Executor, DummyExecutor
 from .handlers import BaseJailHandler
 from .jails import Jail
@@ -96,57 +95,6 @@ class Master(System):
     def ezjail_admin_binary(self):
         binary = '/usr/local/bin/ezjail-admin'
         return binary
-
-    def __ezjail_admin(self, subcommand, **kwargs):
-        # make sure there is no whitespace in the arguments
-        for k, v in kwargs.items():
-            if v is None:
-                continue
-            if subcommand == 'console' and k == 'cmd':
-                continue
-            if len(v.split()) != 1:
-                __logger__.error('The value `%s` of kwarg `%s` contains whitespace', v, k)
-                sys.exit(1)
-        if subcommand == 'console':
-            return self._ezjail_admin(
-                'console',
-                '-e',
-                kwargs['cmd'],
-                kwargs['name'])
-        elif subcommand == 'create':
-            args = [
-                'create',
-                '-c', 'zfs']
-            flavour = kwargs.get('flavour')
-            if flavour is not None:
-                args.extend(['-f', flavour])
-            args.extend([
-                kwargs['name'],
-                kwargs['ip']])
-            rc, out, err = self._ezjail_admin(*args)
-            if rc:
-                raise SystemError(err.strip())
-        elif subcommand == 'delete':
-            rc, out, err = self._ezjail_admin(
-                'delete',
-                '-fw',
-                kwargs['name'])
-            if rc:
-                raise SystemError(err.strip())
-        elif subcommand == 'start':
-            rc, out, err = self._ezjail_admin(
-                'start',
-                kwargs['name'])
-            if rc:
-                raise SystemError(err.strip())
-        elif subcommand == 'stop':
-            rc, out, err = self._ezjail_admin(
-                'stop',
-                kwargs['name'])
-            if rc:
-                raise SystemError(err.strip())
-        else:
-            raise ValueError('Unknown subcommand `%s`' % subcommand)
 
 
 class DummyMaster(Master):

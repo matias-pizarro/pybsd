@@ -2,25 +2,18 @@
 from __future__ import unicode_literals, print_function, absolute_import
 from lazy import lazy
 import logging
-import socket
-import sys
+from . import BaseCommand
 
 
 __logger__ = logging.getLogger('pybsd')
 
 
-class BaseCommand(object):
-    """Provides a base interface to a shell command"""
-    def __init__(self, env=None):
-        self.env = env
+class EzjailAdmin(BaseCommand):
+    """
+    Provides an interface to the ezjail-admin command
 
-    def invoke(self, *args):
-        try:
-            return self.env._exec(self.binary, *args)
-        except socket.error:
-            raise SystemError('Could not connect')
-
-    def check_kwargs(self, subcommand, **kwargs):
+    subcommands to be implemented:
+    def __ezjail_admin(self, subcommand, **kwargs):
         # make sure there is no whitespace in the arguments
         for k, v in kwargs.items():
             if v is None:
@@ -30,10 +23,47 @@ class BaseCommand(object):
             if len(v.split()) != 1:
                 __logger__.error('The value `%s` of kwarg `%s` contains whitespace', v, k)
                 sys.exit(1)
-
-
-class EzjailAdmin(BaseCommand):
-    """Provides an interface to the ezjail-admin command"""
+        if subcommand == 'console':
+            return self._ezjail_admin(
+                'console',
+                '-e',
+                kwargs['cmd'],
+                kwargs['name'])
+        elif subcommand == 'create':
+            args = [
+                'create',
+                '-c', 'zfs']
+            flavour = kwargs.get('flavour')
+            if flavour is not None:
+                args.extend(['-f', flavour])
+            args.extend([
+                kwargs['name'],
+                kwargs['ip']])
+            rc, out, err = self._ezjail_admin(*args)
+            if rc:
+                raise SystemError(err.strip())
+        elif subcommand == 'delete':
+            rc, out, err = self._ezjail_admin(
+                'delete',
+                '-fw',
+                kwargs['name'])
+            if rc:
+                raise SystemError(err.strip())
+        elif subcommand == 'start':
+            rc, out, err = self._ezjail_admin(
+                'start',
+                kwargs['name'])
+            if rc:
+                raise SystemError(err.strip())
+        elif subcommand == 'stop':
+            rc, out, err = self._ezjail_admin(
+                'stop',
+                kwargs['name'])
+            if rc:
+                raise SystemError(err.strip())
+        else:
+            raise ValueError('Unknown subcommand `%s`' % subcommand)
+    """
 
     @property
     def binary(self):

@@ -96,6 +96,15 @@ Installation
 
     pip install pybsd
 
+Quick start
+===========
+
+::
+
+    >>> from pybsd.systems.masters import Master
+    >>> box01 = Master(name='box01', ext_if=('re0', ['8.8.8.8/24']))
+    >>> box01.ezjail_admin.list
+
 Documentation
 =============
 

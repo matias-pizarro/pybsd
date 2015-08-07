@@ -9,18 +9,19 @@ __logger__ = logging.getLogger('pybsd')
 
 
 class Jail(BaseSystem):
-    """Describes a jailed system"""
+    """
+    Describes a jailed system
+
+    Possible types
+    D     Directory tree based jail.
+    I     File-based jail.
+    E     Geli encrypted file-based jail.
+    B     Bde encrypted file-based jail.
+    Z     ZFS filesystem-based jail.
+    """
 
     def __init__(self, name, uid, hostname=None, master=None, jail_type=None, auto_start=False):
         super(Jail, self).__init__(name=name, hostname=hostname)
-        """
-        Possible types
-        D     Directory tree based jail.
-        I     File-based jail.
-        E     Geli encrypted file-based jail.
-        B     Bde encrypted file-based jail.
-        Z     ZFS filesystem-based jail.
-        """
         self.uid = uid
         self.jail_type = jail_type
         self.auto_start = auto_start
@@ -39,8 +40,9 @@ class Jail(BaseSystem):
 
     @status.setter
     def status(self, _status):
-        """ Here we shall later hook polling of real jails if applicable"""
         """
+        Here we shall later hook polling of real jails if applicable
+
         Possible status
         R     The jail is running.
         A     The image of the jail is mounted, but the jail is not running.
