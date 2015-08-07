@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
-from pybsd.systems import Master, DummyMaster, EzjailError
+from pybsd.systems import EzjailError
+from pybsd.systems.masters import Master, DummyMaster
 from pybsd.systems.handlers import BaseJailHandler
-from .test_system import SystemTestCase
+from .test_systems import SystemTestCase
 
 
 class MasterTestCase(SystemTestCase):

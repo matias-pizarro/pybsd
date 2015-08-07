@@ -3,8 +3,10 @@ from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import unittest
 import unipath
-from pybsd.systems import Master, Jail, EzjailError
-from .test_base_system import BaseSystemTestCase
+from pybsd.systems import EzjailError
+from pybsd.systems.jails import Jail
+from pybsd.systems.masters import Master
+from .test_systems import BaseSystemTestCase
 
 
 class JailTestCase(BaseSystemTestCase):
