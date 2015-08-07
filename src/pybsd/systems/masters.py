@@ -5,7 +5,7 @@ from lazy import lazy
 import logging
 import socket
 import sys
-from . import System, EzjailError
+from . import System, SystemError
 from .executors import Executor
 from .handlers import BaseJailHandler
 from .jails import Jail
@@ -43,7 +43,7 @@ class Master(System):
             _j_if = Interface(name=if_name, ips=if_ips)
             intersec = _j_if.ips.intersection(self.ips)
             if len(intersec):
-                raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+                raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
             if _j_if != self.ext_if:
                 self._j_if = _j_if
         else:
@@ -60,7 +60,7 @@ class Master(System):
             _jlo_if = Interface(name=if_name, ips=if_ips)
             intersec = _jlo_if.ips.intersection(self.ips)
             if len(intersec):
-                raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+                raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
             if _jlo_if != self.lo_if:
                 self._jlo_if = _jlo_if
         else:
@@ -68,14 +68,14 @@ class Master(System):
 
     def add_jail(self, jail):
         if not isinstance(jail, Jail):
-            raise EzjailError(u'{} should be an instance of systems.Jail'.format(jail.name))
+            raise SystemError(u'{} should be an instance of systems.Jail'.format(jail.name))
         if jail.name in self.jails:
-            raise EzjailError('a jail called `{}` is already attached to `{}`'.format(jail.name, self.name))
+            raise SystemError('a jail called `{}` is already attached to `{}`'.format(jail.name, self.name))
         m = self.ip_pool
         j = jail.ip_pool
         intersec = m.intersection(j)
         if len(intersec):
-            raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
         m.update(j)
         self.jail_ifconfig(jail)
         self.jails[jail.name] = jail
@@ -88,7 +88,7 @@ class Master(System):
 
     def clone(self, jail):
         if not isinstance(jail, Jail):
-            raise EzjailError(u'{} should be an instance of systems.Jail'.format(jail.name))
+            raise SystemError(u'{} should be an instance of systems.Jail'.format(jail.name))
         _jail = copy.deepcopy(jail)
         return self.add_jail(_jail)
 
@@ -101,7 +101,7 @@ class Master(System):
         try:
             return self._exec(self.ezjail_admin_binary, *args)
         except socket.error:
-            raise EzjailError('Could not connect')
+            raise SystemError('Could not connect')
 
     @lazy
     def ezjail_admin_list_headers(self):
@@ -112,10 +112,10 @@ class Master(System):
         """
         rc, out, err = self._ezjail_admin('list')
         if rc:
-            raise EzjailError(err.strip())
+            raise SystemError(err.strip())
         lines = out.splitlines()
         if len(lines) < 2:
-            raise EzjailError('ezjail-admin list output too short:\n%s' % out.strip())
+            raise SystemError('ezjail-admin list output too short:\n%s' % out.strip())
         headers = []
         current = ''
         for i, cc in enumerate(lines[1]):
@@ -127,7 +127,7 @@ class Master(System):
             else:
                 current = current + lines[0][i]
         if headers != ['STA', 'JID', 'IP', 'Hostname', 'Root Directory']:
-            raise EzjailError('ezjail-admin list output has unknown headers:\n%s' % headers)
+            raise SystemError('ezjail-admin list output has unknown headers:\n%s' % headers)
         return ('status', 'jid', 'ip', 'name', 'root')
 
     def ezjail_admin(self, command, **kwargs):
@@ -158,21 +158,21 @@ class Master(System):
                 kwargs['ip']])
             rc, out, err = self._ezjail_admin(*args)
             if rc:
-                raise EzjailError(err.strip())
+                raise SystemError(err.strip())
         elif command == 'delete':
             rc, out, err = self._ezjail_admin(
                 'delete',
                 '-fw',
                 kwargs['name'])
             if rc:
-                raise EzjailError(err.strip())
+                raise SystemError(err.strip())
         elif command == 'list':
             rc, out, err = self._ezjail_admin('list')
             if rc:
-                raise EzjailError(err.strip())
+                raise SystemError(err.strip())
             lines = out.splitlines()
             if len(lines) < 2:
-                raise EzjailError('ezjail-admin list output too short:\n%s' % out.strip())
+                raise SystemError('ezjail-admin list output too short:\n%s' % out.strip())
             headers = self.ezjail_admin_list_headers
             jails = {}
             current_jail = None
@@ -197,13 +197,13 @@ class Master(System):
                 'start',
                 kwargs['name'])
             if rc:
-                raise EzjailError(err.strip())
+                raise SystemError(err.strip())
         elif command == 'stop':
             rc, out, err = self._ezjail_admin(
                 'stop',
                 kwargs['name'])
             if rc:
-                raise EzjailError(err.strip())
+                raise SystemError(err.strip())
         else:
             raise ValueError('Unknown command `%s`' % command)
 
@@ -211,8 +211,8 @@ class Master(System):
 class DummyMaster(Master):
     """Describes a system that will host jails"""
 
-    def _exec(ezjail_admin_binary, *args):
-        if args[1] == 'list':
+    def _exec(self, ezjail_admin_binary, *args):
+        if args[0] == 'list':
             return (0,
                     """STA JID  IP              Hostname                       Root Directory\n"""
                     """--- ---- --------------- ------------------------------ ------------------------\n"""

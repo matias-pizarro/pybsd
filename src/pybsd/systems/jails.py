@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import six
 import logging
-from . import BaseSystem, EzjailError
+from . import BaseSystem, SystemError
 
 
 __logger__ = logging.getLogger('pybsd')
@@ -27,9 +27,9 @@ class Jail(BaseSystem):
         """
         if master:
             if name in master.jails:
-                raise EzjailError('a jail called `{}` is already attached to `{}`'.format(name, master.name))
+                raise SystemError('a jail called `{}` is already attached to `{}`'.format(name, master.name))
             if uid in master.uids:
-                raise EzjailError('a jail with id `{}` is already attached to `{}`'.format(id, master.name))
+                raise SystemError('a jail with id `{}` is already attached to `{}`'.format(id, master.name))
             master.add_jail(self)
         """
 
@@ -47,7 +47,7 @@ class Jail(BaseSystem):
         S     The jail is stopped.
         """
         if _status not in 'RAS':
-            raise EzjailError('`{}` is not a valid status (it must be one of R, A or S)'.format(_status))
+            raise SystemError('`{}` is not a valid status (it must be one of R, A or S)'.format(_status))
         self._status = _status
 
     @property
@@ -58,7 +58,7 @@ class Jail(BaseSystem):
     def jid(self, _jid):
         """ Here we shall later hook polling of real jails if applicable"""
         if not isinstance(_jid, six.integer_types):
-            raise EzjailError('`{}` is not a valid jid (it must be an integer)'.format(_jid))
+            raise SystemError('`{}` is not a valid jid (it must be an integer)'.format(_jid))
         self._jid = _jid
 
     @property
@@ -75,7 +75,7 @@ class Jail(BaseSystem):
 
     @ext_if.setter
     def ext_if(self, _if):
-        raise EzjailError('Jail interfaces cannot be directly set')
+        raise SystemError('Jail interfaces cannot be directly set')
 
     @property
     def lo_if(self):
@@ -85,4 +85,4 @@ class Jail(BaseSystem):
 
     @lo_if.setter
     def lo_if(self, _if):
-        raise EzjailError('Jail interfaces cannot be directly set')
+        raise SystemError('Jail interfaces cannot be directly set')

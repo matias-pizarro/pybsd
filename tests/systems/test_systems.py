@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
-from pybsd.systems import System, EzjailError
+from pybsd.systems import System, SystemError
 from .test_base_system import BaseSystemTestCase
 
 
@@ -42,7 +42,7 @@ class SystemTestCase(BaseSystemTestCase):
                         'incorrect ext_if ifsv6')
 
     def test_duplicate_ext_if(self):
-        with self.assertRaises(EzjailError) as context_manager:
+        with self.assertRaises(SystemError) as context_manager:
             self.system.ext_if = ('re0', ['192.168.0.0/24'])
         self.assertEqual(context_manager.exception.message, u'Already attributed IPs: [192.168.0.0]')
 
@@ -85,7 +85,7 @@ class SystemTestCase(BaseSystemTestCase):
     def test_duplicate_int_if(self):
         params = self.params.copy()
         params['int_if'] = ('eth0', ['8.8.8.8/24'])
-        with self.assertRaises(EzjailError) as context_manager:
+        with self.assertRaises(SystemError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message, u'Already attributed IPs: [8.8.8.8]')
 
@@ -118,7 +118,7 @@ class SystemTestCase(BaseSystemTestCase):
     def test_duplicate_lo_if(self):
         params = self.params.copy()
         params['lo_if'] = ('lo0', ['8.8.8.8/24'])
-        with self.assertRaises(EzjailError) as context_manager:
+        with self.assertRaises(SystemError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message, u'Already attributed IPs: [8.8.8.8]')
 

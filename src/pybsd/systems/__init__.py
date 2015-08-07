@@ -10,9 +10,9 @@ __logger__ = logging.getLogger('pybsd')
 IF_PROPERTY = re.compile(r'^_\w*_if$')
 
 
-class EzjailError(Exception):
+class SystemError(Exception):
     def __init__(self, *args, **kwargs):
-        super(EzjailError, self).__init__(*args, **kwargs)
+        super(SystemError, self).__init__(*args, **kwargs)
         if six.PY3:
             self.message = args[0]
 
@@ -45,7 +45,7 @@ class System(BaseSystem):
         _ext_if = Interface(name=if_name, ips=if_ips)
         intersec = _ext_if.ips.intersection(self.ips)
         if len(intersec):
-            raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
         self._ext_if = _ext_if
 
     @property
@@ -59,7 +59,7 @@ class System(BaseSystem):
             _int_if = Interface(name=if_name, ips=if_ips)
             intersec = _int_if.ips.intersection(self.ips)
             if len(intersec):
-                raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+                raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
             if _int_if != self.ext_if:
                 self._int_if = _int_if
         else:
@@ -79,7 +79,7 @@ class System(BaseSystem):
         _lo_if = Interface(name=if_name, ips=if_ips)
         intersec = _lo_if.ips.intersection(self.ips)
         if len(intersec):
-            raise EzjailError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
         self._lo_if = _lo_if
 
     @property
