@@ -7,8 +7,10 @@ import logging
 import re
 import socket
 import sys
-from .common import Interface, Executor
+from .commands import EzjailAdmin
+from .executors import Executor, DummyExecutor
 from .handlers import BaseJailHandler
+from .network import Interface
 
 
 __logger__ = logging.getLogger('pybsd')
@@ -100,6 +102,7 @@ class System(BaseSystem):
 
 class Master(System):
     """Describes a system that will host jails"""
+    _ExecutorClass = Executor
     _JailHandlerClass = BaseJailHandler
 
     def __init__(self, name, ext_if, int_if=None, lo_if=None, j_if=None, jlo_if=None, hostname=None):
@@ -107,10 +110,9 @@ class Master(System):
         self.j_if = j_if
         self.jlo_if = jlo_if
         self.jails = {}
-        if not hasattr(self, '_exec'):
-            self._exec = Executor(prefix_args=())
-        if not hasattr(self, 'jail_handler'):
-            self.jail_handler = self._JailHandlerClass(master=self)
+        self._exec = self._ExecutorClass(prefix_args=())
+        self.jail_handler = self._JailHandlerClass(master=self)
+        self.ezjail_admin = EzjailAdmin(master=self) # This has a method for each ezjail-admin command with parameters that mirror that of the binary
 
     @property
     def j_if(self):
@@ -213,7 +215,7 @@ class Master(System):
             raise EzjailError('ezjail-admin list output has unknown headers:\n%s' % headers)
         return ('status', 'jid', 'ip', 'name', 'root')
 
-    def ezjail_admin(self, command, **kwargs):
+    def __ezjail_admin(self, command, **kwargs):
         # make sure there is no whitespace in the arguments
         for k, v in kwargs.items():
             if v is None:
@@ -292,7 +294,8 @@ class Master(System):
 
 
 class DummyMaster(Master):
-    """Describes a system that will host jails"""
+    """Describes a master that works on purely programmatic jails"""
+    _ExecutorClass = DummyExecutor
 
     def _exec(ezjail_admin_binary, *args):
         if args[1] == 'list':
