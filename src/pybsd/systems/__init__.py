@@ -6,9 +6,6 @@ import re
 from .executors import Executor
 from .network import Interface
 
-
-
-
 __logger__ = logging.getLogger('pybsd')
 IF_PROPERTY = re.compile(r'^_\w*_if$')
 

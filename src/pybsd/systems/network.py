@@ -5,7 +5,6 @@ import logging
 from sortedcontainers import SortedListWithKey
 import six
 
-
 __logger__ = logging.getLogger('pybsd')
 
 

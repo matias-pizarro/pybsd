@@ -4,7 +4,6 @@ import six
 import logging
 from . import BaseSystem, SystemError
 
-
 __logger__ = logging.getLogger('pybsd')
 
 

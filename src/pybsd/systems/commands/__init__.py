@@ -2,7 +2,6 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import logging
 import socket
-import sys
 from .. import SystemError
 
 __logger__ = logging.getLogger('pybsd')
@@ -10,6 +9,7 @@ __logger__ = logging.getLogger('pybsd')
 
 class CommandError(SystemError):
     pass
+
 
 class BaseCommand(object):
     """Provides a base interface to a shell command"""

@@ -10,7 +10,6 @@ from .handlers import BaseJailHandler
 from .jails import Jail
 from .network import Interface
 
-
 __logger__ = logging.getLogger('pybsd')
 
 
