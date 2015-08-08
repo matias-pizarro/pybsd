@@ -3,7 +3,10 @@ from __future__ import unicode_literals, print_function, absolute_import
 import six
 import logging
 import re
+from .executors import Executor
 from .network import Interface
+
+
 
 
 __logger__ = logging.getLogger('pybsd')
@@ -19,11 +22,13 @@ class SystemError(Exception):
 
 class BaseSystem(object):
     """Describes a base OS instance, as a computer, a virtualized system or a jail"""
+    _ExecutorClass = Executor
 
     def __init__(self, name, hostname=None):
         super(BaseSystem, self).__init__()
         self.name = name
         self.hostname = (hostname or name)
+        self._exec = self._ExecutorClass()
 
 
 class System(BaseSystem):

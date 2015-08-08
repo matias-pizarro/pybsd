@@ -64,10 +64,22 @@ class EzjailAdmin(BaseCommand):
         else:
             raise ValueError('Unknown subcommand `%s`' % subcommand)
     """
+    name = 'ezjail-admin'
 
     @property
     def binary(self):
         return self.env.ezjail_admin_binary
+
+    def check_kwargs(self, subcommand, **kwargs):
+        # make sure there is no whitespace in the arguments
+        for k, v in kwargs.items():
+            if v is None:
+                continue
+            if subcommand == 'console' and k == 'cmd':
+                continue
+            if len(v.split()) != 1:
+                __logger__.error('The value `%s` of kwarg `%s` contains whitespace', v, k)
+                sys.exit(1)
 
     @lazy
     def list_headers(self):
