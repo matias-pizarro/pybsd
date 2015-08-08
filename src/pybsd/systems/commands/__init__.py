@@ -21,7 +21,7 @@ class BaseCommand(object):
         if hasattr(env, '_exec') and callable(env._exec):
             self.env = env
         else:
-            raise SystemError('`{}` must have a callable Executor method'.format(env))
+            raise CommandError('`{}` must have a callable Executor method'.format(env))
 
     def invoke(self, *args):
         if not getattr(self, 'binary', None):
@@ -29,4 +29,4 @@ class BaseCommand(object):
         try:
             return self.env._exec(self.binary, *args)
         except socket.error:
-            raise SystemError('Could not connect')
+            raise CommandError('Could not connect')

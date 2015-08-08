@@ -3,15 +3,17 @@ from __future__ import unicode_literals, print_function, absolute_import
 import six
 import unittest
 from pybsd.exceptions import SystemError
-from pybsd.systems import System, SystemError
 from pybsd.systems.commands import BaseCommand, CommandError
+from pybsd.systems.masters import DummyMaster
 
 
 class NoNameCommand(BaseCommand):
     pass
 
+
 class NoBinaryCommand(BaseCommand):
     name = 'command_name'
+
 
 class BaseCommandTestCase(unittest.TestCase):
 
@@ -23,7 +25,7 @@ class BaseCommandTestCase(unittest.TestCase):
     }
 
     def setUp(self):
-        self.system = System(**self.params)
+        self.system = DummyMaster(**self.params)
 
     def test_no_name_command(self):
         with self.assertRaises(CommandError) as context_manager:

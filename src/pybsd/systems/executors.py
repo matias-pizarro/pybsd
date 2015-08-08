@@ -78,3 +78,7 @@ class DummyExecutor(BaseExecutor):
                     """    1    lo1|127.0.1.41/24\n"""
                     """    1    lo1|::1:41/100\n""",
                     '')
+        elif subcommand == 'console':
+            return (0,
+                    'The output of command `{}` in jail `{}`'.format(cmd_args[1], cmd_args[2]),
+                    '')

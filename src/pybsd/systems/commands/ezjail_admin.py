@@ -2,8 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 from lazy import lazy
 import logging
-import sys
-from ...exceptions import SystemError
+from . import CommandError
 from . import BaseCommand
 
 __logger__ = logging.getLogger('pybsd')
@@ -42,26 +41,26 @@ class EzjailAdmin(BaseCommand):
                 kwargs['ip']])
             rc, out, err = self._ezjail_admin(*args)
             if rc:
-                raise SystemError(err.strip())
+                raise CommandError(err.strip())
         elif subcommand == 'delete':
             rc, out, err = self._ezjail_admin(
                 'delete',
                 '-fw',
                 kwargs['name'])
             if rc:
-                raise SystemError(err.strip())
+                raise CommandError(err.strip())
         elif subcommand == 'start':
             rc, out, err = self._ezjail_admin(
                 'start',
                 kwargs['name'])
             if rc:
-                raise SystemError(err.strip())
+                raise CommandError(err.strip())
         elif subcommand == 'stop':
             rc, out, err = self._ezjail_admin(
                 'stop',
                 kwargs['name'])
             if rc:
-                raise SystemError(err.strip())
+                raise CommandError(err.strip())
         else:
             raise ValueError('Unknown subcommand `%s`' % subcommand)
     """
@@ -79,8 +78,7 @@ class EzjailAdmin(BaseCommand):
             if subcommand == 'console' and k == 'cmd':
                 continue
             if len(v.split()) != 1:
-                __logger__.error('The value `%s` of kwarg `%s` contains whitespace', v, k)
-                sys.exit(1)
+                raise CommandError('The value `{}` of kwarg `{}` contains whitespace'.format(v, k))
 
     @lazy
     def list_headers(self):
@@ -91,10 +89,10 @@ class EzjailAdmin(BaseCommand):
         """
         rc, out, err = self.invoke('list')
         if rc:
-            raise SystemError(err.strip())
+            raise CommandError(err.strip())
         lines = out.splitlines()
         if len(lines) < 2:
-            raise SystemError('ezjail-admin list output too short:\n%s' % out.strip())
+            raise CommandError('ezjail-admin list output too short:\n%s' % out.strip())
         headers = []
         current = ''
         for i, cc in enumerate(lines[1]):
@@ -106,17 +104,17 @@ class EzjailAdmin(BaseCommand):
             else:
                 current = current + lines[0][i]
         if headers != ['STA', 'JID', 'IP', 'Hostname', 'Root Directory']:
-            raise SystemError('ezjail-admin list output has unknown headers:\n%s' % headers)
+            raise CommandError('ezjail-admin list output has unknown headers:\n%s' % headers)
         return ('status', 'jid', 'ip', 'name', 'root')
 
     @property
     def list(self):
         rc, out, err = self.invoke('list')
         if rc:
-            raise SystemError(err.strip())
+            raise CommandError(err.strip())
         lines = out.splitlines()
         if len(lines) < 2:
-            raise SystemError('ezjail-admin list output too short:\n%s' % out.strip())
+            raise CommandError('ezjail-admin list output too short:\n%s' % out.strip())
         headers = self.list_headers
         jails = {}
         current_jail = None
@@ -136,3 +134,11 @@ class EzjailAdmin(BaseCommand):
                 ip = if_ip.split('|')[1]
                 current_jail['ips'].append(ip)
         return jails
+
+    def console(self, cmd, jail_name):
+        self.check_kwargs('console', cmd=cmd, jail_name=jail_name)
+        rc, out, err = self.invoke('console',
+                                   '-e',
+                                   cmd,
+                                   jail_name)
+        return out
