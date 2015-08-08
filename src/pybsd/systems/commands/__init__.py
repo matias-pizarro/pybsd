@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import logging
 import socket
-from .. import SystemError
+from ...exceptions import SystemError
 
 __logger__ = logging.getLogger('pybsd')
 

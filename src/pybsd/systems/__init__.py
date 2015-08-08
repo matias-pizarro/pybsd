@@ -3,18 +3,12 @@ from __future__ import unicode_literals, print_function, absolute_import
 import six
 import logging
 import re
+from ..exceptions import SystemError
 from .executors import Executor
 from .network import Interface
 
 __logger__ = logging.getLogger('pybsd')
 IF_PROPERTY = re.compile(r'^_\w*_if$')
-
-
-class SystemError(Exception):
-    def __init__(self, *args, **kwargs):
-        super(SystemError, self).__init__(*args, **kwargs)
-        if six.PY3:
-            self.message = args[0]
 
 
 class BaseSystem(object):

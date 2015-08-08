@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
-from pybsd.systems import System, SystemError
+from pybsd.exceptions import SystemError
+from pybsd.systems import System
 from .test_base_system import BaseSystemTestCase
 
 

@@ -2,7 +2,8 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import six
 import logging
-from . import BaseSystem, SystemError
+from ..exceptions import SystemError
+from . import BaseSystem
 
 __logger__ = logging.getLogger('pybsd')
 

@@ -3,7 +3,8 @@ from __future__ import unicode_literals, print_function, absolute_import
 import copy
 from lazy import lazy
 import logging
-from . import System, SystemError
+from ..exceptions import SystemError
+from . import System
 from .commands.ezjail_admin import EzjailAdmin
 from .executors import DummyExecutor
 from .handlers import BaseJailHandler

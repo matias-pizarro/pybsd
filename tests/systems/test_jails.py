@@ -3,7 +3,7 @@ from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import unittest
 import unipath
-from pybsd.systems import SystemError
+from pybsd.exceptions import SystemError
 from pybsd.systems.jails import Jail
 from pybsd.systems.masters import Master
 from .test_systems import BaseSystemTestCase

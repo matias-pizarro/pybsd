@@ -3,6 +3,7 @@ from __future__ import unicode_literals, print_function, absolute_import
 from lazy import lazy
 import logging
 import sys
+from ...exceptions import SystemError
 from . import BaseCommand
 
 __logger__ = logging.getLogger('pybsd')

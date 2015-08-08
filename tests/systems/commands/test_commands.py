@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import six
 import unittest
+from pybsd.exceptions import SystemError
 from pybsd.systems import System, SystemError
 from pybsd.systems.commands import BaseCommand, CommandError
 
