@@ -28,18 +28,18 @@ class BaseCommandTestCase(unittest.TestCase):
 
     def test_no_name_command(self):
         with self.assertRaises(SystemError) as context_manager:
-            _bc = NoNameCommand(env='something')
+            NoNameCommand(env='something')
         self.assertEqual(extract_message(context_manager), u'`name` property is missing')
 
     def test_env_no_executor(self):
         with self.assertRaises(SystemError) as context_manager:
-            _bc = NoBinaryCommand(env='something')
+            NoBinaryCommand(env='something')
         self.assertEqual(extract_message(context_manager), u'`something` must have a callable Executor method')
 
     def test_env_executor_not_callable(self):
         self.system._exec = None
         with self.assertRaises(SystemError) as context_manager:
-            _bc = NoBinaryCommand(env='something')
+            NoBinaryCommand(env='something')
         self.assertEqual(extract_message(context_manager), u'`something` must have a callable Executor method')
 
     def test_no_binary_command(self):
