@@ -106,7 +106,6 @@ class EzjailAdmin(BaseCommand):
             raise SystemError('ezjail-admin list output has unknown headers:\n%s' % headers)
         return ('status', 'jid', 'ip', 'name', 'root')
 
-    @property
     def list(self):
         rc, out, err = self.invoke('list')
         if rc:

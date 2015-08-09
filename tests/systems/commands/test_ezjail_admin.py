@@ -6,10 +6,11 @@ from pybsd.systems.commands import BaseCommand
 from ... import extract_message
 from .test_commands import BaseCommandTestCase
 
+
 class EzjailAdminTestCase(BaseCommandTestCase):
 
     def test_list(self):
-        self.assertSequenceEqual(self.system.ezjail_admin.list,
+        self.assertSequenceEqual(self.system.ezjail_admin.list(),
                                 {u'system': {u'status': u'ZR',
                                                          u'jid': u'1',
                                                          u'ip': u'10.0.1.41/24',
@@ -21,6 +22,11 @@ class EzjailAdminTestCase(BaseCommandTestCase):
                                       }
                                 },
                         'incorrect ezjail-admin list output')
+
+    def test_list_rc_1(self):
+    #     with self.assertRaises(SystemError) as context_manager:
+        self.system.ezjail_admin.list()
+    #     self.assertEqual(extract_message(context_manager), u'some ezjail_admin error')
 
     def test_console(self):
         cmd = 'service'

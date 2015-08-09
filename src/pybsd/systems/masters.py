@@ -5,7 +5,6 @@ from lazy import lazy
 import logging
 from . import System
 from .commands.ezjail_admin import EzjailAdmin
-from .executors import DummyExecutor
 from .handlers import BaseJailHandler
 from .jails import Jail
 from .network import Interface
@@ -92,8 +91,3 @@ class Master(System):
     def ezjail_admin_binary(self):
         binary = '/usr/local/bin/ezjail-admin'
         return binary
-
-
-class DummyMaster(Master):
-    """Describes a master that works on purely programmatic jails"""
-    _ExecutorClass = DummyExecutor

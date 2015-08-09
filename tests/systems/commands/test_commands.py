@@ -2,8 +2,9 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import unittest
 from pybsd.systems.commands import BaseCommand
-from pybsd.systems.masters import DummyMaster
 from ... import extract_message
+from ..test_masters import TestMaster
+
 
 class NoNameCommand(BaseCommand):
     pass
@@ -23,7 +24,7 @@ class BaseCommandTestCase(unittest.TestCase):
     }
 
     def setUp(self):
-        self.system = DummyMaster(**self.params)
+        self.system = TestMaster(**self.params)
 
     def test_no_name_command(self):
         with self.assertRaises(SystemError) as context_manager:

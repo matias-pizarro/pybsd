@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
-from pybsd.systems.masters import Master, DummyMaster
+from pybsd.systems.masters import Master
 from pybsd.systems.handlers import BaseJailHandler
 from .. import extract_message
+from .test_executors import TestExecutor
 from .test_systems import SystemTestCase
+
+
+class TestMaster(Master):
+    """Describes a master that works on purely programmatic jails"""
+    _ExecutorClass = TestExecutor
 
 
 class MasterTestCase(SystemTestCase):
@@ -110,19 +116,3 @@ class MasterTestCase(SystemTestCase):
                         'incorrect jail_handler')
         self.assertEqual(self.system.jail_handler.master, self.system,
                         'incorrect jail_handler')
-
-    def test_dummy_master__exec(self):
-        system = DummyMaster(**self.params)
-        # system.ezjail_admin.list
-        self.assertSequenceEqual(system.ezjail_admin.list,
-                                {u'system': {u'status': u'ZR',
-                                                         u'jid': u'1',
-                                                         u'ip': u'10.0.1.41/24',
-                                                         u'ips': [u'10.0.1.41/24',
-                                                                  u'2a01:4f8:210:41e6::1:41:1/100',
-                                                                  u'127.0.1.41/24',
-                                                                  u'::1:41/100'],
-                                                         u'root': u'/usr/jails/system'
-                                      }
-                                },
-                        'incorrect ezjail-admin list output')

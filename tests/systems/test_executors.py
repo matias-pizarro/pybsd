@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 from pybsd.systems.executors import BaseExecutor
-from pybsd.systems.masters import Master
 
 
 class TestExecutor(BaseExecutor):
@@ -15,7 +14,7 @@ class TestExecutor(BaseExecutor):
                     '')
 
     def __call__(self, binary, subcommand, *cmd_args, **kwargs):
-        if True or 'ezjail_admin' in binary:
+        if 'ezjail-admin' in binary:
             if subcommand == 'list':
                 return self.ezjail_admin_list_output
             elif subcommand == 'console':
