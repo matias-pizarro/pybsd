@@ -3,7 +3,6 @@ from __future__ import unicode_literals, print_function, absolute_import
 import six
 import logging
 import re
-from ..exceptions import SystemError
 from .executors import Executor
 from .network import Interface
 

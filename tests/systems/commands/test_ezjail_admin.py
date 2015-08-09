@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
-import six
 import unittest
-from pybsd.exceptions import SystemError
-from pybsd.systems import System, SystemError
-from pybsd.systems.commands import BaseCommand, CommandError
+from pybsd.systems import System
+from pybsd.systems.commands import BaseCommand
+from ... import extract_message
 from .test_commands import BaseCommandTestCase
 
 class EzjailAdminTestCase(BaseCommandTestCase):
@@ -34,7 +33,7 @@ class EzjailAdminTestCase(BaseCommandTestCase):
     def test_catch_whitespace(self):
         cmd = 'service'
         jail_name = 'test jail'
-        with self.assertRaises(CommandError) as context_manager:
+        with self.assertRaises(SystemError) as context_manager:
             self.system.ezjail_admin.console(cmd, jail_name)
         message = u'The value `{}` of kwarg `{}` contains whitespace'.format(jail_name, 'jail_name')
-        self.assertEqual(context_manager.exception.message, message)
+        self.assertEqual(extract_message(context_manager), message)

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
-from pybsd.exceptions import SystemError
 from pybsd.systems.masters import Master, DummyMaster
 from pybsd.systems.handlers import BaseJailHandler
+from .. import extract_message
 from .test_systems import SystemTestCase
 
 
@@ -60,7 +60,7 @@ class MasterTestCase(SystemTestCase):
         params['j_if'] = ('re0', ['8.8.8.8/24'])
         with self.assertRaises(SystemError) as context_manager:
             self.system_class(**params)
-        self.assertEqual(context_manager.exception.message, u'Already attributed IPs: [8.8.8.8]')
+        self.assertEqual(extract_message(context_manager), u'Already attributed IPs: [8.8.8.8]')
 
     def test_jlo_if_name(self):
         self.assertEqual(self.system.jlo_if.name, 'lo1',
@@ -103,7 +103,7 @@ class MasterTestCase(SystemTestCase):
         params['jlo_if'] = ('lo1', ['127.0.0.1/24'])
         with self.assertRaises(SystemError) as context_manager:
             self.system_class(**params)
-        self.assertEqual(context_manager.exception.message, u'Already attributed IPs: [127.0.0.1]')
+        self.assertEqual(extract_message(context_manager), u'Already attributed IPs: [127.0.0.1]')
 
     def test_jail_handler(self):
         self.assertIsInstance(self.system.jail_handler, BaseJailHandler,

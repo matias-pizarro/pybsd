@@ -3,9 +3,9 @@ from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import unittest
 import unipath
-from pybsd.exceptions import SystemError
 from pybsd.systems.jails import Jail
 from pybsd.systems.masters import Master
+from .. import extract_message
 from .test_systems import BaseSystemTestCase
 
 
@@ -74,7 +74,7 @@ class JailTestCase(BaseSystemTestCase):
     def test_status_failed_assignement(self):
         with self.assertRaises(SystemError) as context_manager:
             self.system.status = 'QR'
-        self.assertEqual(context_manager.exception.message, u'`QR` is not a valid status (it must be one of R, A or S)')
+        self.assertEqual(extract_message(context_manager), u'`QR` is not a valid status (it must be one of R, A or S)')
 
     def test_jid(self):
         self.assertEqual(self.system.jid, None,
@@ -88,7 +88,7 @@ class JailTestCase(BaseSystemTestCase):
     def test_jid_failed_assignement(self):
         with self.assertRaises(SystemError) as context_manager:
             self.system.jid = 'QR'
-        self.assertEqual(context_manager.exception.message, u'`QR` is not a valid jid (it must be an integer)')
+        self.assertEqual(extract_message(context_manager), u'`QR` is not a valid jid (it must be an integer)')
 
     @unittest.skip('This cannot be tested until jails have a master')
     def test_path(self):
@@ -110,7 +110,7 @@ class JailTestCase(BaseSystemTestCase):
     def test_ext_if_failed_assignement(self):
         with self.assertRaises(SystemError) as context_manager:
             self.system.ext_if = ('re0', ['8.8.8.8/24'])
-        self.assertEqual(context_manager.exception.message, u'Jail interfaces cannot be directly set')
+        self.assertEqual(extract_message(context_manager), u'Jail interfaces cannot be directly set')
 
     @unittest.skip('This cannot be tested until jails have a master')
     def test_lo_if_name(self):
@@ -127,4 +127,4 @@ class JailTestCase(BaseSystemTestCase):
     def test_lo_if_failed_assignement(self):
         with self.assertRaises(SystemError) as context_manager:
             self.system.lo_if = ('re0', ['8.8.8.8/24'])
-        self.assertEqual(context_manager.exception.message, u'Jail interfaces cannot be directly set')
+        self.assertEqual(extract_message(context_manager), u'Jail interfaces cannot be directly set')
