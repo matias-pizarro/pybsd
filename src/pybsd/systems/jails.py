@@ -24,14 +24,12 @@ class Jail(BaseSystem):
         self.uid = uid
         self.jail_type = jail_type
         self.auto_start = auto_start
-        """
+        self.master = None
         if master:
-            if name in master.jails:
-                raise SystemError('a jail called `{}` is already attached to `{}`'.format(name, master.name))
-            if uid in master.uids:
-                raise SystemError('a jail with id `{}` is already attached to `{}`'.format(id, master.name))
-            master.add_jail(self)
-        """
+            try:
+                master.add_jail(self)
+            except AttributeError:
+                raise SystemError('`{}` is not a jail master'.format(master))
 
     @property
     def status(self):

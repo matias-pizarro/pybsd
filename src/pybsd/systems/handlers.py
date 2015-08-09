@@ -19,9 +19,7 @@ class BaseJailHandler(object):
         return self.jail_root.child(jail.name)
 
     def get_jail_ext_if(self, jail):
-        assert jail
-        return 'dummy ext_if'
+        return self.master.j_if
 
     def get_jail_lo_if(self, jail):
-        assert jail
-        return 'dummy lo_if'
+        return self.master.jlo_if

@@ -6,12 +6,9 @@ import unipath
 from pybsd.systems.jails import Jail
 from pybsd.systems.masters import Master
 from .. import extract_message
-from .test_systems import BaseSystemTestCase
 
 
-class JailTestCase(BaseSystemTestCase):
-
-    system_class = Jail
+class JailTestCase(unittest.TestCase):
     master_params = {
         'name': 'master',
         'hostname': 'master.foo.bar',
@@ -20,21 +17,46 @@ class JailTestCase(BaseSystemTestCase):
         'j_if': ('re0', ['10.0.0.0/24']),
         'jlo_if': ('lo1', ['127.0.1.0/24']),
     }
-    master = Master(**master_params)
     params = {
         'name': 'system',
         'uid': 12,
         'hostname': 'system.foo.bar',
-        'master': master,
+        'master': None,
         'jail_type': 'Z',
         'auto_start': True,
     }
+
+    def setUp(self):
+        params = self.params.copy()
+        params['master'] = Master(**self.master_params)
+        self.system = Jail(**params)
+
+    def test_no_name(self):
+        params = self.params.copy()
+        del params['name']
+        with self.assertRaises(TypeError):
+            Jail(**params)
+
+    def test_name(self):
+        self.assertEqual(self.system.name, 'system',
+                        'incorrect name')
+
+    def test_no_hostname(self):
+        params = self.params.copy()
+        del params['hostname']
+        system = Jail(**params)
+        self.assertEqual(system.hostname, 'system',
+                        'incorrect hostname')
+
+    def test_hostname(self):
+        self.assertEqual(self.system.hostname, 'system.foo.bar',
+                        'incorrect hostname')
 
     def test_no_uid(self):
         params = self.params.copy()
         del params['uid']
         with self.assertRaises(TypeError):
-            self.system = self.system_class(**params)
+            self.system = Jail(**params)
 
     def test_uid(self):
         self.assertEqual(self.system.uid, 12,
@@ -43,7 +65,7 @@ class JailTestCase(BaseSystemTestCase):
     def test_no_jail_type(self):
         params = self.params.copy()
         del params['jail_type']
-        self.system = self.system_class(**params)
+        self.system = Jail(**params)
         self.assertEqual(self.system.jail_type, None,
                         'incorrect jail_type')
 
@@ -54,7 +76,7 @@ class JailTestCase(BaseSystemTestCase):
     def test_no_auto_start(self):
         params = self.params.copy()
         del params['auto_start']
-        self.system = self.system_class(**params)
+        self.system = Jail(**params)
         self.assertEqual(self.system.auto_start, False,
                         'incorrect auto_start')
 
@@ -90,17 +112,14 @@ class JailTestCase(BaseSystemTestCase):
             self.system.jid = 'QR'
         self.assertEqual(extract_message(context_manager), u'`QR` is not a valid jid (it must be an integer)')
 
-    @unittest.skip('This cannot be tested until jails have a master')
     def test_path(self):
         self.assertEqual(self.system.path, unipath.Path('/usr/jails/system'),
                         'incorrect path')
 
-    @unittest.skip('This cannot be tested until jails have a master')
     def test_ext_if_name(self):
         self.assertEqual(self.system.ext_if.name, 're0',
                         'incorrect ext_if name')
 
-    @unittest.skip('This cannot be tested until jails have a master')
     def test_ext_if_ifsv4(self):
         self.assertSequenceEqual(self.system.ext_if.ifsv4, [ipaddress.IPv4Interface('10.0.0.0/24')],
                         'incorrect ext_if ifsv4')
@@ -112,12 +131,10 @@ class JailTestCase(BaseSystemTestCase):
             self.system.ext_if = ('re0', ['8.8.8.8/24'])
         self.assertEqual(extract_message(context_manager), u'Jail interfaces cannot be directly set')
 
-    @unittest.skip('This cannot be tested until jails have a master')
     def test_lo_if_name(self):
         self.assertEqual(self.system.lo_if.name, 'lo1',
                         'incorrect lo_if name')
 
-    @unittest.skip('This cannot be tested until jails have a master')
     def test_lo_if_ifsv4(self):
         self.assertSequenceEqual(self.system.lo_if.ifsv4, [ipaddress.IPv4Interface('127.0.1.0/24')],
                         'incorrect lo_if ifsv4')

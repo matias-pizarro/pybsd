@@ -64,27 +64,25 @@ class Master(System):
     def add_jail(self, jail):
         if not isinstance(jail, Jail):
             raise SystemError(u'{} should be an instance of systems.Jail'.format(jail.name))
+        if jail.master:
+            if jail.master == self:
+                return jail
+            self.clone(jail)
         if jail.name in self.jails:
             raise SystemError('a jail called `{}` is already attached to `{}`'.format(jail.name, self.name))
-        m = self.ip_pool
-        j = jail.ip_pool
-        intersec = m.intersection(j)
-        if len(intersec):
-            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-        m.update(j)
-        self.jail_ifconfig(jail)
+        if jail.name in self.uids:
+            raise SystemError('a jail with uid `{}` is already attached to `{}`'.format(uid, master.name))
         self.jails[jail.name] = jail
         jail.master = self
         return jail
 
-    def jail_ifconfig(self, jail):
-        for _if in ['ext_if', 'int_if', 'lo_if']:
-            jail.__setattr__(_if, self.__getattribute__(_if))
+    @property
+    def uids(self):
+        return [j.uid for j in self.jails]
 
     def clone(self, jail):
-        if not isinstance(jail, Jail):
-            raise SystemError(u'{} should be an instance of systems.Jail'.format(jail.name))
         _jail = copy.deepcopy(jail)
+        _jail.master = None
         return self.add_jail(_jail)
 
     @lazy

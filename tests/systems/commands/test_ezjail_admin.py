@@ -23,11 +23,6 @@ class EzjailAdminTestCase(BaseCommandTestCase):
                                 },
                         'incorrect ezjail-admin list output')
 
-    def test_list_rc_1(self):
-    #     with self.assertRaises(SystemError) as context_manager:
-        self.system.ezjail_admin.list()
-    #     self.assertEqual(extract_message(context_manager), u'some ezjail_admin error')
-
     def test_console(self):
         cmd = 'service'
         jail_name = 'test_jail'
