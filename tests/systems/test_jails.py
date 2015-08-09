@@ -4,7 +4,7 @@ import ipaddress
 import unittest
 import unipath
 from pybsd.systems.jails import Jail
-from pybsd.systems.masters import Master
+from pybsd.systems.masters import System, Master
 from .. import extract_message
 
 
@@ -30,6 +30,45 @@ class JailTestCase(unittest.TestCase):
         params = self.params.copy()
         params['master'] = Master(**self.master_params)
         self.system = Jail(**params)
+
+    def test_bad_master(self):
+        master_params = self.master_params.copy()
+        del master_params['j_if']
+        del master_params['jlo_if']
+        params = self.params.copy()
+        params['master'] = System(**master_params)
+        with self.assertRaises(SystemError) as context_manager:
+            self.system = Jail(**params)
+        self.assertEqual(extract_message(context_manager), u'`master` is not a jail master')
+
+    def test_duplicate_name(self):
+        jail2 = Jail(name='system', uid=13)
+        with self.assertRaises(SystemError) as context_manager:
+            self.system.master.add_jail(jail2)
+        self.assertEqual(extract_message(context_manager), u'a jail called `system` is already attached to `master`')
+
+    def test_duplicate_uid(self):
+        jail2 = Jail(name='jail2', uid=12)
+        with self.assertRaises(SystemError) as context_manager:
+            self.system.master.add_jail(jail2)
+        self.assertEqual(extract_message(context_manager), u'a jail with uid `12` is already attached to `master`')
+
+    def test_clone(self):
+        jail2 = self.system.master.clone(self.system, 'new_jail', 13)
+        self.assertNotEqual(self.system, jail2)
+
+    def test_idempotent_add_jail(self):
+        jail2 = self.system.master.add_jail(self.system)
+        self.assertEqual(self.system, jail2)
+
+    def test_already_with_another_master(self):
+        master2 = Master(name='master2',
+                         hostname='master2.foo.bar',
+                         ext_if=('re0', ['8.8.8.8/24'])
+                         )
+        with self.assertRaises(SystemError) as context_manager:
+            master2.add_jail(self.system)
+        self.assertEqual(extract_message(context_manager), u'Jail `system` is already attached to `master`')
 
     def test_no_name(self):
         params = self.params.copy()

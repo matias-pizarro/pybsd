@@ -29,7 +29,7 @@ class Jail(BaseSystem):
             try:
                 master.add_jail(self)
             except AttributeError:
-                raise SystemError('`{}` is not a jail master'.format(master))
+                raise SystemError('`{}` is not a jail master'.format(master.name))
 
     @property
     def status(self):

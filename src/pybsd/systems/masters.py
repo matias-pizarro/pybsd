@@ -3,6 +3,7 @@ from __future__ import unicode_literals, print_function, absolute_import
 import copy
 from lazy import lazy
 import logging
+import six
 from . import System
 from .commands.ezjail_admin import EzjailAdmin
 from .handlers import BaseJailHandler
@@ -63,25 +64,27 @@ class Master(System):
 
     def add_jail(self, jail):
         if not isinstance(jail, Jail):
-            raise SystemError(u'{} should be an instance of systems.Jail'.format(jail.name))
+            raise SystemError(u'`{}` should be an instance of systems.Jail'.format(jail.name))
         if jail.master:
             if jail.master == self:
                 return jail
-            self.clone(jail)
+            raise SystemError('Jail `{}` is already attached to `{}`'.format(jail.name, jail.master.name))
         if jail.name in self.jails:
             raise SystemError('a jail called `{}` is already attached to `{}`'.format(jail.name, self.name))
-        if jail.name in self.uids:
-            raise SystemError('a jail with uid `{}` is already attached to `{}`'.format(uid, master.name))
+        if jail.uid in self.uids:
+            raise SystemError('a jail with uid `{}` is already attached to `{}`'.format(jail.uid, self.name))
         self.jails[jail.name] = jail
         jail.master = self
         return jail
 
     @property
     def uids(self):
-        return [j.uid for j in self.jails]
+        return [j.uid for k, j in six.iteritems(self.jails)]
 
-    def clone(self, jail):
+    def clone(self, jail, name, uid):
         _jail = copy.deepcopy(jail)
+        _jail.name = name
+        _jail.uid = uid
         _jail.master = None
         return self.add_jail(_jail)
 

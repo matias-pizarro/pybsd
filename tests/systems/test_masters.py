@@ -116,3 +116,12 @@ class MasterTestCase(SystemTestCase):
                         'incorrect jail_handler')
         self.assertEqual(self.system.jail_handler.master, self.system,
                         'incorrect jail_handler')
+
+    def test_bad_jail(self):
+        system2 = Master(name='system2',
+                         hostname='system2.foo.bar',
+                         ext_if=('re0', ['8.8.8.8/24'])
+                         )
+        with self.assertRaises(SystemError) as context_manager:
+            self.system.add_jail(system2)
+        self.assertEqual(extract_message(context_manager), u'`system2` should be an instance of systems.Jail')
