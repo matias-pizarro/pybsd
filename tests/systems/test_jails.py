@@ -41,18 +41,6 @@ class JailTestCase(unittest.TestCase):
             self.system = Jail(**params)
         self.assertEqual(extract_message(context_manager), u'`master` is not a jail master')
 
-    def test_duplicate_name(self):
-        jail2 = Jail(name='system', uid=13)
-        with self.assertRaises(SystemError) as context_manager:
-            self.system.master.add_jail(jail2)
-        self.assertEqual(extract_message(context_manager), u'a jail called `system` is already attached to `master`')
-
-    def test_duplicate_uid(self):
-        jail2 = Jail(name='jail2', uid=12)
-        with self.assertRaises(SystemError) as context_manager:
-            self.system.master.add_jail(jail2)
-        self.assertEqual(extract_message(context_manager), u'a jail with uid `12` is already attached to `master`')
-
     def test_clone(self):
         jail2 = self.system.master.clone(self.system, 'new_jail', 13)
         self.assertNotEqual(self.system, jail2)
@@ -151,9 +139,23 @@ class JailTestCase(unittest.TestCase):
             self.system.jid = 'QR'
         self.assertEqual(extract_message(context_manager), u'`QR` is not a valid jid (it must be an integer)')
 
+    def test_no_master_path(self):
+        params = self.params.copy()
+        del params['master']
+        self.system = Jail(**params)
+        self.assertEqual(self.system.path, None,
+                        'incorrect path')
+
     def test_path(self):
         self.assertEqual(self.system.path, unipath.Path('/usr/jails/system'),
                         'incorrect path')
+
+    def test_no_master_ext_if(self):
+        params = self.params.copy()
+        del params['master']
+        self.system = Jail(**params)
+        self.assertEqual(self.system.ext_if, None,
+                        'incorrect ext_if')
 
     def test_ext_if_name(self):
         self.assertEqual(self.system.ext_if.name, 're0',
@@ -169,6 +171,13 @@ class JailTestCase(unittest.TestCase):
         with self.assertRaises(SystemError) as context_manager:
             self.system.ext_if = ('re0', ['8.8.8.8/24'])
         self.assertEqual(extract_message(context_manager), u'Jail interfaces cannot be directly set')
+
+    def test_no_master_lo_if(self):
+        params = self.params.copy()
+        del params['master']
+        self.system = Jail(**params)
+        self.assertEqual(self.system.lo_if, None,
+                        'incorrect lo_if')
 
     def test_lo_if_name(self):
         self.assertEqual(self.system.lo_if.name, 'lo1',

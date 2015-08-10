@@ -12,7 +12,7 @@ class BaseJailHandlerTestCase(unittest.TestCase):
         self.assertEqual(handler.jail_root, unipath.Path('/usr/jails'),
                         'incorrect jail_root')
 
-    def test_jail_root(self):
+    def test_custom_jail_root(self):
         handler = BaseJailHandler(jail_root='/var/jails')
         self.assertEqual(handler.jail_root, unipath.Path('/var/jails'),
                         'incorrect jail_root')

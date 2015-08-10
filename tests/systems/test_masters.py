@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
+from pybsd.systems.jails import Jail
 from pybsd.systems.masters import Master
 from pybsd.systems.handlers import BaseJailHandler
 from .. import extract_message
@@ -125,3 +126,24 @@ class MasterTestCase(SystemTestCase):
         with self.assertRaises(SystemError) as context_manager:
             self.system.add_jail(system2)
         self.assertEqual(extract_message(context_manager), u'`system2` should be an instance of systems.Jail')
+
+    def test_jails_dict(self):
+        jail1 = Jail(name='jail1', uid=11, master=self.system)
+        jail2 = Jail(name='jail2', uid=12, master=self.system)
+        jail3 = Jail(name='jail3', uid=13, master=self.system)
+        self.assertDictEqual(self.system.jails, {'jail1': jail1,
+                                                 'jail2': jail2,
+                                                 'jail3': jail3},
+                        'incorrect jails dictionnary')
+
+    def test_duplicate_name(self):
+        jail1 = Jail(name='jail1', uid=11, master=self.system)
+        with self.assertRaises(SystemError) as context_manager:
+            jail2 = Jail(name='jail1', uid=12, master=self.system)
+        self.assertEqual(extract_message(context_manager), u'a jail called `jail1` is already attached to `system`')
+
+    def test_duplicate_uid(self):
+        jail1 = Jail(name='jail1', uid=11, master=self.system)
+        with self.assertRaises(SystemError) as context_manager:
+            jail2 = Jail(name='jail2', uid=11, master=self.system)
+        self.assertEqual(extract_message(context_manager), u'a jail with uid `11` is already attached to `system`')
