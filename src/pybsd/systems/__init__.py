@@ -18,7 +18,7 @@ class BaseSystem(object):
         super(BaseSystem, self).__init__()
         self.name = name
         self.hostname = (hostname or name)
-        self._exec = self._ExecutorClass()
+        self.execute = self._ExecutorClass()
 
 
 class System(BaseSystem):

@@ -13,7 +13,7 @@ class BaseCommand(object):
     def __init__(self, env):
         if not getattr(self, 'name', None):
             raise SystemError('`name` property is missing')
-        if hasattr(env, '_exec') and callable(env._exec):
+        if hasattr(env, 'execute') and callable(env.execute):
             self.env = env
         else:
             raise SystemError('`{}` must have a callable Executor method'.format(env))
@@ -22,6 +22,6 @@ class BaseCommand(object):
         if not getattr(self, 'binary', None):
             raise NotImplementedError('`{}` is not implemented on this system'.format(self.name))
         try:
-            return self.env._exec(self.binary, *args)
+            return self.env.execute(self.binary, *args)
         except socket.error:
             raise SystemError('Could not connect')

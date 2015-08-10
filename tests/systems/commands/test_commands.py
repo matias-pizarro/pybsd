@@ -37,7 +37,7 @@ class BaseCommandTestCase(unittest.TestCase):
         self.assertEqual(extract_message(context_manager), u'`something` must have a callable Executor method')
 
     def test_env_executor_not_callable(self):
-        self.system._exec = None
+        self.system.execute = None
         with self.assertRaises(SystemError) as context_manager:
             NoBinaryCommand(env='something')
         self.assertEqual(extract_message(context_manager), u'`something` must have a callable Executor method')
