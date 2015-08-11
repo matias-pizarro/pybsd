@@ -95,6 +95,11 @@ class InterfaceTestCase(unittest.TestCase):
         self.assertEqual(interface.main_ifv4, ipaddress.IPv4Interface('8.8.8.0/24'),
                         'incorrect main_ifv4')
 
+    def test_empty_ifsv4(self):
+        interface = Interface(name='re0', ips=['aa:aa:0:0::1/110'])
+        self.assertEqual(interface.main_ifv4, None,
+                        'incorrect main_ifv4')
+
     def test_alias_ifsv4(self):
         interface = Interface(name='re0', ips=['8.8.8.8/24', '8.8.8.1/24', '8.8.8.0/24'])
         self.assertSequenceEqual(interface.alias_ifsv4, [ipaddress.IPv4Interface('8.8.8.1/24'),
@@ -104,6 +109,11 @@ class InterfaceTestCase(unittest.TestCase):
     def test_main_ifv6(self):
         interface = Interface(name='re0', ips=['a1:a0:0:0::1/110', 'a0:a2:0:0::1/110', 'a0:a0:0:0::1/110'])
         self.assertEqual(interface.main_ifv6, ipaddress.IPv6Interface('a0:a0::1/110'),
+                        'incorrect main_ifv6')
+
+    def test_empty_ifsv6(self):
+        interface = Interface(name='re0', ips=['8.8.8.8/24', '8.8.8.1/24', '8.8.8.0/24'])
+        self.assertEqual(interface.main_ifv6, None,
                         'incorrect main_ifv6')
 
     def test_alias_ifsv6(self):

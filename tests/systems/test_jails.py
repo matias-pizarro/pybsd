@@ -12,10 +12,11 @@ class JailTestCase(unittest.TestCase):
     master_params = {
         'name': 'master',
         'hostname': 'master.foo.bar',
-        'ext_if': ('re0', ['8.8.8.8/24']),
-        'int_if': ('eth0', ['192.168.0.0/24']),
-        'j_if': ('re0', ['10.0.0.0/24']),
-        'jlo_if': ('lo1', ['127.0.1.0/24']),
+        'ext_if': ('re0', ['148.241.178.106/24', '1c02:4f8:0f0:14e6::/110']),
+        'int_if': ('eth0', ['192.168.0.0/24', '1c02:4f8:0f0:14e6::0:0:1/110']),
+        # 'lo_if': ('lo0', ['127.0.0.1/24', '::1/110']),
+        'j_if': ('re0', ['10.0.2.0/24', '10.0.1.0/24', '1c02:4f8:0f0:14e6::2:0:1/110', '1c02:4f8:0f0:14e6::1:0:1/110']),
+        'jlo_if': ('lo1', ['127.0.2.0/24', '127.0.1.0/24', '::0:2:0:0/110', '::0:1:0:0/110']),
     }
     params = {
         'name': 'system',
@@ -24,6 +25,7 @@ class JailTestCase(unittest.TestCase):
         'master': None,
         'jail_type': 'Z',
         'auto_start': True,
+        'jail_class': 'web',
     }
 
     def setUp(self):
@@ -162,9 +164,9 @@ class JailTestCase(unittest.TestCase):
                         'incorrect ext_if name')
 
     def test_ext_if_ifsv4(self):
-        self.assertSequenceEqual(self.system.ext_if.ifsv4, [ipaddress.IPv4Interface('10.0.0.0/24')],
+        self.assertSequenceEqual(self.system.ext_if.ifsv4, [ipaddress.IPv4Interface('10.0.2.12/24')],
                         'incorrect ext_if ifsv4')
-        self.assertSequenceEqual(self.system.ext_if.ifsv6, [],
+        self.assertSequenceEqual(self.system.ext_if.ifsv6, [ipaddress.IPv6Interface('1c02:4f8:0f0:14e6::2:12:1/110')],
                         'incorrect ext_if ifsv6')
 
     def test_ext_if_failed_assignement(self):
@@ -184,9 +186,9 @@ class JailTestCase(unittest.TestCase):
                         'incorrect lo_if name')
 
     def test_lo_if_ifsv4(self):
-        self.assertSequenceEqual(self.system.lo_if.ifsv4, [ipaddress.IPv4Interface('127.0.1.0/24')],
+        self.assertSequenceEqual(self.system.lo_if.ifsv4, [ipaddress.IPv4Interface('127.0.2.12/24')],
                         'incorrect lo_if ifsv4')
-        self.assertSequenceEqual(self.system.lo_if.ifsv6, [],
+        self.assertSequenceEqual(self.system.lo_if.ifsv6, [ipaddress.IPv6Interface('::0:2:12:0/110')],
                         'incorrect lo_if ifsv6')
 
     def test_lo_if_failed_assignement(self):

@@ -42,7 +42,7 @@ class Interface(object):
 
     @property
     def main_ifv4(self):
-        return self.ifsv4[0]
+        return self.ifsv4[0] if len(self.ifsv4) else None
 
     @property
     def alias_ifsv4(self):
@@ -50,7 +50,7 @@ class Interface(object):
 
     @property
     def main_ifv6(self):
-        return self.ifsv6[0]
+        return self.ifsv6[0] if len(self.ifsv6) else None
 
     @property
     def alias_ifsv6(self):

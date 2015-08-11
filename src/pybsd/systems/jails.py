@@ -18,12 +18,15 @@ class Jail(BaseSystem):
     B     Bde encrypted file-based jail.
     Z     ZFS filesystem-based jail.
     """
+    jail_class_ids = {'service': 1,
+                      'web': 2}
 
-    def __init__(self, name, uid, hostname=None, master=None, jail_type=None, auto_start=False):
+    def __init__(self, name, uid, hostname=None, master=None, jail_type=None, auto_start=False, jail_class='service'):
         super(Jail, self).__init__(name=name, hostname=hostname)
         self.uid = uid
         self.jail_type = jail_type
         self.auto_start = auto_start
+        self.jail_class = jail_class
         self.master = None
         if master:
             try:
@@ -59,6 +62,10 @@ class Jail(BaseSystem):
         if not isinstance(_jid, six.integer_types):
             raise SystemError('`{}` is not a valid jid (it must be an integer)'.format(_jid))
         self._jid = _jid
+
+    @property
+    def jail_class_id(self):
+        return self.jail_class_ids[self.jail_class]
 
     @property
     def path(self):

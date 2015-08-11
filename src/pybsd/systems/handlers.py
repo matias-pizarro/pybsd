@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
+import copy
+import ipaddress
 import logging
 import unipath
 
@@ -19,7 +21,32 @@ class BaseJailHandler(object):
         return self.jail_root.child(jail.name)
 
     def get_jail_ext_if(self, jail):
-        return self.master.j_if
+        return self.extract_if(self.master.j_if, jail=jail)
 
     def get_jail_lo_if(self, jail):
-        return self.master.jlo_if
+        return self.extract_if(self.master.jlo_if, jail=jail)
+
+    def extract_if(self, master_if, jail):
+        _if = copy.deepcopy(master_if)
+        if _if.main_ifv4:
+            _ifv4 = self.get_base_ip(_if.main_ifv4, jail=jail)
+            _if.ifsv4.clear()
+            _if.ifsv4.add(_ifv4)
+        if _if.main_ifv6:
+            _ifv6 = self.get_base_ip(_if.main_ifv6, jail=jail)
+            _if.ifsv6.clear()
+            _if.ifsv6.add(_ifv6)
+        return _if
+
+    def get_base_ip(self, _if, jail):
+        if _if.version == 4:
+            ip = _if.ip.exploded.split('.')
+            ip[2] = str(jail.jail_class_id)
+            ip[3] = str(jail.uid)
+            ip_as_string = '{}/{}'.format('.'.join(ip), str(_if._prefixlen))
+        else:
+            ip = _if.ip.exploded.split(':')
+            ip[5] = str(jail.jail_class_id)
+            ip[6] = str(jail.uid)
+            ip_as_string = '{}/{}'.format(':'.join(ip), str(_if._prefixlen))
+        return ipaddress.ip_interface(ip_as_string)

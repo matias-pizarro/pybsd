@@ -12,8 +12,8 @@ class SystemTestCase(BaseSystemTestCase):
     params = {
         'name': 'system',
         'hostname': 'system.foo.bar',
-        'ext_if': ('re0', ['8.8.8.8/24']),
-        'int_if': ('eth0', ['192.168.0.0/24'])
+        'ext_if': ('re0', ['148.241.178.106/24', '1c02:4f8:0f0:14e6::/110']),
+        'int_if': ('eth0', ['192.168.0.0/24', '1c02:4f8:0f0:14e6::0:0:1/110']),
     }
 
     def test_no_ext_if(self):
@@ -27,19 +27,11 @@ class SystemTestCase(BaseSystemTestCase):
                         'incorrect ext_if name')
 
     def test_ext_if_ifsv4(self):
-        self.assertSequenceEqual(self.system.ext_if.ifsv4, [ipaddress.IPv4Interface('8.8.8.8/24')],
+        self.assertSequenceEqual(self.system.ext_if.ifsv4, [ipaddress.IPv4Interface('148.241.178.106/24')],
                         'incorrect ext_if ifsv4')
-        self.assertSequenceEqual(self.system.ext_if.ifsv6, [],
-                        'incorrect ext_if ifsv6')
 
     def test_ext_if_ifsv6(self):
-        ext_if = ('re0', ['1:1:1::2/110'])
-        self.system.ext_if = ext_if
-        self.assertSequenceEqual(self.system.ext_if.name, 're0',
-                        'incorrect ext_if name')
-        self.assertSequenceEqual(self.system.ext_if.ifsv4, [],
-                        'incorrect ext_if ifsv4')
-        self.assertSequenceEqual(self.system.ext_if.ifsv6, [ipaddress.IPv6Interface('1:1:1::2/110')],
+        self.assertSequenceEqual(self.system.ext_if.ifsv6, [ipaddress.IPv6Interface('1c02:4f8:0f0:14e6::/110')],
                         'incorrect ext_if ifsv6')
 
     def test_duplicate_ext_if(self):
@@ -54,17 +46,9 @@ class SystemTestCase(BaseSystemTestCase):
     def test_int_if_ifsv4(self):
         self.assertSequenceEqual(self.system.int_if.ifsv4, [ipaddress.IPv4Interface('192.168.0.0/24')],
                         'incorrect int_if ifsv4')
-        self.assertSequenceEqual(self.system.int_if.ifsv6, [],
-                        'incorrect int_if ifsv6')
 
     def test_int_if_ifsv6(self):
-        int_if = ('re0', ['1:1:1::2/110'])
-        self.system.int_if = int_if
-        self.assertSequenceEqual(self.system.int_if.name, 're0',
-                        'incorrect int_if name')
-        self.assertSequenceEqual(self.system.int_if.ifsv4, [],
-                        'incorrect int_if ifsv4')
-        self.assertSequenceEqual(self.system.int_if.ifsv6, [ipaddress.IPv6Interface('1:1:1::2/110')],
+        self.assertSequenceEqual(self.system.int_if.ifsv6, [ipaddress.IPv6Interface('1c02:4f8:0f0:14e6::0:0:1/110')],
                         'incorrect int_if ifsv6')
 
     def test_no_int_if_name(self):
@@ -74,21 +58,21 @@ class SystemTestCase(BaseSystemTestCase):
         self.assertEqual(system.int_if.name, 're0',
                         'incorrect int_if name')
 
-    def test_no_int_if_ifsv4(self):
+    def test_no_int_if_ifs(self):
         params = self.params.copy()
         del params['int_if']
         system = self.system_class(**params)
-        self.assertSequenceEqual(system.int_if.ifsv4, [ipaddress.IPv4Interface('8.8.8.8/24')],
+        self.assertSequenceEqual(system.int_if.ifsv4, [ipaddress.IPv4Interface('148.241.178.106/24')],
                         'incorrect int_if ifsv4')
-        self.assertSequenceEqual(system.int_if.ifsv6, [],
-                        'incorrect int_if ifsv6')
+        self.assertSequenceEqual(self.system.int_if.ifsv6, [ipaddress.IPv6Interface('1c02:4f8:0f0:14e6::0:0:1/110')],
+                        'incorrect ext_if ifsv6')
 
     def test_duplicate_int_if(self):
         params = self.params.copy()
-        params['int_if'] = ('eth0', ['8.8.8.8/24'])
+        params['int_if'] = ('eth0', ['148.241.178.106/24'])
         with self.assertRaises(SystemError) as context_manager:
             self.system_class(**params)
-        self.assertEqual(extract_message(context_manager), u'Already attributed IPs: [8.8.8.8]')
+        self.assertEqual(extract_message(context_manager), u'Already attributed IPs: [148.241.178.106]')
 
     def test_no_lo_if_name(self):
         self.assertEqual(self.system.lo_if.name, 'lo0',
@@ -97,7 +81,7 @@ class SystemTestCase(BaseSystemTestCase):
     def test_no_lo_if(self):
         self.assertSequenceEqual(self.system.lo_if.ifsv4, [ipaddress.IPv4Interface('127.0.0.1/8')],
                         'incorrect lo_if ifsv4')
-        self.assertSequenceEqual(self.system.lo_if.ifsv6, [ipaddress.IPv6Interface('::1/128')],
+        self.assertSequenceEqual(self.system.lo_if.ifsv6, [ipaddress.IPv6Interface('::1/110')],
                         'incorrect lo_if ifsv6')
 
     def test_lo_if_name(self):
@@ -118,10 +102,10 @@ class SystemTestCase(BaseSystemTestCase):
 
     def test_duplicate_lo_if(self):
         params = self.params.copy()
-        params['lo_if'] = ('lo0', ['8.8.8.8/24'])
+        params['lo_if'] = ('lo0', ['148.241.178.106/24'])
         with self.assertRaises(SystemError) as context_manager:
             self.system_class(**params)
-        self.assertEqual(extract_message(context_manager), u'Already attributed IPs: [8.8.8.8]')
+        self.assertEqual(extract_message(context_manager), u'Already attributed IPs: [148.241.178.106]')
 
     def test_lo_if_ifsv4(self):
         lo_if = ('lo1', ['127.0.0.2/8'])
@@ -134,9 +118,9 @@ class SystemTestCase(BaseSystemTestCase):
                         'incorrect lo_if ifsv6')
 
     def test_lo_if_ifsv6(self):
-        lo_if = ('re0', ['1:1:1::2/110'])
+        lo_if = ('re0', ['::2/110'])
         self.system.lo_if = lo_if
         self.assertSequenceEqual(self.system.lo_if.ifsv4, [],
                         'incorrect lo_if ifsv4')
-        self.assertSequenceEqual(self.system.lo_if.ifsv6, [ipaddress.IPv6Interface('1:1:1::2/110')],
+        self.assertSequenceEqual(self.system.lo_if.ifsv6, [ipaddress.IPv6Interface('::2/110')],
                         'incorrect lo_if ifsv6')

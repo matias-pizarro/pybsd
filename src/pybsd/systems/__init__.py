@@ -70,7 +70,7 @@ class System(BaseSystem):
             if_name, if_ips = _if
         else:
             if_name = 'lo0'
-            if_ips = ['127.0.0.1/8', '::1/128']
+            if_ips = ['127.0.0.1/8', '::1/110']
         _lo_if = Interface(name=if_name, ips=if_ips)
         intersec = _lo_if.ips.intersection(self.ips)
         if len(intersec):
