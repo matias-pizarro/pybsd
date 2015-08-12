@@ -1,5 +1,0 @@
-pybsd
-=====
-
-.. automodule:: pybsd
-    :members:

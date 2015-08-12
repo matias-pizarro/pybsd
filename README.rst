@@ -14,8 +14,8 @@ PyBSD
       - |version| |downloads|
 
 .. |docs| image:: https://readthedocs.org/projects/pybsd/badge/?style=flat
-    :target: https://readthedocs.org/projects/pybsd
     :alt: Documentation Status
+    :target: https://readthedocs.org/projects/pybsd
 
 .. |travis| image:: http://img.shields.io/travis/rebost/pybsd/master.svg?style=flat&label=Travis
     :alt: Travis-CI Build Status
@@ -36,8 +36,8 @@ PyBSD
 
 
 .. |landscape| image:: https://landscape.io/github/rebost/pybsd/master/landscape.svg?style=flat
-    :target: https://landscape.io/github/rebost/pybsd/master
     :alt: Code Quality Status
+    :target: https://landscape.io/github/rebost/pybsd/master
 
 .. |version| image:: http://img.shields.io/pypi/v/pybsd.svg?style=flat
     :alt: PyPI Package latest release
