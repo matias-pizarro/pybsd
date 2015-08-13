@@ -11,7 +11,7 @@ from .test_systems import SystemTestCase
 
 class TestMaster(Master):
     """Describes a master that works on purely programmatic jails"""
-    _ExecutorClass = TestExecutor
+    ExecutorClass = TestExecutor
 
 
 class MasterTestCase(SystemTestCase):
