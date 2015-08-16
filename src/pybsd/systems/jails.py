@@ -1,4 +1,32 @@
 # -*- coding: utf-8 -*-
+"""The :py:mod:`~pybsd.systems.jails` module provides classes which are used to represent jail
+instances. When attached to a master a jail can be created, deleted and controlled through said
+master's ezjail-admin interface.
+
+Example
+--------
+::
+
+    from pybsd.systems.jails import Jail
+    from pybsd.systems.masters import Master
+    master01 = Master(name='master01',
+                      hostname='master01.foo.bar',
+                      ext_if=('re0', ['148.241.178.106/24', '1c02:4f8:0f0:14e6::/110']),
+                      int_if=('eth0', ['192.168.0.0/24', '1c02:4f8:0f0:14e6::0:0:1/110']),
+                      j_if=('re0', ['10.0.1.0/24', '1c02:4f8:0f0:14e6::1:0:1/110']),
+                      jlo_if=('lo1', ['127.0.1.0/24', '::0:1:0:0/110']))
+    jail01 = Jail(name='system',
+                  uid=12,
+                  hostname='system.foo.bar',
+                  master=None,
+                  jail_type='Z',
+                  auto_start=True,
+                  jail_class='web')
+
+
+Classes
+-------
+"""
 from __future__ import unicode_literals, print_function, absolute_import
 import six
 import logging
@@ -8,15 +36,15 @@ __logger__ = logging.getLogger('pybsd')
 
 
 class Jail(BaseSystem):
-    """
-    Describes a jailed system
+    """Describes a jailed system
 
-    Possible types
-    D     Directory tree based jail.
-    I     File-based jail.
-    E     Geli encrypted file-based jail.
-    B     Bde encrypted file-based jail.
-    Z     ZFS filesystem-based jail.
+    Possible types are:
+        * **D** --> Directory tree based jail.
+        * **I** --> File-based jail.
+        * **E** --> Geli encrypted file-based jail.
+        * **B** --> Bde encrypted file-based jail.
+        * **Z** --> ZFS filesystem-based jail.
+
     """
     jail_class_ids = {'service': 1,
                       'web': 2}

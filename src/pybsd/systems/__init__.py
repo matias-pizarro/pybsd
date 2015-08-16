@@ -4,13 +4,20 @@ instances. This allows interaction with both real and modelized instances.
 
 Examples
 ---------
-from pybsd.systems import System
-box01 = System(name='box01',
-                     hostname='box01.foo.bar',
-                     ext_if=('re0', ['148.241.178.106/24', '1c02:4f8:0f0:14e6::/110']),
-                     int_if=('eth0', ['192.168.0.0/24', '1c02:4f8:0f0:14e6::0:0:1/110']))
-box01.ips
-set(['192.168.0.0', '::1', '1c02:4f8:f0:14e6::', '148.241.178.106', '127.0.0.1', '1c02:4f8:f0:14e6::1'])
+::
+
+    from pybsd.systems import System
+    box01 = System(name='box01',
+                   hostname='box01.foo.bar',
+                   ext_if=('re0', ['148.241.178.106/24', '1c02:4f8:0f0:14e6::/110']),
+                   int_if=('eth0', ['192.168.0.0/24', '1c02:4f8:0f0:14e6::0:0:1/110']))
+    box01.ips
+    # returns:
+    set(['192.168.0.0',
+         '::1', '1c02:4f8:f0:14e6::',
+         '148.241.178.106',
+         '127.0.0.1',
+         '1c02:4f8:f0:14e6::1'])
 
 
 Classes
@@ -28,7 +35,7 @@ IF_PROPERTY = re.compile(r'^_\w*_if$')
 
 
 class BaseSystem(object):
-    """Describes a base OS instance, as a computer, a virtualized system or a jail
+    """Describes a base OS instance such as a computer, a virtualized system or a jail
 
     It provides common functionality for a full system, a jail or a virtualized instance.
 
@@ -60,7 +67,7 @@ class BaseSystem(object):
 class System(BaseSystem):
     """Describes a full OS instance
 
-    It provides common functionality for a full system, a jail or a virtualized instance.
+    It provides common functionality for a full system.
 
     Each interface is described by a tuple (interface_name, [list_of_ip_interfaces]).
 
@@ -81,11 +88,6 @@ class System(BaseSystem):
         Definition of the system's loopback interface. It defaults to ('lo0', ['127.0.0.1/8', '::1/110'])
     hostname : Optional[int]
         The system's hostname.
-
-    Attributes
-    ----------
-    ExecutorClass : ``pybsd.systems.executors.Executor``
-        the class of the system's executor. It must be an instance of ``pybsd.systems.executors.Executor``
 
     """
     def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None):
