@@ -15,14 +15,14 @@ __logger__ = logging.getLogger('pybsd')
 
 class Master(System):
     """Describes a system that will host jails"""
-    _JailHandlerClass = BaseJailHandler
+    JailHandlerClass = BaseJailHandler
 
     def __init__(self, name, ext_if, int_if=None, lo_if=None, j_if=None, jlo_if=None, hostname=None):
         super(Master, self).__init__(name, ext_if, int_if, lo_if, hostname)
         self.j_if = j_if
         self.jlo_if = jlo_if
         self.ezjail_admin = EzjailAdmin(env=self)
-        self.jail_handler = self._JailHandlerClass(master=self)
+        self.jail_handler = self.JailHandlerClass(master=self)
         self.jails = {}
 
     @property
