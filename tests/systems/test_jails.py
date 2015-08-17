@@ -91,11 +91,22 @@ class JailTestCase(unittest.TestCase):
         self.assertEqual(self.system.uid, 12,
                         'incorrect uid')
 
-    def test_no_jail_type(self):
+    def test_unattached_no_jail_type(self):
         params = self.params.copy()
         del params['jail_type']
+        del params['master']
         self.system = Jail(**params)
         self.assertEqual(self.system.jail_type, None,
+                        'incorrect jail_type')
+
+    def test_attached_no_jail_type(self):
+        master_params = self.master_params.copy()
+        master_params['name'] = 'foo'
+        params = self.params.copy()
+        del params['jail_type']
+        params['master'] = Master(**master_params)
+        self.system = Jail(**params)
+        self.assertEqual(self.system.jail_type, 'Z',
                         'incorrect jail_type')
 
     def test_jail_type(self):
@@ -125,7 +136,7 @@ class JailTestCase(unittest.TestCase):
     def test_status_failed_assignement(self):
         with self.assertRaises(SystemError) as context_manager:
             self.system.status = 'QR'
-        self.assertEqual(extract_message(context_manager), u'`QR` is not a valid status (it must be one of R, A or S)')
+        self.assertEqual(extract_message(context_manager), u'`QR` is not a valid status (it must be one of D, R, A or S)')
 
     def test_jid(self):
         self.assertEqual(self.system.jid, None,

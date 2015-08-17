@@ -16,6 +16,7 @@ __logger__ = logging.getLogger('pybsd')
 class Master(System):
     """Describes a system that will host jails"""
     JailHandlerClass = BaseJailHandler
+    default_jail_type = 'Z'
 
     def __init__(self, name, ext_if, int_if=None, lo_if=None, j_if=None, jlo_if=None, hostname=None):
         super(Master, self).__init__(name, ext_if, int_if, lo_if, hostname)
@@ -75,6 +76,7 @@ class Master(System):
             raise SystemError('a jail with uid `{}` is already attached to `{}`'.format(jail.uid, self.name))
         self.jails[jail.name] = jail
         jail.master = self
+        jail.jail_type = jail.jail_type or self.default_jail_type
         return jail
 
     @property

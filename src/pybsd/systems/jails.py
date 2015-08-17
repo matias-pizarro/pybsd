@@ -48,7 +48,7 @@ class Jail(BaseSystem):
         The jail's hostname. It not specified the jail's name is used instead.
     master : ``Optional[pybsd.systems.masters.Master]``
         The jail's master i.e. host system. Default is None
-    type : ``Optional[str]``
+    jail_type : ``Optional[str]``
         The jail's type, according to its storage solution.
         If the jail is not attached it is et to None by default.
         If attached the default is `Z`, for ZFS filesystem-based jail.
@@ -64,10 +64,15 @@ class Jail(BaseSystem):
 
     def __init__(self, name, uid, hostname=None, master=None, jail_type=None, auto_start=False, jail_class='service'):
         super(Jail, self).__init__(name=name, hostname=hostname)
+        #: ``int``: The jail's id, unique over a user's or an organization's domain
         self.uid = uid
+        #: ``Optional[str]``: The jail's type, according to its storage solution.
         self.jail_type = jail_type
+        #: ````: 
         self.auto_start = auto_start
+        #: ````: 
         self.jail_class = jail_class
+        #: ````: 
         self.master = None
         if master:
             try:
@@ -79,8 +84,6 @@ class Jail(BaseSystem):
     def status(self):
         """Return this jail's status as per ezjail_admin
 
-        Here we shall later hook polling of real jails if applicable
-
         Possible status
             * **D**     The jail is detached (not attached to any master)
             * **S**     The jail is stopped.
@@ -91,8 +94,8 @@ class Jail(BaseSystem):
 
     @status.setter
     def status(self, _status):
-        if _status not in 'RAS':
-            raise SystemError('`{}` is not a valid status (it must be one of R, A or S)'.format(_status))
+        if _status not in 'DRAS':
+            raise SystemError('`{}` is not a valid status (it must be one of D, R, A or S)'.format(_status))
         self._status = _status
 
     @property
