@@ -68,11 +68,11 @@ class Jail(BaseSystem):
         self.uid = uid
         #: ``Optional[str]``: The jail's type, according to its storage solution.
         self.jail_type = jail_type
-        #: ````: 
+        #: ````:
         self.auto_start = auto_start
-        #: ````: 
+        #: ````:
         self.jail_class = jail_class
-        #: ````: 
+        #: ````:
         self.master = None
         if master:
             try:
