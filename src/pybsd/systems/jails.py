@@ -38,6 +38,21 @@ __logger__ = logging.getLogger('pybsd')
 class Jail(BaseSystem):
     """Describes a jailed system
 
+    Parameters
+    ----------
+    name : ``str``
+        a name that identifies the jail.
+    uid : ``int``
+        The jail's id, unique over a user's or an organization's domain.
+    hostname : ``Optional[str]``
+        The jail's hostname. It not specified the jail's name is used instead.
+    master : ``Optional[pybsd.systems.masters.Master]``
+        The jail's master i.e. host system. Default is None
+    type : ``Optional[str]``
+        The jail's type, according to its storage solution.
+        If the jail is not attached it is et to None by default.
+        If attached the default is `Z`, for ZFS filesystem-based jail.
+
     Possible types are:
         * **D** --> Directory tree based jail.
         * **I** --> File-based jail.
@@ -62,18 +77,20 @@ class Jail(BaseSystem):
 
     @property
     def status(self):
+        """Return this jail's status as per ezjail_admin
+
+        Here we shall later hook polling of real jails if applicable
+
+        Possible status
+            * **D**     The jail is detached (not attached to any master)
+            * **S**     The jail is stopped.
+            * **A**     The image of the jail is mounted, but the jail is not running.
+            * **R**     The jail is running.
+        """
         return getattr(self, '_status', 'S')
 
     @status.setter
     def status(self, _status):
-        """
-        Here we shall later hook polling of real jails if applicable
-
-        Possible status
-        R     The jail is running.
-        A     The image of the jail is mounted, but the jail is not running.
-        S     The jail is stopped.
-        """
         if _status not in 'RAS':
             raise SystemError('`{}` is not a valid status (it must be one of R, A or S)'.format(_status))
         self._status = _status
@@ -95,12 +112,20 @@ class Jail(BaseSystem):
 
     @property
     def path(self):
+        """unipath.Path: the absolute path of the jail's filesystem, relative to the host's filesystem. It is evaluated
+        dynamically by the master's jail handler, so that the same base jail cloned on different host systems can return
+        different values. By default it resolves to a directory called after jail.name, inside the host system's
+        jail_path: foo.path = unipath.Path('/usr/jails/foo').
+        """
         if self.master:
             return self.master.jail_handler.get_jail_path(self)
         return None
 
     @property
     def ext_if(self):
+        """pybsd.systems.network.Interface: the jail's outward-facing interface. It is evaluated dynamically by the
+        master's jail handler, so that the same base jail cloned on different host systems can return different values.
+        """
         if self.master:
             return self.master.jail_handler.get_jail_ext_if(self)
         return None
@@ -111,6 +136,9 @@ class Jail(BaseSystem):
 
     @property
     def lo_if(self):
+        """pybsd.systems.network.Interface: the jail's loopback interface. It is evaluated dynamically by the
+        master's jail handler, so that the same base jail cloned on different host systems can return different values.
+        """
         if self.master:
             return self.master.jail_handler.get_jail_lo_if(self)
         return None
