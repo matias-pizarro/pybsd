@@ -43,8 +43,8 @@ class BaseSystem(object):
     ----------
     name : ``str``
         a name that identifies the system.
-    hostname : ``Optional[int]``
-        The system's hostname.
+    hostname : ``Optional[str]``
+        The system's hostname. If not specified, the system's name is used instead.
 
     Attributes
     ----------
