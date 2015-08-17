@@ -81,7 +81,7 @@ class Master(System):
     def uids(self):
         return [j.uid for k, j in six.iteritems(self.jails)]
 
-    def clone(self, jail, name, uid):
+    def clone_jail(self, jail, name, uid):
         _jail = copy.deepcopy(jail)
         _jail.name = name
         _jail.uid = uid

@@ -43,8 +43,8 @@ class JailTestCase(unittest.TestCase):
             self.system = Jail(**params)
         self.assertEqual(extract_message(context_manager), u'`master` is not a jail master')
 
-    def test_clone(self):
-        jail2 = self.system.master.clone(self.system, 'new_jail', 13)
+    def test_clone_jail(self):
+        jail2 = self.system.master.clone_jail(self.system, 'new_jail', 13)
         self.assertNotEqual(self.system, jail2)
 
     def test_idempotent_add_jail(self):
