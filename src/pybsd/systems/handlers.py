@@ -10,6 +10,8 @@ __logger__ = logging.getLogger('pybsd')
 
 class BaseJailHandler(object):
     default_jail_root = '/usr/jails'
+    jail_class_ids = {'service': 1,
+                      'web': 2}
 
     def __init__(self, master=None, jail_root=None):
         super(BaseJailHandler, self).__init__()

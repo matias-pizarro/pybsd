@@ -46,8 +46,6 @@ class Jail(BaseSystem):
         * **Z** --> ZFS filesystem-based jail.
 
     """
-    jail_class_ids = {'service': 1,
-                      'web': 2}
 
     def __init__(self, name, uid, hostname=None, master=None, jail_type=None, auto_start=False, jail_class='service'):
         super(Jail, self).__init__(name=name, hostname=hostname)
@@ -93,7 +91,7 @@ class Jail(BaseSystem):
 
     @property
     def jail_class_id(self):
-        return self.jail_class_ids[self.jail_class]
+        return self.master.jail_handler.jail_class_ids[self.jail_class]
 
     @property
     def path(self):
