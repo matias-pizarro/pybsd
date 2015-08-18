@@ -69,7 +69,8 @@ class EzjailAdmin(BaseCommand):
     def binary(self):
         return self.env.ezjail_admin_binary
 
-    def check_kwargs(self, subcommand, **kwargs):
+    @classmethod
+    def check_kwargs(cls, subcommand, **kwargs):
         # make sure there is no whitespace in the arguments
         for key, value in kwargs.items():
             if value is None:
