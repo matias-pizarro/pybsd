@@ -27,8 +27,8 @@ from __future__ import unicode_literals, print_function, absolute_import
 import six
 import logging
 import re
+from ..executors import Executor
 from ..network import Interface
-from .executors import Executor
 
 __logger__ = logging.getLogger('pybsd')
 IF_PROPERTY = re.compile(r'^_\w*_if$')

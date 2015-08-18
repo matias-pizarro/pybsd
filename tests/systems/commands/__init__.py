@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
-from pybsd.systems.executors import BaseExecutor
+from pybsd.executors import BaseExecutor
 from pybsd.systems.masters import Master
 
 
