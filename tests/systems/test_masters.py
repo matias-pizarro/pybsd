@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
+from pybsd.handlers import BaseJailHandler
 from pybsd.systems.jails import Jail
 from pybsd.systems.masters import Master
-from pybsd.systems.handlers import BaseJailHandler
 from .. import extract_message
 from .test_executors import TestExecutor
 from .test_systems import SystemTestCase

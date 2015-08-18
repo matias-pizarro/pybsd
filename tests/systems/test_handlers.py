@@ -3,8 +3,8 @@ from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import unittest
 import unipath
+from pybsd.handlers import BaseJailHandler
 from pybsd.network import Interface
-from pybsd.systems.handlers import BaseJailHandler
 from pybsd.systems.jails import Jail
 from pybsd.systems.masters import Master
 
