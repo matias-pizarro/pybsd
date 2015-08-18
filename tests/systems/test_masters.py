@@ -150,3 +150,7 @@ class MasterTestCase(SystemTestCase):
         self.system.reset_jlo_if()
         self.assertEqual(self.system.jlo_if, self.system.lo_if,
                         'systems.master.Master.reset_jlo_if is broken')
+
+    def test_uname(self):
+        self.assertEqual(self.system.uname(), 'FreeBSD',
+                        'incorrect uname')
