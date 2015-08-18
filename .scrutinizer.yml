@@ -162,3 +162,6 @@ build:
         after:
             - 'pip uninstall -y tox'
             - 'pip install lazy pybsd sortedcontainers unipath pygments pytest tox>=2'
+
+tools:
+    external_code_coverage: true
