@@ -20,8 +20,12 @@ class Master(System):
 
     def __init__(self, name, ext_if, int_if=None, lo_if=None, j_if=None, jlo_if=None, hostname=None):
         super(Master, self).__init__(name, ext_if, int_if, lo_if, hostname)
-        self.j_if = j_if
-        self.jlo_if = jlo_if
+        self._j_if = None
+        if j_if:
+            self.j_if = j_if
+        self._jlo_if = None
+        if jlo_if:
+            self.jlo_if = jlo_if
         self.ezjail_admin = EzjailAdmin(env=self)
         self.jail_handler = self.JailHandlerClass(master=self)
         self.jails = {}
@@ -41,10 +45,11 @@ class Master(System):
             intersec = _j_if.ips.intersection(self.ips)
             if len(intersec):
                 raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-            if _j_if != self.ext_if:
+            else:
                 self._j_if = _j_if
-        else:
-            self._j_if = None
+
+    def reset_j_if(self):
+        self._j_if = None
 
     @property
     def jlo_if(self):
@@ -58,10 +63,11 @@ class Master(System):
             intersec = _jlo_if.ips.intersection(self.ips)
             if len(intersec):
                 raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-            if _jlo_if != self.lo_if:
+            else:
                 self._jlo_if = _jlo_if
-        else:
-            self._jlo_if = None
+
+    def reset_jlo_if(self):
+        self._jlo_if = None
 
     def add_jail(self, jail):
         if not isinstance(jail, Jail):

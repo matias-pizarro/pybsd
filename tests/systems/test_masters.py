@@ -140,3 +140,13 @@ class MasterTestCase(SystemTestCase):
     def test_ezjail_admin_binary(self):
         self.assertEqual(self.system.ezjail_admin_binary, u'/usr/local/bin/ezjail-admin',
                         'incorrect j_if name')
+
+    def test_reset_j_if(self):
+        self.system.reset_j_if()
+        self.assertEqual(self.system.j_if, self.system.ext_if,
+                        'systems.master.Master.reset_j_if is broken')
+
+    def test_reset_jlo_if(self):
+        self.system.reset_jlo_if()
+        self.assertEqual(self.system.jlo_if, self.system.lo_if,
+                        'systems.master.Master.reset_jlo_if is broken')
