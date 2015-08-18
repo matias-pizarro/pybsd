@@ -5,10 +5,10 @@ from lazy import lazy
 import logging
 import six
 from ..commands.ezjail_admin import EzjailAdmin
+from ..network import Interface
 from . import System
 from .handlers import BaseJailHandler
 from .jails import Jail
-from .network import Interface
 
 __logger__ = logging.getLogger('pybsd')
 

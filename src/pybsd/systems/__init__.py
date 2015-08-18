@@ -27,8 +27,8 @@ from __future__ import unicode_literals, print_function, absolute_import
 import six
 import logging
 import re
+from ..network import Interface
 from .executors import Executor
-from .network import Interface
 
 __logger__ = logging.getLogger('pybsd')
 IF_PROPERTY = re.compile(r'^_\w*_if$')
@@ -98,7 +98,7 @@ class System(BaseSystem):
 
     @property
     def ext_if(self):
-        """pybsd.systems.network.Interface: the system's outward-facing interface"""
+        """pybsd.network.Interface: the system's outward-facing interface"""
         return self._ext_if
 
     @ext_if.setter
@@ -112,7 +112,7 @@ class System(BaseSystem):
 
     @property
     def int_if(self):
-        """pybsd.systems.network.Interface: the system's internal network-facing interface"""
+        """pybsd.network.Interface: the system's internal network-facing interface"""
         return self._int_if or self.ext_if
 
     @int_if.setter
@@ -130,7 +130,7 @@ class System(BaseSystem):
 
     @property
     def lo_if(self):
-        """pybsd.systems.network.Interface: the system's loopback interface"""
+        """pybsd.network.Interface: the system's loopback interface"""
         return self._lo_if
 
     @lo_if.setter

@@ -128,7 +128,7 @@ class Jail(BaseSystem):
 
     @property
     def ext_if(self):
-        """pybsd.systems.network.Interface: the jail's outward-facing interface. It is evaluated dynamically by the
+        """pybsd.network.Interface: the jail's outward-facing interface. It is evaluated dynamically by the
         master's jail handler, so that the same base jail cloned on different host systems can return different values.
         """
         if self.master:
@@ -137,7 +137,7 @@ class Jail(BaseSystem):
 
     @property
     def lo_if(self):
-        """pybsd.systems.network.Interface: the jail's loopback interface. It is evaluated dynamically by the
+        """pybsd.network.Interface: the jail's loopback interface. It is evaluated dynamically by the
         master's jail handler, so that the same base jail cloned on different host systems can return different values.
         """
         if self.master:
