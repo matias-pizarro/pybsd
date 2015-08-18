@@ -95,10 +95,5 @@ class Master(System):
         return self.add_jail(_jail)
 
     @lazy
-    def ezjail_admin_binary(self):
-        if self.uname() == 'FreeBSD':
-            return '/usr/local/bin/ezjail-admin'
-
-    def uname(self):
-        # this is a stub
-        return 'FreeBSD'
+    self ezjail_admin_binary(self):
+        return u'/usr/local/bin/ezjail-admin'
