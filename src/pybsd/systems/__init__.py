@@ -93,7 +93,9 @@ class System(BaseSystem):
     def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None):
         super(System, self).__init__(name=name, hostname=hostname)
         self.ext_if = ext_if
-        self.int_if = int_if
+        self._int_if = None
+        if int_if:
+            self.int_if = int_if
         self.lo_if = lo_if
 
     @property
@@ -117,16 +119,12 @@ class System(BaseSystem):
 
     @int_if.setter
     def int_if(self, _if):
-        if _if:
-            if_name, if_ips = _if
-            _int_if = Interface(name=if_name, ips=if_ips)
-            intersec = _int_if.ips.intersection(self.ips)
-            if len(intersec):
-                raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-            if _int_if != self.ext_if:
-                self._int_if = _int_if
-        else:
-            self._int_if = None
+        if_name, if_ips = _if
+        _int_if = Interface(name=if_name, ips=if_ips)
+        intersec = _int_if.ips.intersection(self.ips)
+        if len(intersec):
+            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+        self._int_if = _int_if
 
     @property
     def lo_if(self):

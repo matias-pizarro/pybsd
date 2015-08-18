@@ -39,14 +39,13 @@ class Master(System):
 
     @j_if.setter
     def j_if(self, _if):
-        if _if:
-            if_name, if_ips = _if
-            _j_if = Interface(name=if_name, ips=if_ips)
-            intersec = _j_if.ips.intersection(self.ips)
-            if len(intersec):
-                raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-            else:
-                self._j_if = _j_if
+        if_name, if_ips = _if
+        _j_if = Interface(name=if_name, ips=if_ips)
+        intersec = _j_if.ips.intersection(self.ips)
+        if len(intersec):
+            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+        else:
+            self._j_if = _j_if
 
     def reset_j_if(self):
         self._j_if = None
@@ -57,14 +56,13 @@ class Master(System):
 
     @jlo_if.setter
     def jlo_if(self, _if):
-        if _if:
-            if_name, if_ips = _if
-            _jlo_if = Interface(name=if_name, ips=if_ips)
-            intersec = _jlo_if.ips.intersection(self.ips)
-            if len(intersec):
-                raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-            else:
-                self._jlo_if = _jlo_if
+        if_name, if_ips = _if
+        _jlo_if = Interface(name=if_name, ips=if_ips)
+        intersec = _jlo_if.ips.intersection(self.ips)
+        if len(intersec):
+            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+        else:
+            self._jlo_if = _jlo_if
 
     def reset_jlo_if(self):
         self._jlo_if = None
