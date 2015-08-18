@@ -19,6 +19,7 @@ include COPYRIGHT
 include README.rst
 include TODO.rst
 
-include tox.ini .travis.yml appveyor.yml
+include *.ini
+include *.yml
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib
