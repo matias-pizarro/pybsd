@@ -51,7 +51,7 @@ class JailTestCase(unittest.TestCase):
         jail2 = self.system.master.add_jail(self.system)
         self.assertEqual(self.system, jail2)
 
-    def test_already_with_another_master(self):
+    def test_already_attached(self):
         master2 = Master(name='master2',
                          hostname='master2.foo.bar',
                          ext_if=('re0', ['8.8.8.8/24'])

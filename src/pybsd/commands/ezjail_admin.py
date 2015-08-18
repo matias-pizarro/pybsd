@@ -14,13 +14,13 @@ class EzjailAdmin(BaseCommand):
     subcommands to be implemented:
     def __ezjail_admin(self, subcommand, **kwargs):
         # make sure there is no whitespace in the arguments
-        for k, v in kwargs.items():
-            if v is None:
+        for key, value in kwargs.items():
+            if value is None:
                 continue
-            if subcommand == 'console' and k == 'cmd':
+            if subcommand == 'console' and key == 'cmd':
                 continue
-            if len(v.split()) != 1:
-                __logger__.error('The value `%s` of kwarg `%s` contains whitespace', v, k)
+            if len(value.split()) != 1:
+                __logger__.error('The value `%s` of kwarg `%s` contains whitespace', value, key)
                 sys.exit(1)
         if subcommand == 'console':
             return self._ezjail_admin(
@@ -71,13 +71,13 @@ class EzjailAdmin(BaseCommand):
 
     def check_kwargs(self, subcommand, **kwargs):
         # make sure there is no whitespace in the arguments
-        for k, v in kwargs.items():
-            if v is None:
+        for key, value in kwargs.items():
+            if value is None:
                 continue
-            if subcommand == 'console' and k == 'cmd':
+            if subcommand == 'console' and key == 'cmd':
                 continue
-            if len(v.split()) != 1:
-                raise SystemError('The value `{}` of kwarg `{}` contains whitespace'.format(v, k))
+            if len(value.split()) != 1:
+                raise SystemError('The value `{}` of kwarg `{}` contains whitespace'.format(value, key))
 
     @lazy
     def list_headers(self):

@@ -129,13 +129,13 @@ class MasterTestCase(SystemTestCase):
         jail1 = Jail(name='jail1', uid=11, master=self.system)
         with self.assertRaises(SystemError) as context_manager:
             jail2 = Jail(name='jail1', uid=12, master=self.system)
-        self.assertEqual(extract_message(context_manager), u'a jail called `jail1` is already attached to `system`')
+        self.assertEqual(extract_message(context_manager), u'a jail called `{}` is already attached to `system`'.format(jail1.name))
 
     def test_duplicate_uid(self):
         jail1 = Jail(name='jail1', uid=11, master=self.system)
         with self.assertRaises(SystemError) as context_manager:
             jail2 = Jail(name='jail2', uid=11, master=self.system)
-        self.assertEqual(extract_message(context_manager), u'a jail with uid `11` is already attached to `system`')
+        self.assertEqual(extract_message(context_manager), u'a jail with uid `{}` is already attached to `system`'.format(jail1.uid))
 
     def test_ezjail_admin_binary(self):
         self.assertEqual(self.system.ezjail_admin_binary, u'/usr/local/bin/ezjail-admin',
