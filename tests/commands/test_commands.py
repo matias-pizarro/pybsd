@@ -2,8 +2,8 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import unittest
 from pybsd.commands import BaseCommand
-from ... import extract_message
-from ..test_masters import TestMaster
+from .. import extract_message
+from ..systems.test_masters import TestMaster
 
 
 class NoNameCommand(BaseCommand):

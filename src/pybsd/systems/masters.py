@@ -95,5 +95,5 @@ class Master(System):
         return self.add_jail(_jail)
 
     @lazy
-    self ezjail_admin_binary(self):
+    def ezjail_admin_binary(self):
         return u'/usr/local/bin/ezjail-admin'
