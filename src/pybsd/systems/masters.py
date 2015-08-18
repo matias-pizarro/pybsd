@@ -4,8 +4,8 @@ import copy
 from lazy import lazy
 import logging
 import six
+from ..commands.ezjail_admin import EzjailAdmin
 from . import System
-from .commands.ezjail_admin import EzjailAdmin
 from .handlers import BaseJailHandler
 from .jails import Jail
 from .network import Interface

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import unittest
-from pybsd.systems.commands import BaseCommand
+from pybsd.commands import BaseCommand
 from ... import extract_message
 from ..test_masters import TestMaster
 
