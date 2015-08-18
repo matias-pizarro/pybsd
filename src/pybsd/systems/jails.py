@@ -53,12 +53,12 @@ class Jail(BaseSystem):
         If the jail is not attached it is et to None by default.
         If attached the default is `Z`, for ZFS filesystem-based jail.
 
-    Possible types are:
-        * **D** --> Directory tree based jail.
-        * **I** --> File-based jail.
-        * **E** --> Geli encrypted file-based jail.
-        * **B** --> Bde encrypted file-based jail.
-        * **Z** --> ZFS filesystem-based jail.
+        Possible types are:
+            * **D** --> Directory tree based jail.
+            * **I** --> File-based jail.
+            * **E** --> Geli encrypted file-based jail.
+            * **B** --> Bde encrypted file-based jail.
+            * **Z** --> ZFS filesystem-based jail.
 
     """
 
@@ -73,12 +73,18 @@ class Jail(BaseSystem):
         #: ````:
         self.jail_class = jail_class
         #: ````:
+        self._jid = None
+        #: ````:
         self.master = None
         if master:
             try:
                 master.add_jail(self)
             except AttributeError:
                 raise SystemError('`{}` is not a jail master'.format(master.name))
+
+    @property
+    def is_attached(self):
+        return self.master is not None
 
     @property
     def status(self):
@@ -89,14 +95,10 @@ class Jail(BaseSystem):
             * **S**     The jail is stopped.
             * **A**     The image of the jail is mounted, but the jail is not running.
             * **R**     The jail is running.
-        """
-        return getattr(self, '_status', 'S')
 
-    @status.setter
-    def status(self, _status):
-        if _status not in 'DRAS':
-            raise SystemError('`{}` is not a valid status (it must be one of D, R, A or S)'.format(_status))
-        self._status = _status
+        The `S` value is a stub for now. It must come from parsing master's ezjail-admin.list()
+        """
+        return 'S' if self.is_attached else 'D'
 
     @property
     def jid(self):
@@ -133,10 +135,6 @@ class Jail(BaseSystem):
             return self.master.jail_handler.get_jail_ext_if(self)
         return None
 
-    @ext_if.setter
-    def ext_if(self, _if):
-        raise SystemError('Jail interfaces cannot be directly set')
-
     @property
     def lo_if(self):
         """pybsd.systems.network.Interface: the jail's loopback interface. It is evaluated dynamically by the
@@ -145,7 +143,3 @@ class Jail(BaseSystem):
         if self.master:
             return self.master.jail_handler.get_jail_lo_if(self)
         return None
-
-    @lo_if.setter
-    def lo_if(self, _if):
-        raise SystemError('Jail interfaces cannot be directly set')

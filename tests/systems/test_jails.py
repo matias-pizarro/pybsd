@@ -124,19 +124,16 @@ class JailTestCase(unittest.TestCase):
         self.assertEqual(self.system.auto_start, True,
                         'incorrect auto_start')
 
-    def test_status(self):
+    def test_attached_default_status(self):
         self.assertEqual(self.system.status, 'S',
                         'incorrect status')
 
-    def test_status_assignement(self):
-        self.system.status = 'R'
-        self.assertEqual(self.system.status, 'R',
-                        'incorrect status')
-
-    def test_status_failed_assignement(self):
-        with self.assertRaises(SystemError) as context_manager:
-            self.system.status = 'QR'
-        self.assertEqual(extract_message(context_manager), u'`QR` is not a valid status (it must be one of D, R, A or S)')
+    def test_unattached_default_status(self):
+        params = self.params.copy()
+        del params['master']
+        self.system = Jail(**params)
+        self.assertEqual(self.system.status, 'D',
+                        'incorrect jail_type')
 
     def test_jid(self):
         self.assertEqual(self.system.jid, None,
@@ -181,9 +178,9 @@ class JailTestCase(unittest.TestCase):
                         'incorrect ext_if ifsv6')
 
     def test_ext_if_failed_assignement(self):
-        with self.assertRaises(SystemError) as context_manager:
+        with self.assertRaises(AttributeError) as context_manager:
             self.system.ext_if = ('re0', ['8.8.8.8/24'])
-        self.assertEqual(extract_message(context_manager), u'Jail interfaces cannot be directly set')
+        self.assertEqual(extract_message(context_manager), u"can't set attribute")
 
     def test_no_master_lo_if(self):
         params = self.params.copy()
@@ -203,6 +200,6 @@ class JailTestCase(unittest.TestCase):
                         'incorrect lo_if ifsv6')
 
     def test_lo_if_failed_assignement(self):
-        with self.assertRaises(SystemError) as context_manager:
+        with self.assertRaises(AttributeError) as context_manager:
             self.system.lo_if = ('re0', ['8.8.8.8/24'])
-        self.assertEqual(extract_message(context_manager), u'Jail interfaces cannot be directly set')
+        self.assertEqual(extract_message(context_manager), u"can't set attribute")

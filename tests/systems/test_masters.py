@@ -136,3 +136,7 @@ class MasterTestCase(SystemTestCase):
         with self.assertRaises(SystemError) as context_manager:
             jail2 = Jail(name='jail2', uid=11, master=self.system)
         self.assertEqual(extract_message(context_manager), u'a jail with uid `11` is already attached to `system`')
+
+    def test_ezjail_admin_binary(self):
+        self.assertEqual(self.system.ezjail_admin_binary, u'/usr/local/bin/ezjail-admin',
+                        'incorrect j_if name')
