@@ -153,6 +153,10 @@ filter:
     excluded_paths:
         - '*/test/*'
 
+before_commands:
+    - pip install lazy pybsd sortedcontainers unipath
+    - pip3 install lazy pybsd sortedcontainers unipath
+
 build:
     dependencies:
         after:
