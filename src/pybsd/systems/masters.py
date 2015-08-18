@@ -3,7 +3,6 @@ from __future__ import unicode_literals, print_function, absolute_import
 import copy
 from lazy import lazy
 import logging
-import os
 import six
 from ..commands.ezjail_admin import EzjailAdmin
 from ..handlers import BaseJailHandler
