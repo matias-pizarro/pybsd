@@ -28,7 +28,6 @@ Classes
 -------
 """
 from __future__ import unicode_literals, print_function, absolute_import
-import six
 import logging
 from . import BaseSystem
 
@@ -59,6 +58,11 @@ class Jail(BaseSystem):
             * **E** --> Geli encrypted file-based jail.
             * **B** --> Bde encrypted file-based jail.
             * **Z** --> ZFS filesystem-based jail.
+    auto_start : ``Optional[bool]``
+        Whether the jail should be started automatically at host system's boot time.
+    jail_class : ``Optional[str]``
+        Allows differentiating jails by class. This will be worked out of base jails to depend on the jail handler. The
+        base handler will probably not have the notion of classes
 
     """
 
@@ -68,12 +72,10 @@ class Jail(BaseSystem):
         self.uid = uid
         #: ``Optional[str]``: The jail's type, according to its storage solution.
         self.jail_type = jail_type
-        #: ````:
+        #: ``Optional[bool]``: Whether the jail should be started automatically at host system's boot time.
         self.auto_start = auto_start
-        #: ````:
+        #: ``Optional[str]``: Allows differentiating jails by class.
         self.jail_class = jail_class
-        #: ````:
-        self._jid = None
         #: ````:
         self.master = None
         if master:
@@ -88,7 +90,7 @@ class Jail(BaseSystem):
 
     @property
     def status(self):
-        """Return this jail's status as per ezjail_admin
+        """Returns this jail's status as per ezjail_admin
 
         Possible status
             * **D**     The jail is detached (not attached to any master)
@@ -96,20 +98,18 @@ class Jail(BaseSystem):
             * **A**     The image of the jail is mounted, but the jail is not running.
             * **R**     The jail is running.
 
-        The `S` value is a stub for now. It must come from parsing master's ezjail-admin.list()
+        The `S` value is a stub for now. It must come from parsing master's ezjail-admin.list()'s output
         """
         return 'S' if self.is_attached else 'D'
 
     @property
     def jid(self):
-        return getattr(self, '_jid', None)
+        """Returns this jail's jid as per ezjail_admin
 
-    @jid.setter
-    def jid(self, _jid):
-        """ Here we shall later hook polling of real jails if applicable"""
-        if not isinstance(_jid, six.integer_types):
-            raise SystemError('`{}` is not a valid jid (it must be an integer)'.format(_jid))
-        self._jid = _jid
+        The `1` value returned when attached is a stub for now. It must come from parsing master's
+        ezjail-admin.list()'s output
+        """
+        return 1 if self.is_attached else None
 
     @property
     def jail_class_id(self):

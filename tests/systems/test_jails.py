@@ -135,19 +135,16 @@ class JailTestCase(unittest.TestCase):
         self.assertEqual(self.system.status, 'D',
                         'incorrect jail_type')
 
-    def test_jid(self):
+    def test_unattached_jid(self):
+        params = self.params.copy()
+        del params['master']
+        self.system = Jail(**params)
         self.assertEqual(self.system.jid, None,
                         'incorrect jid')
 
-    def test_jid_assignement(self):
-        self.system.jid = 13
-        self.assertEqual(self.system.jid, 13,
+    def test_jid(self):
+        self.assertEqual(self.system.jid, 1,
                         'incorrect jid')
-
-    def test_jid_failed_assignement(self):
-        with self.assertRaises(SystemError) as context_manager:
-            self.system.jid = 'QR'
-        self.assertEqual(extract_message(context_manager), u'`QR` is not a valid jid (it must be an integer)')
 
     def test_no_master_path(self):
         params = self.params.copy()
