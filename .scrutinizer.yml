@@ -156,7 +156,6 @@ filter:
 before_commands:
     - pip install lazy pybsd sortedcontainers unipath
     - pip3 install lazy pybsd sortedcontainers unipath
-    - pyenv install pypy
 
 build:
     dependencies:
