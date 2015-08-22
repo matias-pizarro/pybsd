@@ -7,8 +7,7 @@ Example
 --------
 ::
 
-    from pybsd.systems.jails import Jail
-    from pybsd.systems.masters import Master
+    from pybsd import Jail, Master
     master01 = Master(name='master01',
                       hostname='master01.foo.bar',
                       ext_if=('re0', ['148.241.178.106/24', '1c02:4f8:0f0:14e6::/110']),
@@ -29,7 +28,7 @@ Classes
 """
 from __future__ import unicode_literals, print_function, absolute_import
 import logging
-from . import BaseSystem
+from .base import BaseSystem
 
 __logger__ = logging.getLogger('pybsd')
 

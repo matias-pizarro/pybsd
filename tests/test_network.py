@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import unittest
-from pybsd.network import Interface
+from pybsd import Interface
 
 
 class InterfaceTestCase(unittest.TestCase):

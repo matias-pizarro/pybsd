@@ -7,7 +7,7 @@ import six
 from ..commands.ezjail_admin import EzjailAdmin
 from ..handlers import BaseJailHandler
 from ..network import Interface
-from . import System
+from .base import System
 from .jails import Jail
 
 __logger__ = logging.getLogger('pybsd')

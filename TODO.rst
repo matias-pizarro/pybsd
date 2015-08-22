@@ -5,6 +5,8 @@ In Progress
 
 To do
 -----
+    * check for complexity once Executor.__call__ has been refactored
+        flake8  --max-complexity 10 src
     * Use Makefile ¿?
     * Give jails a uuid
     * Work commits into Changelog

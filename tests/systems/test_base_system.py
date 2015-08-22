@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import unittest
-from pybsd.systems import BaseSystem
+from pybsd import BaseSystem
 
 
 class BaseSystemTestCase(unittest.TestCase):

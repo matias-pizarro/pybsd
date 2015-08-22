@@ -2,8 +2,8 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import logging
-from sortedcontainers import SortedListWithKey
 import six
+import sortedcontainers
 
 __logger__ = logging.getLogger('pybsd')
 
@@ -12,8 +12,8 @@ class Interface(object):
     """Describes a network interface"""
     def __init__(self, name, ips):
         self.name = name
-        self.ifsv4 = SortedListWithKey(key=lambda x: x.ip.compressed)
-        self.ifsv6 = SortedListWithKey(key=lambda x: x.ip.compressed)
+        self.ifsv4 = sortedcontainers.SortedListWithKey(key=lambda x: x.ip.compressed)
+        self.ifsv6 = sortedcontainers.SortedListWithKey(key=lambda x: x.ip.compressed)
         self.add_ips(ips)
 
     def add_ips(self, ips):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
-from lazy import lazy
+import lazy
 import logging
 from . import BaseCommand
 
@@ -80,7 +80,7 @@ class EzjailAdmin(BaseCommand):
             if len(value.split()) != 1:
                 raise SystemError('The value `{}` of kwarg `{}` contains whitespace'.format(value, key))
 
-    @lazy
+    @lazy.lazy
     def list_headers(self):
         """
         rc:  command return code
