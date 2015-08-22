@@ -1,6 +1,6 @@
-:py:mod:`pybsd.systems.jails` Module
-====================================
+`Jail` Class
+============
 
-.. automodule:: pybsd.systems.jails
+.. autoclass:: pybsd.Jail
     :members:
     :show-inheritance:

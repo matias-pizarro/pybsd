@@ -134,6 +134,13 @@ class JailTestCase(unittest.TestCase):
         self.assertEqual(self.system.status, 'D',
                         'incorrect jail_type')
 
+    def test_unattached_class_id(self):
+        params = self.params.copy()
+        del params['master']
+        self.system = Jail(**params)
+        self.assertEqual(self.system.jail_class_id, None,
+                        'incorrect jail_class_id')
+
     def test_unattached_jid(self):
         params = self.params.copy()
         del params['master']

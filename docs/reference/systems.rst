@@ -1,6 +1,16 @@
-:py:mod:`pybsd.systems` Module
-==============================
+`System` Classes
+================
 
-.. automodule:: pybsd.systems
+`BaseSystem`
+------------
+
+.. autoclass:: pybsd.BaseSystem
+    :members:
+    :show-inheritance:
+
+`System`
+--------
+
+.. autoclass:: pybsd.System
     :members:
     :show-inheritance:
