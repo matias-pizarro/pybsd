@@ -25,12 +25,12 @@ class BaseJailHandler(object):
             ip = _if.ip.exploded.split('.')
             ip[2] = str(jail.jail_class_id)
             ip[3] = str(jail.uid)
-            ip_as_string = '{}/{}'.format('.'.join(ip), str(_if._prefixlen))
+            ip_as_string = '{}/{}'.format('.'.join(ip), str(_if.network.prefixlen))
         else:
             ip = _if.ip.exploded.split(':')
             ip[5] = str(jail.jail_class_id)
             ip[6] = str(jail.uid)
-            ip_as_string = '{}/{}'.format(':'.join(ip), str(_if._prefixlen))
+            ip_as_string = '{}/{}'.format(':'.join(ip), str(_if.network.prefixlen))
         return ipaddress.ip_interface(ip_as_string)
 
     @classmethod
