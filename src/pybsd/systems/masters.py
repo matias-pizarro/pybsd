@@ -6,7 +6,6 @@ import logging
 import six
 from ..commands import EzjailAdmin
 from ..handlers import BaseJailHandler
-from ..network import Interface
 from .base import System
 from .jails import Jail
 
@@ -46,12 +45,8 @@ class Master(System):
 
     def __init__(self, name, ext_if, int_if=None, lo_if=None, j_if=None, jlo_if=None, hostname=None):
         super(Master, self).__init__(name, ext_if, int_if, lo_if, hostname)
-        self._j_if = None
-        if j_if:
-            self.j_if = j_if
-        self._jlo_if = None
-        if jlo_if:
-            self.jlo_if = jlo_if
+        self._j_if = self._set_if(j_if)
+        self._jlo_if = self._set_if(jlo_if)
         self.ezjail_admin = EzjailAdmin(env=self)
         self.jail_handler = self.JailHandlerClass(master=self)
         self.jails = {}
@@ -63,16 +58,6 @@ class Master(System):
         """
         return self._j_if or self.ext_if
 
-    @j_if.setter
-    def j_if(self, _if):
-        if_name, if_ips = _if
-        _j_if = Interface(name=if_name, ips=if_ips)
-        intersec = _j_if.ips.intersection(self.ips)
-        if len(intersec):
-            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-        else:
-            self._j_if = _j_if
-
     def reset_j_if(self):
         """Resets the system's j_if to its default value (its own ext_if)"""
         self._j_if = None
@@ -83,16 +68,6 @@ class Master(System):
         this will be the system's own lo_if.
         """
         return self._jlo_if or self.lo_if
-
-    @jlo_if.setter
-    def jlo_if(self, _if):
-        if_name, if_ips = _if
-        _jlo_if = Interface(name=if_name, ips=if_ips)
-        intersec = _jlo_if.ips.intersection(self.ips)
-        if len(intersec):
-            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-        else:
-            self._jlo_if = _jlo_if
 
     def reset_jlo_if(self):
         """Resets the system's jlo_if to its default value (its own lo_if)"""

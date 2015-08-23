@@ -8,7 +8,7 @@ from ..executors import Executor
 from ..network import Interface
 
 __logger__ = logging.getLogger('pybsd')
-IF_PROPERTY = re.compile(r'^_\w*_if$')
+IF_PROPERTY = re.compile(r'^\w*_if$')
 
 
 class BaseSystem(object):
@@ -89,57 +89,31 @@ class System(BaseSystem):
     """
     def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None):
         super(System, self).__init__(name=name, hostname=hostname)
-        self._ext_if = None
-        self.ext_if = ext_if
-        self._int_if = None
-        if int_if:
-            self.int_if = int_if
-        self._lo_if = None
-        self.lo_if = lo_if
-
-    @property
-    def ext_if(self):
         """:py:class:`~pybsd.Interface`: the system's outward-facing interface"""
-        return self._ext_if
+        self.ext_if = self._set_if(ext_if)
+        self._int_if = self._set_if(int_if)
+        lo_if = lo_if or ('lo0', ['127.0.0.1/8', '::1/110'])
+        """:py:class:`~pybsd.Interface`: the system's loopback interface"""
+        self.lo_if = self._set_if(lo_if)
 
-    @ext_if.setter
-    def ext_if(self, _if):
-        if_name, if_ips = _if
-        _ext_if = Interface(name=if_name, ips=if_ips)
-        intersec = _ext_if.ips.intersection(self.ips)
+    def _set_if(self, definition):
+        if not definition:
+            return None
+        if_name, if_ips = definition
+        _if = Interface(name=if_name, ips=if_ips)
+        intersec = _if.ips.intersection(self.ips)
         if len(intersec):
             raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-        self._ext_if = _ext_if
+        return _if
 
     @property
     def int_if(self):
         """:py:class:`~pybsd.Interface`: the system's internal network-facing interface"""
         return self._int_if or self.ext_if
 
-    @int_if.setter
-    def int_if(self, _if):
-        if_name, if_ips = _if
-        _int_if = Interface(name=if_name, ips=if_ips)
-        intersec = _int_if.ips.intersection(self.ips)
-        if len(intersec):
-            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-        self._int_if = _int_if
-
-    @property
-    def lo_if(self):
-        """:py:class:`~pybsd.Interface`: the system's loopback interface"""
-        return self._lo_if
-
-    @lo_if.setter
-    def lo_if(self, _if):
-        if not _if:
-            _if = ('lo0', ['127.0.0.1/8', '::1/110'])
-        if_name, if_ips = _if
-        _lo_if = Interface(name=if_name, ips=if_ips)
-        intersec = _lo_if.ips.intersection(self.ips)
-        if len(intersec):
-            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
-        self._lo_if = _lo_if
+    def reset_int_if(self):
+        """Resets the system's int_if to its default value (its own ext_if)"""
+        self._int_if = None
 
     @property
     def ips(self):
