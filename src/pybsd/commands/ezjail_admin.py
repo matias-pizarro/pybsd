@@ -42,14 +42,14 @@ class EzjailAdmin(BaseCommand):
             raise SystemError('ezjail-admin list output too short:\n%s' % out.strip())
         headers = []
         current = ''
-        for i, cc in enumerate(lines[1]):
-            if cc != '-' or i >= len(lines[0]):
+        for pos, char in enumerate(lines[1]):
+            if char != '-' or pos >= len(lines[0]):
                 headers.append(current.strip())
-                if i >= len(lines[0]):
+                if pos >= len(lines[0]):
                     break
                 current = ''
             else:
-                current = current + lines[0][i]
+                current = current + lines[0][pos]
         if headers != ['STA', 'JID', 'IP', 'Hostname', 'Root Directory']:
             raise SystemError('ezjail-admin list output has unknown headers:\n%s' % headers)
         return ('status', 'jid', 'ip', 'name', 'root')
