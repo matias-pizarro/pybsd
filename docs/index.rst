@@ -13,6 +13,7 @@ Contents:
    contributing
    authors
    changelog
+   roadmap
 
 Indices and tables
 ==================

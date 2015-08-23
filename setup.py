@@ -33,7 +33,7 @@ if sys.version_info.major == 2:
 
 setup(
     name="PyBSD",
-    version='0.0.1',
+    version='0.0.2',
     license='BSD',
     description='a Python tool to provision, keep in sync and manage FreeBSD boxes and jails',
     long_description='%s\n%s' % (read('README.rst'), re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))),

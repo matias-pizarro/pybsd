@@ -24,6 +24,6 @@ default_context:
     sphinx_theme:              'sphinx_rtd_theme'
     test_matrix_configurator:  'no'
     test_runner:               'pytest'
-    version:                   '0.0.1'
+    version:                   '0.0.2'
     website:                   'https://docbase.net'
     year:                      '2015'
