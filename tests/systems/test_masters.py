@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
-from pybsd import BaseJailHandler, Jail, Master
+from pybsd import BaseJailHandler, Jail, Master, AttachNonJailError
 from .. import extract_message
 from ..test_executors import TestExecutor
 from .test_base import SystemTestCase
@@ -110,9 +110,10 @@ class MasterTestCase(SystemTestCase):
                          hostname='system2.foo.bar',
                          ext_if=('re0', ['148.241.178.106/24'])
                          )
-        with self.assertRaises(SystemError) as context_manager:
+        with self.assertRaises(AttachNonJailError) as context_manager:
             self.system.add_jail(system2)
-        self.assertEqual(extract_message(context_manager), u'`system2` should be an instance of systems.Jail')
+        self.assertEqual(context_manager.exception.message,
+                        u"Can't attach `system2.foo.bar` to `system.foo.bar`. `system2.foo.bar` is not a jail.")
 
     def test_jails_dict(self):
         jail1 = Jail(name='jail1', uid=11, master=self.system)

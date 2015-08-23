@@ -48,6 +48,10 @@ class BaseSystem(object):
     def hostname(self, hostname):
         self._hostname = hostname
 
+    def __repr__(self):
+        """Maps the system's string representation to its hostname"""
+        return self.hostname
+
 
 class System(BaseSystem):
     """Describes a full OS instance
@@ -101,12 +105,12 @@ class System(BaseSystem):
     """
     def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None):
         super(System, self).__init__(name=name, hostname=hostname)
+        #: :py:class:`~pybsd.Interface`: the system's outward-facing interface
         self.ext_if = self.make_if(ext_if)
-        """:py:class:`~pybsd.Interface`: the system's outward-facing interface"""
         self._int_if = self.make_if(int_if)
         lo_if = lo_if or ('lo0', ['127.0.0.1/8', '::1/110'])
-        """:py:class:`~pybsd.Interface`: the system's loopback interface. If not expressly defined, it defaults to
-        ('lo0', ['127.0.0.1/8', '::1/110'])"""
+        #: :py:class:`~pybsd.Interface`: the system's loopback interface. If not expressly defined, it defaults to
+        #: ('lo0', ['127.0.0.1/8', '::1/110'])
         self.lo_if = self.make_if(lo_if)
 
     def make_if(self, definition):

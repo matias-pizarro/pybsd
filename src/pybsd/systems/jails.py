@@ -57,6 +57,11 @@ class Jail(BaseSystem):
     jail_class : Optional[:py:class:`str`]
         Allows differentiating jails by class. This will be worked out of base jails to depend on the jail handler. The
         base handler will probably not have the notion of classes
+
+    Raises
+    ------
+    SystemError
+        if `master` is specified and is not an instance of :py:class:`~pybsd.Master`
     """
 
     def __init__(self, name, uid, hostname=None, master=None, jail_type=None, auto_start=False, jail_class='service'):
@@ -69,7 +74,8 @@ class Jail(BaseSystem):
         self.auto_start = auto_start
         #: Optional[:py:class:`str`]: Allows differentiating jails by class.
         self.jail_class = jail_class
-        #: :py:class:`~pybsd.Master`]: The jail's master i.e. host system. By default a :py:class:`~pybsd.Jail`] is created detached.
+        #: Optional[:py:class:`~pybsd.Master`]: The jail's master i.e. host system. By default a :py:class:`~pybsd.Jail` is created
+        #: detached.
         self.master = None
         if master:
             try:
@@ -79,8 +85,7 @@ class Jail(BaseSystem):
 
     @property
     def is_attached(self):
-        """:py:class:`bool`: Whether the jail is currently attached to a master.
-        """
+        """:py:class:`bool`: Whether the jail is currently attached to a master."""
         return self.master is not None
 
     @property

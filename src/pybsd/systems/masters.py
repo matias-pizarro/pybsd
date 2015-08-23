@@ -5,6 +5,7 @@ from lazy import lazy
 import logging
 import six
 from ..commands import EzjailAdmin
+from ..exceptions import AttachNonJailError
 from ..handlers import BaseJailHandler
 from .base import System
 from .jails import Jail
@@ -37,7 +38,7 @@ class Master(System):
 
     Attributes
     ----------
-    JailHandlerClass : : :py:class:`class`
+    JailHandlerClass : :py:class:`class`
         the class of the system's jail handler. It must be or extend :py:class:`~pybsd.BaseJailHandler`
     """
     JailHandlerClass = BaseJailHandler
@@ -78,12 +79,28 @@ class Master(System):
 
         Re-attaching an already-owned jail is transparent.
 
+        Parameters
+        ----------
+        :py:class:`~pybsd.Jail`
+
+
         Returns
         -------
         :py:class:`~pybsd.Jail`
+
+        Raises
+        ------
+        AttachNonJailError
+            if `jail` is not an instance of :py:class:`~pybsd.Jail`
+        SystemError(Jail `xxx` is already attached to `yyy`)
+            if `jail` is already attached to another :py:class:`~pybsd.Master`
+        SystemError(a jail called `xxx` is already attached to `yyy`)
+            if another :py:class:`~pybsd.Jail` is already attached to `master` with the same name
+        SystemError(a jail with uid `###` is already attached to `xxx`)
+            if another :py:class:`~pybsd.Jail` is already attached to `master` with the uid
         """
         if not isinstance(jail, Jail):
-            raise SystemError(u'`{}` should be an instance of systems.Jail'.format(jail.name))
+            raise AttachNonJailError(self, jail)
         if jail.is_attached:
             if jail.master == self:
                 return jail
