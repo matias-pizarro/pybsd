@@ -46,6 +46,8 @@ class System(BaseSystem):
 
     It provides common functionality for a full system.
 
+    **Interfaces**
+
     Each interface is described by:
 
         :py:class:`tuple` (interface_name (:py:class:`str`), :py:class:`list` [ip_interfaces (:py:class:`str`)]).
@@ -58,7 +60,6 @@ class System(BaseSystem):
 
     Example
     -------
-
     >>> from pybsd import System
     >>> box01 = System(name='box01',
     ...                hostname='box01.foo.bar',
@@ -71,7 +72,6 @@ class System(BaseSystem):
     False
     >>> box01.ips
     SortedSet(['127.0.0.1', '148.241.178.106', '192.168.0.0', '1c02:4f8:f0:14e6::', '1c02:4f8:f0:14e6::1', '::1'], key=None, load=1000)
-
 
     Parameters
     ----------

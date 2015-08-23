@@ -1,7 +1,9 @@
 Roadmap
 =======
 
-All the -- *expected* -- dates of completion and version numbers are pure hypothesis, likely to be modified by reality
+All the -- *expected* -- dates of completion and version numbers are pure hypothesis, likely to be modified by reality.
+
+Until version 1.0.0, the API, properties, methods and trheir signature are likely to change a lot.
 
 
 0.0.3 (expected end of 2015-08)
@@ -20,6 +22,7 @@ Further development is therefore put on the backburner until this is achieved.
   existing systems.
 * To achieve this, when not working on an actual system, the package will create and maintain internal state that allows
   state-dependent methods to work
+* implement Master.remove_jail method
 
 0.0.5 (expected wk2 of 2015-09)
 -------------------------------

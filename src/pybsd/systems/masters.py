@@ -14,7 +14,33 @@ __logger__ = logging.getLogger('pybsd')
 
 
 class Master(System):
-    """Describes a system that will host jails"""
+    """Describes a system that will host jails
+
+    Parameters
+    ----------
+    name : :py:class:`str`
+        a name that identifies the system.
+    ext_if : :py:class:`tuple` (:py:class:`str`, :py:class:`list` [:py:class:`str`])
+        Definition of the system's outward-facing interface
+    int_if : Optional[ :py:class:`tuple` (:py:class:`str`, :py:class:`list` [:py:class:`str`]) ]
+        Definition of the system's internal network-facing interface. If it is not specified it defaults to ext_if,
+        as in that case the same interface will be used for all networks.
+    lo_if : Optional[ :py:class:`tuple` (:py:class:`str`, :py:class:`list` [:py:class:`str`]) ]
+        Definition of the system's loopback interface. It defaults to ('lo0', ['127.0.0.1/8', '::1/110'])
+    j_if : Optional[ :py:class:`tuple` (:py:class:`str`, :py:class:`list` [:py:class:`str`]) ]
+        Definition of the interface the system provides to hosted jails as their external interface. By default, this will be
+        the system's own ext_if.
+    jlo_if : Optional[ :py:class:`tuple` (:py:class:`str`, :py:class:`list` [:py:class:`str`]) ]
+        Definition of the interface the system provides to hosted jails as their loopback interface. By default, this will be
+        the system's own lo_if.
+    hostname : Optional[:py:class:`int`]
+        The system's hostname.
+
+    Attributes
+    ----------
+    JailHandlerClass : : :py:class:`class`
+        the class of the system's jail handler. It must be or extend :py:class:`~pybsd.BaseJailHandler`
+    """
     JailHandlerClass = BaseJailHandler
     default_jail_type = 'Z'
 
@@ -32,8 +58,8 @@ class Master(System):
 
     @property
     def j_if(self):
-        """
-        By default, a master uses its own ext_if as jails ext_if
+        """:py:class:`~pybsd.Interface`: the interface the system provides to hosted jails as their external interface. By default,
+        this will be the system's own ext_if.
         """
         return self._j_if or self.ext_if
 
@@ -48,10 +74,14 @@ class Master(System):
             self._j_if = _j_if
 
     def reset_j_if(self):
+        """Resets the system's j_if to its default value (its own ext_if)"""
         self._j_if = None
 
     @property
     def jlo_if(self):
+        """:py:class:`~pybsd.Interface`: the interface the system provides to hosted jails as their loopback interface. By default,
+        this will be the system's own lo_if.
+        """
         return self._jlo_if or self.lo_if
 
     @jlo_if.setter
@@ -65,12 +95,22 @@ class Master(System):
             self._jlo_if = _jlo_if
 
     def reset_jlo_if(self):
+        """Resets the system's jlo_if to its default value (its own lo_if)"""
         self._jlo_if = None
 
     def add_jail(self, jail):
+        """Adds a jail to the system's jails list.
+
+        Re-attaching an already-owned jail is transparent.
+
+        Returns
+        -------
+        :py:class:`~pybsd.Jail`
+        """
         if not isinstance(jail, Jail):
             raise SystemError(u'`{}` should be an instance of systems.Jail'.format(jail.name))
-        if jail.master:
+        if jail.is_attached:
+            """This operation is idem-potent"""
             if jail.master == self:
                 return jail
             raise SystemError('Jail `{}` is already attached to `{}`'.format(jail.name, jail.master.name))
