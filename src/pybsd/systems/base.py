@@ -93,18 +93,39 @@ class System(BaseSystem):
         Interface definition used to initialize self.lo_if
     hostname : Optional[:py:class:`int`]
         The system's hostname.
+
+    Raises
+    ------
+    SystemError
+        if any ip address in the interface definitions is duplicated.
     """
     def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None):
         super(System, self).__init__(name=name, hostname=hostname)
-        self.ext_if = self._set_if(ext_if)
+        self.ext_if = self.make_if(ext_if)
         """:py:class:`~pybsd.Interface`: the system's outward-facing interface"""
-        self._int_if = self._set_if(int_if)
+        self._int_if = self.make_if(int_if)
         lo_if = lo_if or ('lo0', ['127.0.0.1/8', '::1/110'])
         """:py:class:`~pybsd.Interface`: the system's loopback interface. If not expressly defined, it defaults to
         ('lo0', ['127.0.0.1/8', '::1/110'])"""
-        self.lo_if = self._set_if(lo_if)
+        self.lo_if = self.make_if(lo_if)
 
-    def _set_if(self, definition):
+    def make_if(self, definition):
+        """Returns an :py:class:`~pybsd.Interface` based on `definition`
+
+        Parameters
+        ----------
+        definition : :py:class:`tuple` (:py:class:`str`, :py:class:`list` [:py:class:`str`])
+
+        Returns
+        -------
+        :py:class:`~pybsd.Interface`
+
+        Raises
+        ------
+        SystemError
+            if one of the ip addresses in `definition` is already in use
+
+        """
         if not definition:
             return None
         if_name, if_ips = definition
@@ -116,8 +137,8 @@ class System(BaseSystem):
 
     @property
     def int_if(self):
-        """:py:class:`~pybsd.Interface`: the system's internal network-facing interface. If not expressly defined, it defaults to self.ext_if,
-        as in that case the same interface will be used for all networks."""
+        """:py:class:`~pybsd.Interface`: the system's internal network-facing interface. If not expressly defined, it defaults to
+        self.ext_if, as in that case the same interface will be used for all networks."""
         return self._int_if or self.ext_if
 
     def reset_int_if(self):

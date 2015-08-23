@@ -45,8 +45,8 @@ class Master(System):
 
     def __init__(self, name, ext_if, int_if=None, lo_if=None, j_if=None, jlo_if=None, hostname=None):
         super(Master, self).__init__(name, ext_if, int_if, lo_if, hostname)
-        self._j_if = self._set_if(j_if)
-        self._jlo_if = self._set_if(jlo_if)
+        self._j_if = self.make_if(j_if)
+        self._jlo_if = self.make_if(jlo_if)
         self.ezjail_admin = EzjailAdmin(env=self)
         self.jail_handler = self.JailHandlerClass(master=self)
         self.jails = {}
