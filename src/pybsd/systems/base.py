@@ -88,10 +88,12 @@ class System(BaseSystem):
     """
     def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None):
         super(System, self).__init__(name=name, hostname=hostname)
+        self._ext_if = None
         self.ext_if = ext_if
         self._int_if = None
         if int_if:
             self.int_if = int_if
+        self._lo_if = None
         self.lo_if = lo_if
 
     @property
