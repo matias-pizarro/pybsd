@@ -11,7 +11,8 @@ Until version 1.0.0, the API, properties, methods and trheir signature are likel
 **Complete documentation:**
 
 the idea is that keeping documentation up to date is not a realistic prospect until we have the current code base covered.
-Further development is therefore put on the backburner until this is achieved.
+Further development is therefore put on the backburner until this is achieved. However, opportunities for simplification or
+fixes in the existing code base will be followed up.
 
 0.0.4 (expected wk1 of 2015-09)
 --------------------------------

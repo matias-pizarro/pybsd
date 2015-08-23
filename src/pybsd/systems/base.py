@@ -22,7 +22,7 @@ class BaseSystem(object):
     name : :py:class:`str`
         a name that identifies the system.
     hostname : Optional[:py:class:`str`]
-        The system's hostname. If not specified, the system's name is used instead.
+        The system's hostname.
 
     Attributes
     ----------
@@ -35,10 +35,18 @@ class BaseSystem(object):
         super(BaseSystem, self).__init__()
         #: :py:class:`str`: a name that identifies the system
         self.name = name
-        #: :py:class:`str` or :py:class:`~None`: The system's hostname
-        self.hostname = (hostname or name)
+        self._hostname = hostname
         #: :py:class:`~function`: a method that proxies binaries invocations
         self.execute = self.ExecutorClass()
+
+    @property
+    def hostname(self):
+        """:py:class:`str`: The system's hostname. If not specified, the system's name is returned instead."""
+        return self._hostname or self.name
+
+    @hostname.setter
+    def hostname(self, hostname):
+        self._hostname = hostname
 
 
 class System(BaseSystem):
@@ -78,22 +86,22 @@ class System(BaseSystem):
     name : :py:class:`str`
         a name that identifies the system.
     ext_if : :py:class:`tuple` (:py:class:`str`, :py:class:`list` [:py:class:`str`])
-        Definition of the system's outward-facing interface
+        Interface definition used to initialize self.ext_if
     int_if : Optional[ :py:class:`tuple` (:py:class:`str`, :py:class:`list` [:py:class:`str`]) ]
-        Definition of the system's internal network-facing interface. If it is not specified it defaults to ext_if,
-        as in that case the same interface will be used for all networks.
+        Interface definition used to initialize self.int_if
     lo_if : Optional[ :py:class:`tuple` (:py:class:`str`, :py:class:`list` [:py:class:`str`]) ]
-        Definition of the system's loopback interface. It defaults to ('lo0', ['127.0.0.1/8', '::1/110'])
+        Interface definition used to initialize self.lo_if
     hostname : Optional[:py:class:`int`]
         The system's hostname.
     """
     def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None):
         super(System, self).__init__(name=name, hostname=hostname)
-        """:py:class:`~pybsd.Interface`: the system's outward-facing interface"""
         self.ext_if = self._set_if(ext_if)
+        """:py:class:`~pybsd.Interface`: the system's outward-facing interface"""
         self._int_if = self._set_if(int_if)
         lo_if = lo_if or ('lo0', ['127.0.0.1/8', '::1/110'])
-        """:py:class:`~pybsd.Interface`: the system's loopback interface"""
+        """:py:class:`~pybsd.Interface`: the system's loopback interface. If not expressly defined, it defaults to
+        ('lo0', ['127.0.0.1/8', '::1/110'])"""
         self.lo_if = self._set_if(lo_if)
 
     def _set_if(self, definition):
@@ -108,7 +116,8 @@ class System(BaseSystem):
 
     @property
     def int_if(self):
-        """:py:class:`~pybsd.Interface`: the system's internal network-facing interface"""
+        """:py:class:`~pybsd.Interface`: the system's internal network-facing interface. If not expressly defined, it defaults to self.ext_if,
+        as in that case the same interface will be used for all networks."""
         return self._int_if or self.ext_if
 
     def reset_int_if(self):

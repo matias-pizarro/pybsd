@@ -5,6 +5,8 @@ In Progress
 
 To do
 -----
+    * jail type should be defined at jail attachment-time, by the master or its handler
+    * jail hsotname should be defined by its handler
     * check for complexity once Executor.__call__ has been refactored
         flake8  --max-complexity 10 src
     * Use Makefile ¿?

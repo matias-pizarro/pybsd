@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import unittest
 from .. import extract_message
-from .test_commands import BaseCommandTestCase
+from .test_base import BaseCommandTestCase
 
 
 class EzjailAdminTestCase(BaseCommandTestCase):

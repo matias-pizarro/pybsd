@@ -85,7 +85,6 @@ class Master(System):
         if not isinstance(jail, Jail):
             raise SystemError(u'`{}` should be an instance of systems.Jail'.format(jail.name))
         if jail.is_attached:
-            """This operation is idem-potent"""
             if jail.master == self:
                 return jail
             raise SystemError('Jail `{}` is already attached to `{}`'.format(jail.name, jail.master.name))

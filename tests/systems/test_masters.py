@@ -4,7 +4,7 @@ import ipaddress
 from pybsd import BaseJailHandler, Jail, Master
 from .. import extract_message
 from ..test_executors import TestExecutor
-from .test_systems import SystemTestCase
+from .test_base import SystemTestCase
 
 
 class TestMaster(Master):

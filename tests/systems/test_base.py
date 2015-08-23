@@ -41,6 +41,11 @@ class BaseSystemTestCase(unittest.TestCase):
         self.assertEqual(self.system.hostname, 'system.foo.bar',
                         'incorrect hostname')
 
+    def test_hostname_assignment(self):
+        self.system.hostname = 'system.bar.foo'
+        self.assertEqual(self.system.hostname, 'system.bar.foo',
+                        'incorrect hostname')
+
 
 
 class SystemTestCase(BaseSystemTestCase):
