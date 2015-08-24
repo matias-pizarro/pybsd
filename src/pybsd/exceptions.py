@@ -21,6 +21,7 @@ class MasterJailError(PyBSDError):
         The jail
     """
     def __init__(self, master, jail):
+        super(MasterJailError, self).__init__()
         self.master = master
         self.jail = jail
 
