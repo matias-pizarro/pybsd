@@ -105,20 +105,21 @@ class Master(System):
         """
         if not isinstance(jail, Jail):
             raise AttachNonJailError(self, jail)
-        if jail.is_attached:
+        elif jail.is_attached:
             if jail.master == self:
                 return jail
             raise JailAlreadyAttachedError(self, jail)
-        if jail.name in self.jails:
+        elif jail.name in self.jails:
             raise DuplicateJailNameError(self, jail)
-        if jail.hostname in self.hostnames:
+        elif jail.hostname in self.hostnames:
             raise DuplicateJailHostnameError(self, jail)
-        if jail.uid in self.uids:
+        elif jail.uid in self.uids:
             raise DuplicateJailUidError(self, jail)
-        self.jails[jail.name] = jail
-        jail.master = self
-        jail.jail_type = jail.jail_type or self.default_jail_type
-        return jail
+        else:
+            self.jails[jail.name] = jail
+            jail.master = self
+            jail.jail_type = jail.jail_type or self.default_jail_type
+            return jail
 
     @property
     def hostnames(self):
