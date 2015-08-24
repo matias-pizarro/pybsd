@@ -5,8 +5,11 @@ In Progress
 
 To do
 -----
+    * implement real path in docs
+    * example for each class
+    * Use custom exceptions instead of SystemError
     * jail type should be defined at jail attachment-time, by the master or its handler
-    * jail hsotname should be defined by its handler
+    * jail hostname should be defined by its handler, unless forced by jail itself
     * check for complexity once Executor.__call__ has been refactored
         flake8  --max-complexity 10 src
     * Use Makefile ¿?

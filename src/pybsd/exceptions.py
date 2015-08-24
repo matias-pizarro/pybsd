@@ -19,7 +19,14 @@ class MasterJailError(PyBSDError):
         The master
     jail : :py:class:`~pybsd.Jail`
         The jail
+
+    Attributes
+    ----------
+    msg : :py:class:`str`
+        The template used to generate the exception message
     """
+    msg = None
+
     def __init__(self, master, jail):
         super(MasterJailError, self).__init__()
         self.master = master
@@ -27,7 +34,7 @@ class MasterJailError(PyBSDError):
 
     def __str__(self):
         """Returns the formatted msg as the string representation of the exception"""
-        return self.msg.format(master=repr(self.master), jail=repr(self.jail))
+        return self.msg.format(master=self.master, jail=self.jail)
 
     @property
     def message(self):
@@ -46,3 +53,55 @@ class AttachNonJailError(MasterJailError):
         The object that was supposed to be attached
     """
     msg = u"Can't attach `{jail}` to `{master}`. `{jail}` is not a jail."
+
+
+class JailAlreadyAttachedError(MasterJailError):
+    """Error when a jail is already attached to another master
+
+    Parameters
+    ----------
+    master : :py:class:`~pybsd.Master`
+        The master
+    jail : :py:class:`~pybsd.Jail`
+        The jail
+    """
+    msg = u"Can't attach `{jail}` to `{master}`. `{jail}` is already attached to `{jail.master}`."
+
+
+class DuplicateJailNameError(MasterJailError):
+    """Error when another jail with the same name is already attached to a master
+
+    Parameters
+    ----------
+    master : :py:class:`~pybsd.Master`
+        The master
+    jail : :py:class:`~pybsd.Jail`
+        The jail
+    """
+    msg = u"Can't attach `{jail}` to `{master}`. A jail called `{jail.name}` is already attached to `{master}`."
+
+
+class DuplicateJailHostnameError(MasterJailError):
+    """Error when another jail with the same hostname is already attached to a master
+
+    Parameters
+    ----------
+    master : :py:class:`~pybsd.Master`
+        The master
+    jail : :py:class:`~pybsd.Jail`
+        The jail
+    """
+    msg = u"Can't attach `{jail}` to `{master}`. A jail with hostname `{jail.hostname}` is already attached to `{master}`."
+
+
+class DuplicateJailUidError(MasterJailError):
+    """Error when another jail with the same uid is already attached to a master
+
+    Parameters
+    ----------
+    master : :py:class:`~pybsd.Master`
+        The master
+    jail : :py:class:`~pybsd.Jail`
+        The jail
+    """
+    msg = u"Can't attach `{jail}` to `{master}`. A jail with uid `{jail.uid}` is already attached to `{master}`."

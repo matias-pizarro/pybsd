@@ -50,15 +50,6 @@ class JailTestCase(unittest.TestCase):
         jail2 = self.system.master.add_jail(self.system)
         self.assertEqual(self.system, jail2)
 
-    def test_already_attached(self):
-        master2 = Master(name='master2',
-                         hostname='master2.foo.bar',
-                         ext_if=('re0', ['8.8.8.8/24'])
-                         )
-        with self.assertRaises(SystemError) as context_manager:
-            master2.add_jail(self.system)
-        self.assertEqual(extract_message(context_manager), u'Jail `system` is already attached to `master`')
-
     def test_no_name(self):
         params = self.params.copy()
         del params['name']

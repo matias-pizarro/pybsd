@@ -5,7 +5,8 @@ from lazy import lazy
 import logging
 import six
 from ..commands import EzjailAdmin
-from ..exceptions import AttachNonJailError
+from ..exceptions import (AttachNonJailError, JailAlreadyAttachedError, DuplicateJailNameError, DuplicateJailHostnameError,
+                          DuplicateJailUidError)
 from ..handlers import BaseJailHandler
 from .base import System
 from .jails import Jail
@@ -81,46 +82,56 @@ class Master(System):
 
         Parameters
         ----------
-        :py:class:`~pybsd.Jail`
-
+        jail : :py:class:`~pybsd.Jail`
+            The jail to be added
 
         Returns
         -------
         :py:class:`~pybsd.Jail`
+            the jail that was added. This allows chaining of commands.
 
         Raises
         ------
-        AttachNonJailError
+        : :py:exc:`~pybsd.AttachNonJailError`
             if `jail` is not an instance of :py:class:`~pybsd.Jail`
-        SystemError(Jail `xxx` is already attached to `yyy`)
+        : :py:exc:`~pybsd.JailAlreadyAttachedError`
             if `jail` is already attached to another :py:class:`~pybsd.Master`
-        SystemError(a jail called `xxx` is already attached to `yyy`)
-            if another :py:class:`~pybsd.Jail` is already attached to `master` with the same name
-        SystemError(a jail with uid `###` is already attached to `xxx`)
-            if another :py:class:`~pybsd.Jail` is already attached to `master` with the uid
+        : :py:exc:`~pybsd.DuplicateJailNameError`
+            if another :py:class:`~pybsd.Jail` with the same name is already attached to `master`
+        : :py:exc:`~pybsd.DuplicateJailHostnameError`
+            if another :py:class:`~pybsd.Jail` with the same hostname is already attached to `master`
+        : :py:exc:`~pybsd.DuplicateJailUidError`
+            if another :py:class:`~pybsd.Jail` with the same uid is already attached to `master`
         """
         if not isinstance(jail, Jail):
             raise AttachNonJailError(self, jail)
         if jail.is_attached:
             if jail.master == self:
                 return jail
-            raise SystemError('Jail `{}` is already attached to `{}`'.format(jail.name, jail.master.name))
+            raise JailAlreadyAttachedError(self, jail)
         if jail.name in self.jails:
-            raise SystemError('a jail called `{}` is already attached to `{}`'.format(jail.name, self.name))
+            raise DuplicateJailNameError(self, jail)
+        if jail.hostname in self.hostnames:
+            raise DuplicateJailHostnameError(self, jail)
         if jail.uid in self.uids:
-            raise SystemError('a jail with uid `{}` is already attached to `{}`'.format(jail.uid, self.name))
+            raise DuplicateJailUidError(self, jail)
         self.jails[jail.name] = jail
         jail.master = self
         jail.jail_type = jail.jail_type or self.default_jail_type
         return jail
 
     @property
+    def hostnames(self):
+        return [j.hostname for k, j in six.iteritems(self.jails)]
+
+    @property
     def uids(self):
         return [j.uid for k, j in six.iteritems(self.jails)]
 
-    def clone_jail(self, jail, name, uid):
+    def clone_jail(self, jail, name, uid, hostname=None):
         _jail = copy.deepcopy(jail)
         _jail.name = name
+        _jail.hostname = hostname
         _jail.uid = uid
         _jail.master = None
         return self.add_jail(_jail)
