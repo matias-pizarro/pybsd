@@ -122,7 +122,7 @@ class MasterTestCase(SystemTestCase):
                          ext_if=('re0', ['148.241.178.107/24'])
                          )
         jail = Jail(name='jail',
-                    uid = 12,
+                    uid=12,
                     hostname='jail.foo.bar',
                     master=master2)
         with self.assertRaises(JailAlreadyAttachedError) as context_manager:
@@ -131,14 +131,14 @@ class MasterTestCase(SystemTestCase):
                          "Can't attach `jail.foo.bar` to `master.foo.bar`. `jail.foo.bar` is already attached to `master2.foo.bar`.")
 
     def test_duplicate_name(self):
-        jail1 = Jail(name='jail1', uid=11, master=self.system)
+        assert Jail(name='jail1', uid=11, master=self.system)
         with self.assertRaises(DuplicateJailNameError) as context_manager:
             jail2 = Jail(name='jail1', uid=12, master=self.system)
         self.assertEqual(context_manager.exception.message,
                          "Can't attach `jail1` to `master.foo.bar`. A jail called `jail1` is already attached to `master.foo.bar`.")
 
     def test_duplicate_hostname(self):
-        jail1 = Jail(name='jail1', hostname='something.foo.bar', uid=11, master=self.system)
+        assert Jail(name='jail1', hostname='something.foo.bar', uid=11, master=self.system)
         with self.assertRaises(DuplicateJailHostnameError) as context_manager:
             jail2 = Jail(name='jail2', hostname='something.foo.bar', uid=12, master=self.system)
         self.assertEqual(context_manager.exception.message,
@@ -146,7 +146,7 @@ class MasterTestCase(SystemTestCase):
                          " is already attached to `master.foo.bar`.")
 
     def test_duplicate_uid(self):
-        jail1 = Jail(name='jail1', uid=11, master=self.system)
+        assert Jail(name='jail1', uid=11, master=self.system)
         with self.assertRaises(DuplicateJailUidError) as context_manager:
             jail2 = Jail(name='jail2', uid=11, master=self.system)
         self.assertEqual(context_manager.exception.message,
