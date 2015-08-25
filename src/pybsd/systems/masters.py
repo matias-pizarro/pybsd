@@ -55,7 +55,7 @@ class Master(System):
 
     @property
     def j_if(self):
-        """:py:class:`~pybsd.Interface`: the interface the system provides to hosted jails as their external interface. By default,
+        """:py:class:`~pybsd.network.Interface`: the interface the system provides to hosted jails as their external interface. By default,
         this will be the system's own ext_if.
         """
         return self._j_if or self.ext_if
@@ -66,7 +66,7 @@ class Master(System):
 
     @property
     def jlo_if(self):
-        """:py:class:`~pybsd.Interface`: the interface the system provides to hosted jails as their loopback interface. By default,
+        """:py:class:`~pybsd.network.Interface`: the interface the system provides to hosted jails as their loopback interface. By default,
         this will be the system's own lo_if.
         """
         return self._jlo_if or self.lo_if
@@ -82,26 +82,26 @@ class Master(System):
 
         Parameters
         ----------
-        jail : :py:class:`~pybsd.Jail`
+        jail : :py:class:`~pybsd.systems.jails.Jail`
             The jail to be added
 
         Returns
         -------
-        :py:class:`~pybsd.Jail`
+        :py:class:`~pybsd.systems.jails.Jail`
             the jail that was added. This allows chaining of commands.
 
         Raises
         ------
-        : :py:exc:`~pybsd.AttachNonJailError`
-            if `jail` is not an instance of :py:class:`~pybsd.Jail`
-        : :py:exc:`~pybsd.JailAlreadyAttachedError`
-            if `jail` is already attached to another :py:class:`~pybsd.Master`
-        : :py:exc:`~pybsd.DuplicateJailNameError`
-            if another :py:class:`~pybsd.Jail` with the same name is already attached to `master`
-        : :py:exc:`~pybsd.DuplicateJailHostnameError`
-            if another :py:class:`~pybsd.Jail` with the same hostname is already attached to `master`
-        : :py:exc:`~pybsd.DuplicateJailUidError`
-            if another :py:class:`~pybsd.Jail` with the same uid is already attached to `master`
+        : :py:exc:`~pybsd.exceptions.AttachNonJailError`
+            if `jail` is not an instance of :py:class:`~pybsd.systems.jails.Jail`
+        : :py:exc:`~pybsd.exceptions.JailAlreadyAttachedError`
+            if `jail` is already attached to another :py:class:`~pybsd.systems.masters.Master`
+        : :py:exc:`~pybsd.exceptions.DuplicateJailNameError`
+            if another :py:class:`~pybsd.systems.jails.Jail` with the same name is already attached to `master`
+        : :py:exc:`~pybsd.exceptions.DuplicateJailHostnameError`
+            if another :py:class:`~pybsd.systems.jails.Jail` with the same hostname is already attached to `master`
+        : :py:exc:`~pybsd.exceptions.DuplicateJailUidError`
+            if another :py:class:`~pybsd.systems.jails.Jail` with the same uid is already attached to `master`
         """
         if not isinstance(jail, Jail):
             raise AttachNonJailError(self, jail)

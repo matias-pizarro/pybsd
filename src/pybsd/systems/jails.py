@@ -9,8 +9,8 @@ __logger__ = logging.getLogger('pybsd')
 class Jail(BaseSystem):
     """Describes a jailed system
 
-    When attached to an instance of :py:class:`~pybsd.Master` a jail can be created, deleted and controlled through said master's
-    ezjail-admin interface.
+    When attached to an instance of :py:class:`~pybsd.systems.masters.Master` a jail can be created, deleted
+    and controlled through said master's ezjail-admin interface.
 
     Example
     -------
@@ -39,7 +39,7 @@ class Jail(BaseSystem):
         The jail's id, unique over a user's or an organization's domain.
     hostname : Optional[:py:class:`str`]
         The jail's hostname. It not specified the jail's name is used instead.
-    master : Optional[:py:class:`~pybsd.Master`]
+    master : Optional[:py:class:`~pybsd.systems.masters.Master`]
         The jail's master i.e. host system. Default is None
     jail_type : Optional[:py:class:`str`]
         The jail's type, according to its storage solution.
@@ -61,7 +61,7 @@ class Jail(BaseSystem):
     Raises
     ------
     SystemError
-        if `master` is specified and is not an instance of :py:class:`~pybsd.Master`
+        if `master` is specified and is not an instance of :py:class:`~pybsd.systems.masters.Master`
     """
 
     def __init__(self, name, uid, hostname=None, master=None, jail_type=None, auto_start=False, jail_class='service'):
@@ -74,8 +74,8 @@ class Jail(BaseSystem):
         self.auto_start = auto_start
         #: Optional[:py:class:`str`]: Allows differentiating jails by class.
         self.jail_class = jail_class
-        #: Optional[:py:class:`~pybsd.Master`]: The jail's master i.e. host system. By default a :py:class:`~pybsd.Jail` is created
-        #: detached.
+        #: Optional[:py:class:`~pybsd.systems.masters.Master`]: The jail's master i.e. host system. By default a
+        #: :py:class:`~pybsd.systems.jails.Jail` is created detached.
         self.master = None
         if master:
             try:
@@ -142,7 +142,7 @@ class Jail(BaseSystem):
 
     @property
     def ext_if(self):
-        """:py:class:`~pybsd.Interface`: the jail's outward-facing interface. It is evaluated dynamically by the
+        """:py:class:`~pybsd.network.Interface`: the jail's outward-facing interface. It is evaluated dynamically by the
         master's jail handler, so that the same base jail cloned on different host systems can return different values.
         """
         if self.is_attached:
@@ -152,7 +152,7 @@ class Jail(BaseSystem):
 
     @property
     def lo_if(self):
-        """:py:class:`~pybsd.Interface`: the jail's loopback interface. It is evaluated dynamically by the
+        """:py:class:`~pybsd.network.Interface`: the jail's loopback interface. It is evaluated dynamically by the
         master's jail handler, so that the same base jail cloned on different host systems can return different values.
         """
         if self.is_attached:

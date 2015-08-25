@@ -1,21 +1,21 @@
 Network
 =======
-.. autoclass:: pybsd.Interface
+.. autoclass:: pybsd.network.Interface
     :members:
     :show-inheritance:
 
 Handlers
 ========
-.. autoclass:: pybsd.BaseJailHandler
+.. autoclass:: pybsd.handlers.BaseJailHandler
     :members:
     :show-inheritance:
 
 Executors
 =========
-.. autoclass:: pybsd.BaseExecutor
+.. autoclass:: pybsd.executors.BaseExecutor
     :members:
     :show-inheritance:
 
-.. autoclass:: pybsd.Executor
+.. autoclass:: pybsd.executors.Executor
     :members:
     :show-inheritance:

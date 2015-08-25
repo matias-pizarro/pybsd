@@ -3,12 +3,12 @@ Commands
 
 `BaseCommand`
 -------------
-.. autoclass:: pybsd.BaseCommand
+.. autoclass:: pybsd.commands.BaseCommand
     :members:
     :show-inheritance:
 
 `EzjailAdmin`
 -------------
-.. autoclass:: pybsd.EzjailAdmin
+.. autoclass:: pybsd.commands.EzjailAdmin
     :members:
     :show-inheritance:

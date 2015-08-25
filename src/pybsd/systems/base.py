@@ -27,7 +27,7 @@ class BaseSystem(object):
     Attributes
     ----------
     ExecutorClass : :py:class:`class`
-        the class of the system's executor. It must be or extend :py:class:`~pybsd.Executor`
+        the class of the system's executor. It must be or extend :py:class:`~pybsd.executors.Executor`
     """
     ExecutorClass = Executor
 
@@ -105,16 +105,16 @@ class System(BaseSystem):
     """
     def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None):
         super(System, self).__init__(name=name, hostname=hostname)
-        #: :py:class:`~pybsd.Interface`: the system's outward-facing interface
+        #: :py:class:`~pybsd.network.Interface`: the system's outward-facing interface
         self.ext_if = self.make_if(ext_if)
         self._int_if = self.make_if(int_if)
         lo_if = lo_if or ('lo0', ['127.0.0.1/8', '::1/110'])
-        #: :py:class:`~pybsd.Interface`: the system's loopback interface. If not expressly defined, it defaults to
+        #: :py:class:`~pybsd.network.Interface`: the system's loopback interface. If not expressly defined, it defaults to
         #: ('lo0', ['127.0.0.1/8', '::1/110'])
         self.lo_if = self.make_if(lo_if)
 
     def make_if(self, definition):
-        """Returns an :py:class:`~pybsd.Interface` based on `definition`
+        """Returns an :py:class:`~pybsd.network.Interface` based on `definition`
 
         Parameters
         ----------
@@ -122,7 +122,7 @@ class System(BaseSystem):
 
         Returns
         -------
-        :py:class:`~pybsd.Interface`
+        :py:class:`~pybsd.network.Interface`
 
         Raises
         ------
@@ -141,7 +141,7 @@ class System(BaseSystem):
 
     @property
     def int_if(self):
-        """:py:class:`~pybsd.Interface`: the system's internal network-facing interface. If not expressly defined, it defaults to
+        """:py:class:`~pybsd.network.Interface`: the system's internal network-facing interface. If not expressly defined, it defaults to
         self.ext_if, as in that case the same interface will be used for all networks."""
         return self._int_if or self.ext_if
 

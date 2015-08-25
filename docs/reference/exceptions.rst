@@ -1,30 +1,30 @@
 Exceptions
 ==========
 
-.. autoclass:: pybsd.PyBSDError
+.. autoclass:: pybsd.exceptions.PyBSDError
     :members:
     :show-inheritance:
 
-.. autoclass:: pybsd.MasterJailError
+.. autoclass:: pybsd.exceptions.MasterJailError
     :members:
     :show-inheritance:
 
-.. autoclass:: pybsd.AttachNonJailError
+.. autoclass:: pybsd.exceptions.AttachNonJailError
     :members:
     :show-inheritance:
 
-.. autoclass:: pybsd.JailAlreadyAttachedError
+.. autoclass:: pybsd.exceptions.JailAlreadyAttachedError
     :members:
     :show-inheritance:
 
-.. autoclass:: pybsd.DuplicateJailNameError
+.. autoclass:: pybsd.exceptions.DuplicateJailNameError
     :members:
     :show-inheritance:
 
-.. autoclass:: pybsd.DuplicateJailHostnameError
+.. autoclass:: pybsd.exceptions.DuplicateJailHostnameError
     :members:
     :show-inheritance:
 
-.. autoclass:: pybsd.DuplicateJailUidError
+.. autoclass:: pybsd.exceptions.DuplicateJailUidError
     :members:
     :show-inheritance:

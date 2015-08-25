@@ -3,24 +3,24 @@ Systems
 
 `BaseSystem`
 ------------
-.. autoclass:: pybsd.BaseSystem
+.. autoclass:: pybsd.systems.base.BaseSystem
     :members:
     :show-inheritance:
 
 `System`
 --------
-.. autoclass:: pybsd.System
+.. autoclass:: pybsd.systems.base.System
     :members:
     :show-inheritance:
 
 `Master`
 --------
-.. autoclass:: pybsd.Master
+.. autoclass:: pybsd.systems.masters.Master
     :members:
     :show-inheritance:
 
 `Jail`
 ------
-.. autoclass:: pybsd.Jail
+.. autoclass:: pybsd.systems.jails.Jail
     :members:
     :show-inheritance:
