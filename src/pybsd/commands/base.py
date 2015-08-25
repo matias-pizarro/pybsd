@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import logging
 import socket
+from ..exceptions import InvalidCommandName
 
 __logger__ = logging.getLogger('pybsd')
 
@@ -12,7 +13,7 @@ class BaseCommand(object):
 
     def __init__(self, env):
         if not getattr(self, 'name', None):
-            raise SystemError('`name` property is missing')
+            raise InvalidCommandName(self)
         if hasattr(env, 'execute') and callable(env.execute):
             self.env = env
         else:
@@ -25,3 +26,7 @@ class BaseCommand(object):
             return self.env.execute(self.binary, *args)
         except socket.error:
             raise SystemError('Could not connect')
+
+    def __repr__(self):
+        # Maps the command's string representation to its name
+        return self.name

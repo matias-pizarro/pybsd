@@ -104,3 +104,27 @@ class DuplicateJailUidError(MasterJailError):
         The jail
     """
     msg = u"Can't attach `{jail}` to `{master}`. A jail with uid `{jail.uid}` is already attached to `{master}`."
+
+
+class CommandError(PyBSDError):
+    """Base exception for errors involving a command. It is never raised
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.Command`
+        The command
+    """
+    def __init__(self, command):
+        super(CommandError, self).__init__()
+        self.parameters = {'command': command}
+
+
+class InvalidCommandName(CommandError):
+    """Error when a command is missing a `name` attribute
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.Command`
+        The command
+    """
+    msg = "Can't initialize command: `{command.__class__.__module__}` is missing a `name` property."

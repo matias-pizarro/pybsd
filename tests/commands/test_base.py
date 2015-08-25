@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import unittest
-from pybsd import BaseCommand
+from pybsd import BaseCommand, InvalidCommandName
 from .. import extract_message
 from ..systems.test_masters import TestMaster
 
@@ -27,9 +27,10 @@ class BaseCommandTestCase(unittest.TestCase):
         self.system = TestMaster(**self.params)
 
     def test_no_name_command(self):
-        with self.assertRaises(SystemError) as context_manager:
+        with self.assertRaises(InvalidCommandName) as context_manager:
             NoNameCommand(env='something')
-        self.assertEqual(extract_message(context_manager), u'`name` property is missing')
+        self.assertEqual(context_manager.exception.message,
+                         "Can't initialize command: `tests.commands.test_base` is missing a `name` property.")
 
     def test_env_no_executor(self):
         with self.assertRaises(SystemError) as context_manager:

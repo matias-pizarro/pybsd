@@ -87,7 +87,7 @@ class Master(System):
 
         Returns
         -------
-        :py:class:`~pybsd.systems.jails.Jail`
+        : :py:class:`~pybsd.systems.jails.Jail`
             the jail that was added. This allows chaining of commands.
 
         Raises

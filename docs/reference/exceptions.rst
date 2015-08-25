@@ -28,3 +28,11 @@ Exceptions
 .. autoclass:: pybsd.exceptions.DuplicateJailUidError
     :members:
     :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.CommandError
+    :members:
+    :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.InvalidCommandName
+    :members:
+    :show-inheritance:

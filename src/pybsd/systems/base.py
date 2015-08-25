@@ -49,7 +49,12 @@ class BaseSystem(object):
         self._hostname = hostname
 
     def __repr__(self):
-        """Maps the system's string representation to its hostname"""
+        # Maps the system's string representation to its hostname
+        #
+        # Returns
+        # -------
+        # : :py:class:`str`
+        #     the system's hostname
         return self.hostname
 
 
@@ -122,7 +127,8 @@ class System(BaseSystem):
 
         Returns
         -------
-        :py:class:`~pybsd.network.Interface`
+        : :py:class:`~pybsd.network.Interface`
+            a valid interface
 
         Raises
         ------
