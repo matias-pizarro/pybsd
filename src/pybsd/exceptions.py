@@ -6,8 +6,24 @@ __logger__ = logging.getLogger('pybsd')
 
 
 class PyBSDError(Exception):
-    """Base PyBSD Exception. It is only used to except any PyBSD error and never raised"""
-    msg = None
+    """Base PyBSD Exception. It is only used to except any PyBSD error and never raised
+
+    Attributes
+    ----------
+    msg : :py:class:`str`
+        The template used to generate the exception message
+    """
+    msg = ''
+    parameters = {}
+
+    @property
+    def message(self):
+        """An alias of __str__, useful for tests"""
+        return self.__str__()
+
+    def __str__(self):
+        # Returns the formatted msg as the string representation of the exception
+        return self.msg.format(**self.parameters)
 
 
 class MasterJailError(PyBSDError):
@@ -19,27 +35,10 @@ class MasterJailError(PyBSDError):
         The master
     jail : :py:class:`~pybsd.systems.jails.Jail`
         The jail
-
-    Attributes
-    ----------
-    msg : :py:class:`str`
-        The template used to generate the exception message
     """
-    msg = None
-
     def __init__(self, master, jail):
         super(MasterJailError, self).__init__()
-        self.master = master
-        self.jail = jail
-
-    def __str__(self):
-        # Returns the formatted msg as the string representation of the exception
-        return self.msg.format(master=self.master, jail=self.jail)
-
-    @property
-    def message(self):
-        """An alias of __str__, useful for tests"""
-        return self.__str__()
+        self.parameters = {'master': master, 'jail': jail}
 
 
 class AttachNonJailError(MasterJailError):
