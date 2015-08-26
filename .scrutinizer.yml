@@ -159,7 +159,7 @@ before_commands:
 
 build:
     environment:
-        python: '2.7.7'
+        python: 'pypy-2.3.1'
     dependencies:
         after:
             - 'pip uninstall -y tox'
