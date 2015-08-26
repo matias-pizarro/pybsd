@@ -113,18 +113,61 @@ class CommandError(PyBSDError):
     ----------
     command : :py:class:`~pybsd.commands.Command`
         The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
     """
-    def __init__(self, command):
+    def __init__(self, command, environment):
         super(CommandError, self).__init__()
-        self.parameters = {'command': command}
+        self.parameters = {'command': command, 'environment': environment}
 
 
-class InvalidCommandName(CommandError):
+class InvalidCommandNameError(CommandError):
     """Error when a command is missing a `name` attribute
 
     Parameters
     ----------
     command : :py:class:`~pybsd.commands.Command`
         The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
     """
     msg = "Can't initialize command: `{command.__class__.__module__}` is missing a `name` property."
+
+
+class InvalidCommandExecutorError(CommandError):
+    """Error when a command is missing a `name` attribute
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.Command`
+        The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    """
+    msg = "Can't initialize command: `{command}` must have a callable `Executor` method."
+
+
+class CommandNotImplementedError(CommandError):
+    """Error when a command is missing a `name` attribute
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.Command`
+        The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    """
+    msg = "Can't execute command: `{command}` is not implemented on `{environment}`."
+
+
+class CommandConnectionError(CommandError):
+    """Error when a command is missing a `name` attribute
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.Command`
+        The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    """
+    msg = "Can't execute command: `{command}`- can't connect to `{environment}`."

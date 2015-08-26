@@ -33,6 +33,6 @@ Exceptions
     :members:
     :show-inheritance:
 
-.. autoclass:: pybsd.exceptions.InvalidCommandName
+.. autoclass:: pybsd.exceptions.InvalidCommandNameError
     :members:
     :show-inheritance:
