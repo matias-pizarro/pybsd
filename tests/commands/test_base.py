@@ -2,7 +2,6 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import unittest
 from pybsd import BaseCommand, InvalidCommandNameError, InvalidCommandExecutorError, CommandNotImplementedError, CommandConnectionError
-from .. import extract_message
 from ..systems.test_masters import TestMaster
 
 
