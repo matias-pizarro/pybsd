@@ -158,6 +158,8 @@ before_commands:
     - pip3 install lazy pybsd sortedcontainers unipath
 
 build:
+    environment:
+        python: '2.7.7'
     dependencies:
         after:
             - 'pip uninstall -y tox'
