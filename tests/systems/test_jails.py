@@ -3,8 +3,8 @@ from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import unittest
 import unipath
-from pybsd import System, Jail, Master
-from .. import extract_message
+from pybsd import System, Jail, Master, AttachNonMasterError
+from ..utils import extract_message
 
 
 class JailTestCase(unittest.TestCase):
@@ -38,9 +38,10 @@ class JailTestCase(unittest.TestCase):
         del master_params['jlo_if']
         params = self.params.copy()
         params['master'] = System(**master_params)
-        with self.assertRaises(SystemError) as context_manager:
+        with self.assertRaises(AttachNonMasterError) as context_manager:
             self.system = Jail(**params)
-        self.assertEqual(extract_message(context_manager), u'`master` is not a jail master')
+        self.assertEqual(context_manager.exception.message,
+                         "Can't attach `system.foo.bar` to `master.foo.bar`. `master.foo.bar` is not a master.")
 
     def test_clone_jail(self):
         jail2 = self.system.master.clone_jail(self.system, 'new_jail', 13)

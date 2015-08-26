@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function, absolute_import
 import logging
+from ..exceptions import AttachNonMasterError
 from .base import BaseSystem
 
 __logger__ = logging.getLogger('pybsd')
@@ -81,7 +82,7 @@ class Jail(BaseSystem):
             try:
                 master.add_jail(self)
             except AttributeError:
-                raise SystemError('`{}` is not a jail master'.format(master.name))
+                raise AttachNonMasterError(master, self)
 
     @property
     def is_attached(self):

@@ -3,7 +3,6 @@ from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import unittest
 from pybsd import BaseSystem, System, InterfaceError
-from .. import extract_message
 
 
 class BaseSystemTestCase(unittest.TestCase):

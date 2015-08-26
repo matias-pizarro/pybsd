@@ -121,8 +121,10 @@ class SubprocessError(CommandError):
     """
     msg = "`{command}` on `{environment}` returned: '{err}'"
 
-    def __init__(self, command, environment, err):
+    def __init__(self, command, environment, err, subcommand):
         super(SubprocessError, self).__init__(command, environment)
+        if subcommand:
+            command = "{command}[{subcommand}]"
         self.parameters = {'command': command, 'environment': environment, 'err': err}
 
 

@@ -3,7 +3,6 @@ from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 from pybsd import (BaseJailHandler, Jail, Master, AttachNonJailError, JailAlreadyAttachedError,
                    DuplicateJailNameError, DuplicateJailHostnameError, DuplicateJailUidError, InterfaceError)
-from .. import extract_message
 from ..test_executors import TestExecutor
 from .test_base import SystemTestCase
 
