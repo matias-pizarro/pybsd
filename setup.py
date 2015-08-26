@@ -60,6 +60,7 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: Implementation :: PyPy",
         "Programming Language :: Unix Shell",
         "Topic :: System :: Installation/Setup",
         "Topic :: System :: Monitoring",
