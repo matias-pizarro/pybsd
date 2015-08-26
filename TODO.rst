@@ -5,7 +5,6 @@ In Progress
 
 To do
 -----
-    * implement real path in docs
     * example for each class
     * Use custom exceptions instead of SystemError
     * jail type should be defined at jail attachment-time, by the master or its handler

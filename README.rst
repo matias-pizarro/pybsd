@@ -2,6 +2,15 @@
 PyBSD
 =====
 
+
+**a Python tool to provision, keep in sync and manage FreeBSD boxes and jails**
+
+Free software: BSD license
+
+    | PyPi: https://pypi.python.org/pypi/pybsd
+    | Github: https://github.com/rebost/pybsd
+    | Read the Docs: http://pybsd.readthedocs.org/
+
 .. list-table::
     :stub-columns: 1
 
@@ -29,11 +38,9 @@ PyBSD
     :alt: Coverage Status
     :target: https://coveralls.io/github/rebost/pybsd
 
-
 .. |codecov| image:: http://img.shields.io/codecov/c/github/rebost/pybsd/master.svg?style=flat&label=Codecov
     :alt: Coverage Status
     :target: https://codecov.io/github/rebost/pybsd
-
 
 .. |landscape| image:: https://landscape.io/github/rebost/pybsd/master/landscape.svg?style=flat
     :alt: Code Quality Status
@@ -50,10 +57,6 @@ PyBSD
 .. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/rebost/pybsd/master.svg?style=flat
     :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/rebost/pybsd/
-
-a Python tool to provision, keep in sync and manage FreeBSD boxes and jails
-
-* Free software: BSD license
 
 Provisioning, keeping in sync and maintaining even a medium-sized pool of `FreeBSD <https://www.freebsd.org/>`_ boxes and jails can quickly become a time-consuming and complex task. Tools like `Ansible <http://www.ansible.com/home>`_ , `Fabric <http://www.fabfile.org/>`_ and `ezjail <http://erdgeist.org/arts/software/ezjail/>`_ provide welcome help in one aspect or another and it makes sense to integrate them into a `Python <https://www.python.org/>`_-based interface that allows centralized, push-oriented and automated interaction.
 
