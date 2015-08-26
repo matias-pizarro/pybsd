@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import lazy
 import logging
+from ..exceptions import SubprocessError
 from . import BaseCommand
 
 __logger__ = logging.getLogger('pybsd')
@@ -36,7 +37,7 @@ class EzjailAdmin(BaseCommand):
         """
         rc, out, err = self.invoke('list')
         if rc:
-            raise SystemError(err.strip())
+            raise SubprocessError(self, self.env, err.strip(), 'list_headers')
         lines = out.splitlines()
         if len(lines) < 2:
             raise SystemError('ezjail-admin list output too short:\n%s' % out.strip())
@@ -57,7 +58,7 @@ class EzjailAdmin(BaseCommand):
     def list(self):
         rc, out, err = self.invoke('list')
         if rc:
-            raise SystemError(err.strip())
+            raise SubprocessError(self, self.env, err.strip(), 'list')
         lines = out.splitlines()
         if len(lines) < 2:
             raise SystemError('ezjail-admin list output too short:\n%s' % out.strip())
@@ -118,25 +119,25 @@ class EzjailAdmin(BaseCommand):
     #             kwargs['ip']])
     #         rc, out, err = self._ezjail_admin(*args)
     #         if rc:
-    #             raise SystemError(err.strip())
+    #             raise SubprocessError(self, self.env, err.strip(), 'create')
     #     elif subcommand == 'delete':
     #         rc, out, err = self._ezjail_admin(
     #             'delete',
     #             '-fw',
     #             kwargs['name'])
     #         if rc:
-    #             raise SystemError(err.strip())
+    #             raise SubprocessError(self, self.env, err.strip(), 'delete')
     #     elif subcommand == 'start':
     #         rc, out, err = self._ezjail_admin(
     #             'start',
     #             kwargs['name'])
     #         if rc:
-    #             raise SystemError(err.strip())
+    #             raise SubprocessError(self, self.env, err.strip(), 'start')
     #     elif subcommand == 'stop':
     #         rc, out, err = self._ezjail_admin(
     #             'stop',
     #             kwargs['name'])
     #         if rc:
-    #             raise SystemError(err.strip())
+    #             raise SubprocessError(self, self.env, err.strip(), 'stop')
     #     else:
     #         raise ValueError('Unknown subcommand `%s`' % subcommand)

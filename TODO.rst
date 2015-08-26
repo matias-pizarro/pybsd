@@ -5,8 +5,8 @@ In Progress
 
 To do
 -----
-    * example for each class
     * Use custom exceptions instead of SystemError
+    * example for each class
     * jail type should be defined at jail attachment-time, by the master or its handler
     * jail hostname should be defined by its handler, unless forced by jail itself
     * check for complexity once Executor.__call__ has been refactored

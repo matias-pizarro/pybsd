@@ -4,6 +4,7 @@ import logging
 import re
 import six
 import sortedcontainers
+from ..exceptions import InterfaceError
 from ..executors import Executor
 from ..network import Interface
 
@@ -142,7 +143,7 @@ class System(BaseSystem):
         _if = Interface(name=if_name, ips=if_ips)
         intersec = _if.ips.intersection(self.ips)
         if len(intersec):
-            raise SystemError('Already attributed IPs: [{}]'.format(', '.join(intersec)))
+            raise InterfaceError(self, _if, intersec)
         return _if
 
     @property

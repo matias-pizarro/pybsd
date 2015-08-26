@@ -55,3 +55,12 @@ class Interface(object):
     @property
     def alias_ifsv6(self):
         return self.ifsv6[1:]
+
+    def __repr__(self):
+        # Maps the interface's string representation to its name
+        #
+        # Returns
+        # -------
+        # : :py:class:`str`
+        #     the interface's name
+        return self.name

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 import unittest
-from pybsd import BaseSystem, System
+from pybsd import BaseSystem, System, InterfaceError
 from .. import extract_message
 
 
@@ -79,9 +79,10 @@ class SystemTestCase(BaseSystemTestCase):
     def test_duplicate_ext_if(self):
         params = self.params.copy()
         params['ext_if'] = ('eth0', ['192.168.0.0/24'])
-        with self.assertRaises(SystemError) as context_manager:
+        with self.assertRaises(InterfaceError) as context_manager:
             self.system_class(**params)
-        self.assertEqual(extract_message(context_manager), u'Already attributed IPs: [192.168.0.0]')
+        self.assertEqual(context_manager.exception.message,
+                         "Can't assign ip(s) `[192.168.0.0]` to `eth0` on `{}`, already in use.".format(params['hostname']))
 
     def test_int_if_name(self):
         self.assertEqual(self.system.int_if.name, 'eth0',
@@ -114,9 +115,10 @@ class SystemTestCase(BaseSystemTestCase):
     def test_duplicate_int_if(self):
         params = self.params.copy()
         params['int_if'] = ('eth0', ['148.241.178.106/24'])
-        with self.assertRaises(SystemError) as context_manager:
+        with self.assertRaises(InterfaceError) as context_manager:
             self.system_class(**params)
-        self.assertEqual(extract_message(context_manager), u'Already attributed IPs: [148.241.178.106]')
+        self.assertEqual(context_manager.exception.message,
+                         "Can't assign ip(s) `[148.241.178.106]` to `eth0` on `{}`, already in use.".format(params['hostname']))
 
     def test_no_lo_if_name(self):
         self.assertEqual(self.system.lo_if.name, 'lo0',
@@ -147,9 +149,10 @@ class SystemTestCase(BaseSystemTestCase):
     def test_duplicate_lo_if(self):
         params = self.params.copy()
         params['lo_if'] = ('lo0', ['148.241.178.106/24'])
-        with self.assertRaises(SystemError) as context_manager:
+        with self.assertRaises(InterfaceError) as context_manager:
             self.system_class(**params)
-        self.assertEqual(extract_message(context_manager), u'Already attributed IPs: [148.241.178.106]')
+        self.assertEqual(context_manager.exception.message,
+                         "Can't assign ip(s) `[148.241.178.106]` to `lo0` on `{}`, already in use.".format(params['hostname']))
 
     def test_lo_if_ifsv4(self):
         params = self.params.copy()

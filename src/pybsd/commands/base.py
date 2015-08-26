@@ -29,4 +29,9 @@ class BaseCommand(object):
 
     def __repr__(self):
         # Maps the command's string representation to its name
+        #
+        # Returns
+        # -------
+        # : :py:class:`str`
+        #     the command's name
         return self.name

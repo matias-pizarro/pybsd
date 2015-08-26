@@ -26,6 +26,106 @@ class PyBSDError(Exception):
         return self.msg.format(**self.parameters)
 
 
+class InterfaceError(PyBSDError):
+    """Base exception for errors involving a network interface.
+
+    Parameters
+    ----------
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    interface : :py:class:`~pybsd.network.Interface`
+        The interface
+    ips : :py:class:`set`
+        The ips
+    """
+    msg = "Can't assign ip(s) `[{ips}]` to `{interface}` on `{environment}`, already in use."
+
+    def __init__(self, environment, interface, ips):
+        super(InterfaceError, self).__init__()
+        ips_string = ', '.join(ips)
+        self.parameters = {'environment': environment, 'interface': interface, 'ips': ips_string}
+
+
+class CommandError(PyBSDError):
+    """Base exception for errors involving a command. It is never raised
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.Command`
+        The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    """
+    def __init__(self, command, environment):
+        super(CommandError, self).__init__()
+        self.parameters = {'command': command, 'environment': environment}
+
+
+class InvalidCommandNameError(CommandError):
+    """Error when a command is missing a `name` attribute
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.Command`
+        The command
+    """
+    msg = "Can't initialize command: `{command.__class__.__module__}` is missing a `name` property."
+
+
+class InvalidCommandExecutorError(CommandError):
+    """Error when a command is missing a `name` attribute
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.Command`
+        The command
+    """
+    msg = "Can't initialize command: `{command}` must have a callable `Executor` method."
+
+
+class CommandNotImplementedError(CommandError):
+    """Error when a command is missing a `name` attribute
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.Command`
+        The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    """
+    msg = "Can't execute command: `{command}` is not implemented on `{environment}`."
+
+
+class CommandConnectionError(CommandError):
+    """Error when a command is missing a `name` attribute
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.Command`
+        The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    """
+    msg = "Can't execute command: `{command}`- can't connect to `{environment}`."
+
+
+class SubprocessError(CommandError):
+    """Base exception for errors returned by a subprocessed
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.Command`
+        The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is executed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    """
+    msg = "`{command}` on `{environment}` returned: '{err}'"
+
+    def __init__(self, command, environment, err):
+        super(SubprocessError, self).__init__(command, environment)
+        self.parameters = {'command': command, 'environment': environment, 'err': err}
+
+
 class MasterJailError(PyBSDError):
     """Base exception for errors involving a master and a jail. It is never raised
 
@@ -39,6 +139,19 @@ class MasterJailError(PyBSDError):
     def __init__(self, master, jail):
         super(MasterJailError, self).__init__()
         self.parameters = {'master': master, 'jail': jail}
+
+
+class AttachNonMasterError(MasterJailError):
+    """Error when a master tries to import a non-jail
+
+    Parameters
+    ----------
+    master : :py:class:`~pybsd.systems.masters.Master`
+        The object that was supposed to host the jail
+    jail : `any`
+        The jail
+    """
+    msg = u"Can't attach `{jail}` to `{master}`. `{master}` is not a master."
 
 
 class AttachNonJailError(MasterJailError):
@@ -104,70 +217,3 @@ class DuplicateJailUidError(MasterJailError):
         The jail
     """
     msg = u"Can't attach `{jail}` to `{master}`. A jail with uid `{jail.uid}` is already attached to `{master}`."
-
-
-class CommandError(PyBSDError):
-    """Base exception for errors involving a command. It is never raised
-
-    Parameters
-    ----------
-    command : :py:class:`~pybsd.commands.Command`
-        The command
-    environment : :py:class:`~pybsd.systems.base.BaseSystem`
-        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
-    """
-    def __init__(self, command, environment):
-        super(CommandError, self).__init__()
-        self.parameters = {'command': command, 'environment': environment}
-
-
-class InvalidCommandNameError(CommandError):
-    """Error when a command is missing a `name` attribute
-
-    Parameters
-    ----------
-    command : :py:class:`~pybsd.commands.Command`
-        The command
-    environment : :py:class:`~pybsd.systems.base.BaseSystem`
-        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
-    """
-    msg = "Can't initialize command: `{command.__class__.__module__}` is missing a `name` property."
-
-
-class InvalidCommandExecutorError(CommandError):
-    """Error when a command is missing a `name` attribute
-
-    Parameters
-    ----------
-    command : :py:class:`~pybsd.commands.Command`
-        The command
-    environment : :py:class:`~pybsd.systems.base.BaseSystem`
-        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
-    """
-    msg = "Can't initialize command: `{command}` must have a callable `Executor` method."
-
-
-class CommandNotImplementedError(CommandError):
-    """Error when a command is missing a `name` attribute
-
-    Parameters
-    ----------
-    command : :py:class:`~pybsd.commands.Command`
-        The command
-    environment : :py:class:`~pybsd.systems.base.BaseSystem`
-        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
-    """
-    msg = "Can't execute command: `{command}` is not implemented on `{environment}`."
-
-
-class CommandConnectionError(CommandError):
-    """Error when a command is missing a `name` attribute
-
-    Parameters
-    ----------
-    command : :py:class:`~pybsd.commands.Command`
-        The command
-    environment : :py:class:`~pybsd.systems.base.BaseSystem`
-        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
-    """
-    msg = "Can't execute command: `{command}`- can't connect to `{environment}`."

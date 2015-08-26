@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import
 import ipaddress
 from pybsd import (BaseJailHandler, Jail, Master, AttachNonJailError, JailAlreadyAttachedError,
-                   DuplicateJailNameError, DuplicateJailHostnameError, DuplicateJailUidError)
+                   DuplicateJailNameError, DuplicateJailHostnameError, DuplicateJailUidError, InterfaceError)
 from .. import extract_message
 from ..test_executors import TestExecutor
 from .test_base import SystemTestCase
@@ -59,9 +59,10 @@ class MasterTestCase(SystemTestCase):
     def test_duplicate_j_if(self):
         params = self.params.copy()
         params['j_if'] = ('re0', ['148.241.178.106/24'])
-        with self.assertRaises(SystemError) as context_manager:
+        with self.assertRaises(InterfaceError) as context_manager:
             self.system_class(**params)
-        self.assertEqual(extract_message(context_manager), u'Already attributed IPs: [148.241.178.106]')
+        self.assertEqual(context_manager.exception.message,
+                         "Can't assign ip(s) `[148.241.178.106]` to `re0` on `{}`, already in use.".format(params['hostname']))
 
     def test_jlo_if_name(self):
         self.assertEqual(self.system.jlo_if.name, 'lo1',
@@ -96,9 +97,10 @@ class MasterTestCase(SystemTestCase):
     def test_duplicate_jlo_if(self):
         params = self.params.copy()
         params['jlo_if'] = ('lo1', ['127.0.0.1/24'])
-        with self.assertRaises(SystemError) as context_manager:
+        with self.assertRaises(InterfaceError) as context_manager:
             self.system_class(**params)
-        self.assertEqual(extract_message(context_manager), u'Already attributed IPs: [127.0.0.1]')
+        self.assertEqual(context_manager.exception.message,
+                         "Can't assign ip(s) `[127.0.0.1]` to `lo1` on `{}`, already in use.".format(params['hostname']))
 
     def test_jail_handler(self):
         self.assertIsInstance(self.system.jail_handler, BaseJailHandler,
