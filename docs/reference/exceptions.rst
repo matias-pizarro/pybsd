@@ -5,7 +5,46 @@ Exceptions
     :members:
     :show-inheritance:
 
+Network
+-------
+.. autoclass:: pybsd.exceptions.InterfaceError
+    :members:
+    :show-inheritance:
+
+Commands
+--------
+.. autoclass:: pybsd.exceptions.CommandError
+    :members:
+    :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.InvalidCommandNameError
+    :members:
+    :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.InvalidCommandExecutorError
+    :members:
+    :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.CommandNotImplementedError
+    :members:
+    :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.CommandConnectionError
+    :members:
+    :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.SubprocessError
+    :members:
+    :show-inheritance:
+
+Systems
+-------
+
 .. autoclass:: pybsd.exceptions.MasterJailError
+    :members:
+    :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.AttachNonMasterError
     :members:
     :show-inheritance:
 
@@ -26,13 +65,5 @@ Exceptions
     :show-inheritance:
 
 .. autoclass:: pybsd.exceptions.DuplicateJailUidError
-    :members:
-    :show-inheritance:
-
-.. autoclass:: pybsd.exceptions.CommandError
-    :members:
-    :show-inheritance:
-
-.. autoclass:: pybsd.exceptions.InvalidCommandNameError
     :members:
     :show-inheritance:

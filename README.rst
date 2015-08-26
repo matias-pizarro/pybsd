@@ -11,6 +11,8 @@ Free software: BSD license
     | Github: https://github.com/rebost/pybsd
     | Read the Docs: http://pybsd.readthedocs.org/
 
+Tested on `Python 2.7 <https://docs.python.org/2/>`_, `Python 3.4 <https://docs.python.org/3/>`_ and `PyPy <http://pypy.org/>`_
+
 .. list-table::
     :stub-columns: 1
 
@@ -118,6 +120,4 @@ Development
 
 To run the all tests run::
 
-    py.test --pdb
-    # or
-    tox
+    tox -e 2.7,3.4,pypy
