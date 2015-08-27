@@ -10,6 +10,7 @@ __logger__ = logging.getLogger('pybsd')
 class BaseCommand(object):
     """Provides a base interface to a shell command"""
     name = None
+    binary = None
 
     def __init__(self, env):
         if not getattr(self, 'name', None):

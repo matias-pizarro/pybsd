@@ -3,7 +3,7 @@ from __future__ import unicode_literals, print_function, absolute_import
 import lazy
 import logging
 from ..exceptions import SubprocessError
-from . import BaseCommand
+from .base import BaseCommand
 
 __logger__ = logging.getLogger('pybsd')
 
