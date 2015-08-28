@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function, absolute_import
+from __future__ import absolute_import, print_function, unicode_literals
+
 import unittest
-from pybsd import BaseCommand, InvalidCommandNameError, InvalidCommandExecutorError, CommandNotImplementedError, CommandConnectionError
+
+from pybsd import (BaseCommand, CommandConnectionError, CommandNotImplementedError, InvalidCommandExecutorError,
+                   InvalidCommandNameError)
+
 from ..systems.test_masters import TestMaster
 
 

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function, absolute_import
+from __future__ import absolute_import, print_function, unicode_literals
+
 import logging
+
 from ..exceptions import AttachNonMasterError
 from .base import BaseSystem
 

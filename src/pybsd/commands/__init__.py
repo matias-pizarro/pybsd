@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function, absolute_import
-import logging
-from .base import BaseCommand  # noqa
-# ezjail_admin relies on base
-from .ezjail_admin import EzjailAdmin  # noqa
+from __future__ import absolute_import, print_function, unicode_literals
 
+import logging
+
+from .base import BaseCommand  # noqa
+from .ezjail_admin import EzjailAdmin  # noqa
 
 __logger__ = logging.getLogger('pybsd')

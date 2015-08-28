@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function, absolute_import
-import ipaddress
+from __future__ import absolute_import, print_function, unicode_literals
+
 import unittest
+
+import ipaddress
 import unipath
-from pybsd import System, Jail, Master, AttachNonMasterError
+
+from pybsd import AttachNonMasterError, Jail, Master, System
+
 from ..utils import extract_message
 
 

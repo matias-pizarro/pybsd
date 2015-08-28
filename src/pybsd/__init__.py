@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function, absolute_import
+from __future__ import absolute_import, print_function, unicode_literals
+
 import logging
 
-from .exceptions import (PyBSDError, MasterJailError, AttachNonMasterError, AttachNonJailError, JailAlreadyAttachedError,  # noqa
-                         DuplicateJailNameError, DuplicateJailHostnameError, DuplicateJailUidError, InterfaceError,  # noqa
-                         SubprocessError, InvalidCommandNameError, InvalidCommandExecutorError, CommandNotImplementedError,  # noqa
-                         CommandConnectionError)  # noqa
-from .network import Interface  # noqa
-from .handlers import BaseJailHandler  # noqa
-# executors and commands rely on exceptions
-from .executors import BaseExecutor, Executor  # noqa
 from .commands import BaseCommand, EzjailAdmin  # noqa
-# systems relies on network, handlers, executors, commands and exceptions
-from .systems import BaseSystem, System, Jail, Master  # noqa
+from .exceptions import (AttachNonJailError, AttachNonMasterError, CommandConnectionError, CommandNotImplementedError,  # noqa
+                         DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError, InterfaceError,  # noqa
+                         InvalidCommandExecutorError, InvalidCommandNameError, JailAlreadyAttachedError, MasterJailError,  # noqa
+                         PyBSDError, SubprocessError)  # noqa
+from .executors import BaseExecutor, Executor  # noqa
+from .handlers import BaseJailHandler  # noqa
+from .network import Interface  # noqa
+from .systems import BaseSystem, Jail, Master, System  # noqa
 
 __version__ = "0.0.2"
 __logger__ = logging.getLogger('pybsd')

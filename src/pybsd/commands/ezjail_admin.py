@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function, absolute_import
-import lazy
+from __future__ import absolute_import, print_function, unicode_literals
+
 import logging
+
+import lazy
+
 from ..exceptions import SubprocessError
 from .base import BaseCommand
 

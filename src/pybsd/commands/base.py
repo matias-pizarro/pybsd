@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function, absolute_import
+from __future__ import absolute_import, print_function, unicode_literals
+
 import logging
 import socket
-from ..exceptions import InvalidCommandNameError, InvalidCommandExecutorError, CommandNotImplementedError, CommandConnectionError
+
+from ..exceptions import CommandConnectionError, CommandNotImplementedError, InvalidCommandExecutorError, InvalidCommandNameError
 
 __logger__ = logging.getLogger('pybsd')
 

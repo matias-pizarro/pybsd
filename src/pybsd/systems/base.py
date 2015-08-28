@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function, absolute_import
+from __future__ import absolute_import, print_function, unicode_literals
+
 import logging
 import re
+
 import six
 import sortedcontainers
+
 from ..exceptions import InterfaceError
 from ..executors import Executor
 from ..network import Interface

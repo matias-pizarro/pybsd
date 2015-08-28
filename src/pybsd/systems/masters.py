@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function, absolute_import
+from __future__ import absolute_import, print_function, unicode_literals
+
 import copy
-from lazy import lazy
 import logging
+
 import six
+from lazy import lazy
+
 from ..commands import EzjailAdmin
-from ..exceptions import (AttachNonJailError, JailAlreadyAttachedError, DuplicateJailNameError, DuplicateJailHostnameError,
-                          DuplicateJailUidError)
+from ..exceptions import (AttachNonJailError, DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError,
+                          JailAlreadyAttachedError)
 from ..handlers import BaseJailHandler
 from .base import System
 from .jails import Jail

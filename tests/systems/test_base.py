@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals, print_function, absolute_import
-import ipaddress
+from __future__ import absolute_import, print_function, unicode_literals
+
 import unittest
-from pybsd import BaseSystem, System, InterfaceError
+
+import ipaddress
+
+from pybsd import BaseSystem, InterfaceError, System
 
 
 class BaseSystemTestCase(unittest.TestCase):
