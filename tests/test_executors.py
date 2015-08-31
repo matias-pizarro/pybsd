@@ -51,12 +51,46 @@ class ExecutorTestCase(unittest.TestCase):
         executor = Executor()
         rc, out, err = executor('ls', 'tests/test_executors')
         self.assertEqual(rc, 0, 'incorrect executor return code')
-        self.assertEqual(out.decode('ascii'), 'readme\n', 'incorrect executor stdout')
-        self.assertEqual(err.decode('ascii'), '', 'incorrect executor stderr')
+        self.assertEqual(out, 'readme\n', 'incorrect executor stdout')
+        self.assertEqual(err, '', 'incorrect executor stderr')
 
-    def test_ls_fnf_output(self):
+    def test_ls_file_not_found_output(self):
         executor = Executor()
         rc, out, err = executor('ls', 'i/do/not/exist')
         self.assertEqual(rc, 2, 'incorrect executor return code')
-        self.assertEqual(out.decode('ascii'), '', 'incorrect executor stdout')
-        self.assertEqual(err.decode('ascii'), 'ls: cannot access i/do/not/exist: No such file or directory\n', 'incorrect executor stderr')
+        self.assertEqual(out, '', 'incorrect executor stdout')
+        self.assertEqual(err, 'ls: cannot access i/do/not/exist: No such file or directory\n', 'incorrect executor stderr')
+
+    def test_ls_with_err_output(self):
+        executor = Executor()
+        rc, out = executor('ls', 'tests/test_executors', err='')
+        self.assertEqual(rc, 0, 'incorrect executor return code')
+        self.assertEqual(out, 'readme\n', 'incorrect executor stdout')
+
+    def test_ls_with_out_and_err_output(self):
+        executor = Executor()
+        rc = executor('ls', 'tests/test_executors', out='readme\n', err='')
+        self.assertEqual(rc, 0, 'incorrect executor return code')
+
+    def test_ls_with_rc_out_and_err_output(self):
+        executor = Executor()
+        rc = executor('ls', 'tests/test_executors', rc=0, out='readme\n', err='')
+        self.assertEqual(rc, None, 'incorrect executor return code')
+
+    # def test_ls_output_w_rc(self):
+    #     executor = Executor()
+    #     rc, out, err  = executor('ls', 'tests/test_executors', rc=0)
+    #     self.assertEqual(rc, 0, 'incorrect executor return code')
+    #     self.assertEqual(out, 'readme\n', 'incorrect executor stdout')
+    #     self.assertEqual(err, '', 'incorrect executor stderr')
+
+    # def test_ls_output_w_rc(self):
+    #     executor = Executor()
+    #     with self.assertRaises(subprocess.CalledProcessError) as context_manager:
+    #         executor('ls', 'tests/test_executors', rc=0, out='readme\n', err='')
+    #     import pdb; pdb.set_trace()
+    #     self.assertEqual(extract_message(context_manager), message)
+    #         (0, 'ls tests/test_executors', b'')
+        # self.assertEqual(rc, 2, 'incorrect executor return code')
+        # self.assertEqual(out, '', 'incorrect executor stdout')
+        # self.assertEqual(err, 'ls: cannot access i/do/not/exist: No such file or directory\n', 'incorrect executor stderr')

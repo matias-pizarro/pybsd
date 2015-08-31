@@ -2,10 +2,16 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import logging
+import six
 import subprocess
 
 __logger__ = logging.getLogger('pybsd')
 
+
+def safe_unicode(string):
+    if isinstance(string, six.binary_type):
+        string = string.decode('utf8')
+    return string
 
 class Executor(object):
     """Adapted from https://github.com/ployground/ploy"""
@@ -32,6 +38,10 @@ class Executor(object):
         else:
             pass
             # not supported yet
+        _out = safe_unicode(_out)
+        _err = safe_unicode(_err)
+        out = safe_unicode(out)
+        err = safe_unicode(err)
         result = []
         if rc is None:
             result.append(_rc)
