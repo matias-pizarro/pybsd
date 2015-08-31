@@ -13,6 +13,7 @@ def safe_unicode(string):
         string = string.decode('utf8')
     return string
 
+
 class Executor(object):
     """Adapted from https://github.com/ployground/ploy"""
 
