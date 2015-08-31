@@ -119,3 +119,9 @@ class ExecutorTestCase(unittest.TestCase):
         with self.assertRaises(subprocess.CalledProcessError) as context_manager:
             executor('ls', 'i/do/not/exist', rc=[1, 3], out='readme\n', err='something')
         self.assertEqual(context_manager.exception.returncode, 2, 'incorrect executor return code')
+
+    def test_ls_correct_rc(self):
+        executor = Executor()
+        with self.assertRaises(subprocess.CalledProcessError) as context_manager:
+            executor('ls', 'i/do/not/exist', rc=[1, 2, 3], out='readme\n', err='something')
+        self.assertEqual(context_manager.exception.returncode, 2, 'incorrect executor return code')
