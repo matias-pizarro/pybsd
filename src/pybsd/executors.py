@@ -7,29 +7,31 @@ import subprocess
 __logger__ = logging.getLogger('pybsd')
 
 
-class BaseExecutor(object):
+class Executor(object):
     """Adapted from https://github.com/ployground/ploy"""
 
-    def __init__(self, prefix_args=(), splitlines=False):
+    def __init__(self, instance=None, prefix_args=(), splitlines=False):
+        self.instance = instance
         self.prefix_args = tuple(prefix_args)
         self.splitlines = splitlines
 
-
-class Executor(BaseExecutor):
-
-    def __call__(self, binary, subcommand, *cmd_args, **kwargs):
-        args = self.prefix_args + (binary, subcommand,) + cmd_args
+    def __call__(self, *cmd_args, **kwargs):
+        args = self.prefix_args + cmd_args
         rc = kwargs.pop('rc', None)
         out = kwargs.pop('out', None)
         err = kwargs.pop('err', None)
         stdin = kwargs.pop('stdin', None)
-        __logger__.debug('Executing locally:\n%s', args)
-        popen_kwargs = dict(stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if stdin is not None:
-            popen_kwargs['stdin'] = subprocess.PIPE
-        proc = subprocess.Popen(args, **popen_kwargs)
-        _out, _err = proc.communicate(input=stdin)
-        _rc = proc.returncode
+        if self.instance is None:
+            __logger__.debug('Executing locally:\n%s', args)
+            popen_kwargs = dict(stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if stdin is not None:
+                popen_kwargs['stdin'] = subprocess.PIPE
+            proc = subprocess.Popen(args, **popen_kwargs)
+            _out, _err = proc.communicate(input=stdin)
+            _rc = proc.returncode
+        else:
+            pass
+            # not supported yet
         result = []
         if rc is None:
             result.append(_rc)

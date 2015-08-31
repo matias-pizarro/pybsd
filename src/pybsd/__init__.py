@@ -8,7 +8,7 @@ from .exceptions import (AttachNonJailError, AttachNonMasterError, CommandConnec
                          DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError, InterfaceError,  # noqa
                          InvalidCommandExecutorError, InvalidCommandNameError, InvalidOutputError, JailAlreadyAttachedError,  # noqa
                          MasterJailError, PyBSDError, SubprocessError, WhitespaceError)  # noqa
-from .executors import BaseExecutor, Executor  # noqa
+from .executors import Executor  # noqa
 from .handlers import BaseJailHandler  # noqa
 from .network import Interface  # noqa
 from .systems import BaseSystem, Jail, Master, System  # noqa

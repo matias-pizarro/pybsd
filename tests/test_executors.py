@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
 
-from pybsd import BaseExecutor, Master
+from pybsd import Executor, Master
 
 
-class TestExecutor(BaseExecutor):
+class TestExecutor(Executor):
     ezjail_admin_list_output = (0,
                     """STA JID  IP              Hostname                       Root Directory\n"""
                     """--- ---- --------------- ------------------------------ ------------------------\n"""
