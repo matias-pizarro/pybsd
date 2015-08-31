@@ -54,6 +54,13 @@ class ExecutorTestCase(unittest.TestCase):
         self.assertEqual(out, 'readme\n', 'incorrect executor stdout')
         self.assertEqual(err, '', 'incorrect executor stderr')
 
+    def test_ls_output_splitlines(self):
+        executor = Executor(splitlines=True)
+        rc, out, err = executor('ls', 'tests/test_executors')
+        self.assertEqual(rc, 0, 'incorrect executor return code')
+        self.assertEqual(out, ['readme'], 'incorrect executor stdout')
+        self.assertEqual(err, [], 'incorrect executor stderr')
+
     def test_ls_file_not_found_output(self):
         executor = Executor()
         rc, out, err = executor('ls', 'i/do/not/exist')
@@ -81,3 +88,34 @@ class ExecutorTestCase(unittest.TestCase):
         executor = Executor()
         with self.assertRaises(subprocess.CalledProcessError) as context_manager:
             executor('ls', 'tests/test_executors', rc=2, out='readme\n', err='')
+        self.assertEqual(context_manager.exception.returncode, 0, 'incorrect executor return code')
+
+    def test_ls_calledprocesserror_2(self):
+        executor = Executor()
+        with self.assertRaises(subprocess.CalledProcessError) as context_manager:
+            executor('ls', 'tests/test_executors', rc=0, out='readme\n', err='something')
+        self.assertEqual(context_manager.exception.returncode, 0, 'incorrect executor return code')
+
+    def test_ls_calledprocesserror_3(self):
+        executor = Executor()
+        with self.assertRaises(subprocess.CalledProcessError) as context_manager:
+            executor('ls', 'i/do/not/exist', rc=2, out='', err='something')
+        self.assertEqual(context_manager.exception.returncode, 2, 'incorrect executor return code')
+
+    def test_ls_calledprocesserror_4(self):
+        executor = Executor()
+        with self.assertRaises(subprocess.CalledProcessError) as context_manager:
+            executor('ls', 'tests/test_executors', rc=0, out='', err='something')
+        self.assertEqual(context_manager.exception.returncode, 0, 'incorrect executor return code')
+
+    def test_ls_calledprocesserror_5(self):
+        executor = Executor()
+        with self.assertRaises(subprocess.CalledProcessError) as context_manager:
+            executor('ls', 'i/do/not/exist', rc=2, out='readme\n', err='something')
+        self.assertEqual(context_manager.exception.returncode, 2, 'incorrect executor return code')
+
+    def test_ls_calledprocesserror_6(self):
+        executor = Executor()
+        with self.assertRaises(subprocess.CalledProcessError) as context_manager:
+            executor('ls', 'i/do/not/exist', rc=[1, 3], out='readme\n', err='something')
+        self.assertEqual(context_manager.exception.returncode, 2, 'incorrect executor return code')
