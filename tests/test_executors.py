@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
 
+import subprocess
+import unittest
+
 from pybsd import Executor, Master
 
+from .utils import extract_message
 
 class TestExecutor(Executor):
     ezjail_admin_list_output = (0,
@@ -39,3 +43,20 @@ class TestExecutorShortOutput(TestExecutor):
     ezjail_admin_list_output = (0,
                     """STA JID  IP              Hostname                       Root Directory""",
                     '')
+
+
+class ExecutorTestCase(unittest.TestCase):
+
+    def test_ls_output(self):
+        executor = Executor()
+        rc, out, err = executor('ls', 'tests/test_executors')
+        self.assertEqual(rc, 0, 'incorrect executor return code')
+        self.assertEqual(out.decode('ascii'), 'readme\n', 'incorrect executor stdout')
+        self.assertEqual(err.decode('ascii'), '', 'incorrect executor stderr')
+
+    def test_ls_fnf_output(self):
+        executor = Executor()
+        rc, out, err = executor('ls', 'i/do/not/exist')
+        self.assertEqual(rc, 2, 'incorrect executor return code')
+        self.assertEqual(out.decode('ascii'), '', 'incorrect executor stdout')
+        self.assertEqual(err.decode('ascii'), 'ls: cannot access i/do/not/exist: No such file or directory\n', 'incorrect executor stderr')

@@ -59,4 +59,5 @@ class UnknownHeadersTestCase(BaseCommandTestCase):
         with self.assertRaises(InvalidOutputError) as context_manager:
             self.system.ezjail_admin.list()
         self.assertEqual(context_manager.exception.message,
-                         "`ezjail-admin` on `system.foo.bar` returned: 'output has unknown headers\n['STA', 'JOID', 'IP', 'Hostname', 'Root Directory']'")
+                         "`ezjail-admin` on `system.foo.bar` returned: 'output has unknown headers\n"
+                         "['STA', 'JOID', 'IP', 'Hostname', 'Root Directory']'")
