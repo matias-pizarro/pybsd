@@ -2,7 +2,6 @@ In Progress
 -----------
     * Add docstrings
     * document tests and release
-    * Use custom exceptions instead of SystemError
     * tidy up CI configurations
 
 To do
@@ -36,6 +35,7 @@ To do
 
 Done
 ----
+    * Use custom exceptions instead of SystemError
     * Make Sphinx pick up generated docs
     * Give Master a jif
     * reimplement and rename systems.Master.clone clone_jail

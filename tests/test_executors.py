@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
 
-from pybsd import BaseExecutor
+from pybsd import BaseExecutor, Master
 
 
 class TestExecutor(BaseExecutor):
@@ -22,3 +22,20 @@ class TestExecutor(BaseExecutor):
                 return (0,
                         'The output of command `{}` in jail `{}`'.format(cmd_args[1], cmd_args[2]),
                         '')
+
+
+class TestExecutorUnknownHeaders(TestExecutor):
+    ezjail_admin_list_output = (0,
+                    """STA JOID  IP              Hostname                       Root Directory\n"""
+                    """--- ---- --------------- ------------------------------ ------------------------\n"""
+                    """ZR  1    10.0.1.41/24    system             /usr/jails/system\n"""
+                    """    1    re0|2a01:4f8:210:41e6::1:41:1/100\n"""
+                    """    1    lo1|127.0.1.41/24\n"""
+                    """    1    lo1|::1:41/100\n""",
+                    '')
+
+
+class TestExecutorShortOutput(TestExecutor):
+    ezjail_admin_list_output = (0,
+                    """STA JID  IP              Hostname                       Root Directory""",
+                    '')

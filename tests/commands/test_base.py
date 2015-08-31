@@ -4,9 +4,9 @@ from __future__ import absolute_import, print_function, unicode_literals
 import unittest
 
 from pybsd import (BaseCommand, CommandConnectionError, CommandNotImplementedError, InvalidCommandExecutorError,
-                   InvalidCommandNameError)
+                   InvalidCommandNameError, Master)
 
-from ..systems.test_masters import TestMaster
+from ..test_executors import TestExecutor
 
 
 class NoNameCommand(BaseCommand):
@@ -18,7 +18,7 @@ class NoBinaryCommand(BaseCommand):
 
 
 class BaseCommandTestCase(unittest.TestCase):
-
+    executor_class = TestExecutor
     params = {
         'name': 'system',
         'hostname': 'system.foo.bar',
@@ -27,6 +27,10 @@ class BaseCommandTestCase(unittest.TestCase):
     }
 
     def setUp(self):
+
+        class TestMaster(Master):
+            ExecutorClass = self.executor_class
+
         self.system = TestMaster(**self.params)
 
     def test_no_name_command(self):
@@ -57,7 +61,7 @@ class BaseCommandTestCase(unittest.TestCase):
 
     @unittest.skip('Cannot be tested until BaseCommand is actually able to connect remotely')
     def test_socket_error(self):
-        with self.assertRaises(BaseCommand) as context_manager:
+        with self.assertRaises(CommandConnectionError) as context_manager:
             pass
         self.assertEqual(context_manager.exception.message,
                          "Can't execute command: `some_command` - can't connect to `system.foo.bar`.")

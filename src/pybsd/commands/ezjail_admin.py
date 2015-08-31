@@ -5,7 +5,7 @@ import logging
 
 import lazy
 
-from ..exceptions import SubprocessError
+from ..exceptions import InvalidOutputError, SubprocessError, WhitespaceError
 from .base import BaseCommand
 
 __logger__ = logging.getLogger('pybsd')
@@ -20,8 +20,7 @@ class EzjailAdmin(BaseCommand):
     def binary(self):
         return self.env.ezjail_admin_binary
 
-    @classmethod
-    def check_kwargs(cls, subcommand, **kwargs):
+    def check_kwargs(self, subcommand, **kwargs):
         # make sure there is no whitespace in the arguments
         for key, value in kwargs.items():
             if value is None:
@@ -29,7 +28,7 @@ class EzjailAdmin(BaseCommand):
             if subcommand == 'console' and key == 'cmd':
                 continue
             if len(value.split()) != 1:
-                raise SystemError('The value `{}` of kwarg `{}` contains whitespace'.format(value, key))
+                raise WhitespaceError(self, self.env, key, value, subcommand)
 
     @lazy.lazy
     def list_headers(self):
@@ -43,7 +42,7 @@ class EzjailAdmin(BaseCommand):
             raise SubprocessError(self, self.env, err.strip(), 'list_headers')
         lines = out.splitlines()
         if len(lines) < 2:
-            raise SystemError('ezjail-admin list output too short:\n%s' % out.strip())
+            raise InvalidOutputError(self, self.env, u'output too short', 'list')
         headers = []
         current = ''
         for pos, char in enumerate(lines[1]):
@@ -55,17 +54,15 @@ class EzjailAdmin(BaseCommand):
             else:
                 current = current + lines[0][pos]
         if headers != ['STA', 'JID', 'IP', 'Hostname', 'Root Directory']:
-            raise SystemError('ezjail-admin list output has unknown headers:\n%s' % headers)
+            raise InvalidOutputError(self, self.env, u"output has unknown headers\n['{}']".format(u"', '".join(headers)), 'list')
         return ('status', 'jid', 'ip', 'name', 'root')
 
     def list(self):
+        headers = self.list_headers
         rc, out, err = self.invoke('list')
         if rc:
             raise SubprocessError(self, self.env, err.strip(), 'list')
         lines = out.splitlines()
-        if len(lines) < 2:
-            raise SystemError('ezjail-admin list output too short:\n%s' % out.strip())
-        headers = self.list_headers
         jails = {}
         current_jail = None
         for line in lines[2:]:

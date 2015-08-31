@@ -13,7 +13,7 @@ Network
 
 Commands
 --------
-.. autoclass:: pybsd.exceptions.CommandError
+.. autoclass:: pybsd.exceptions.BaseCommandError
     :members:
     :show-inheritance:
 
@@ -30,6 +30,18 @@ Commands
     :show-inheritance:
 
 .. autoclass:: pybsd.exceptions.CommandConnectionError
+    :members:
+    :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.CommandError
+    :members:
+    :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.WhitespaceError
+    :members:
+    :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.InvalidOutputError
     :members:
     :show-inheritance:
 

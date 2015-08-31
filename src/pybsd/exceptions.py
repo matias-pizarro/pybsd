@@ -47,7 +47,7 @@ class InterfaceError(PyBSDError):
         self.parameters = {'environment': environment, 'interface': interface, 'ips': ips_string}
 
 
-class CommandError(PyBSDError):
+class BaseCommandError(PyBSDError):
     """Base exception for errors involving a command. It is never raised
 
     Parameters
@@ -58,38 +58,40 @@ class CommandError(PyBSDError):
         The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
     """
     def __init__(self, command, environment):
-        super(CommandError, self).__init__()
+        super(BaseCommandError, self).__init__()
         self.parameters = {'command': command, 'environment': environment}
 
 
-class InvalidCommandNameError(CommandError):
+class InvalidCommandNameError(BaseCommandError):
     """Error when a command is missing a `name` attribute
 
     Parameters
     ----------
-    command : :py:class:`~pybsd.commands.Command`
+    command : :py:class:`~pybsd.commands.BaseCommand`
         The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
     """
     msg = "Can't initialize command: `{command.__class__.__module__}` is missing a `name` property."
 
 
-class InvalidCommandExecutorError(CommandError):
+class InvalidCommandExecutorError(BaseCommandError):
     """Error when a command is missing a `name` attribute
 
     Parameters
     ----------
-    command : :py:class:`~pybsd.commands.Command`
+    command : :py:class:`~pybsd.commands.BaseCommand`
         The command
     """
     msg = "Can't initialize command: `{command}` must have a callable `Executor` method."
 
 
-class CommandNotImplementedError(CommandError):
+class CommandNotImplementedError(BaseCommandError):
     """Error when a command is missing a `name` attribute
 
     Parameters
     ----------
-    command : :py:class:`~pybsd.commands.Command`
+    command : :py:class:`~pybsd.commands.BaseCommand`
         The command
     environment : :py:class:`~pybsd.systems.base.BaseSystem`
         The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
@@ -97,12 +99,12 @@ class CommandNotImplementedError(CommandError):
     msg = "Can't execute command: `{command}` is not implemented on `{environment}`."
 
 
-class CommandConnectionError(CommandError):
+class CommandConnectionError(BaseCommandError):
     """Error when a command is missing a `name` attribute
 
     Parameters
     ----------
-    command : :py:class:`~pybsd.commands.Command`
+    command : :py:class:`~pybsd.commands.BaseCommand`
         The command
     environment : :py:class:`~pybsd.systems.base.BaseSystem`
         The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
@@ -110,22 +112,83 @@ class CommandConnectionError(CommandError):
     msg = "Can't execute command: `{command}`- can't connect to `{environment}`."
 
 
-class SubprocessError(CommandError):
-    """Base exception for errors returned by a subprocessed
+class CommandError(BaseCommandError):
+    """Base exception for errors involving a validated command. It is never raised
 
     Parameters
     ----------
-    command : :py:class:`~pybsd.commands.Command`
+    command : :py:class:`~pybsd.commands.BaseCommand`
+        The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    subcommand : :py:class:`str`
+        The subcommand, if any
+    """
+    def __init__(self, command, environment, subcommand=None):
+        super(CommandError, self).__init__(command, environment)
+        if subcommand:
+            command = "{command}[{subcommand}]"
+        self.parameters = {'command': command, 'environment': environment}
+
+
+class WhitespaceError(CommandError):
+    """Error when a command arguments include corrupting whitespace
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.BaseCommand`
         The command
     environment : :py:class:`~pybsd.systems.base.BaseSystem`
         The environment on which the command is executed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    subcommand : :py:class:`str`
+        The subcommand, if any
+    """
+    msg = "`{command}` on `{environment}`: value `{value}` of argument `{argument}` contains whitespace"
+
+    def __init__(self, command, environment, argument, value, subcommand=None):
+        super(WhitespaceError, self).__init__(command, environment, subcommand)
+        self.parameters = {'command': command, 'environment': environment, 'argument': argument, 'value': value}
+
+
+class InvalidOutputError(CommandError):
+    """Base exception for commands returning invalid output
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.BaseCommand`
+        The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is executed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    subcommand : :py:class:`str`
+        The subcommand, if any
+    err : :py:class:`str`
+        The error returned by the subprocess
     """
     msg = "`{command}` on `{environment}` returned: '{err}'"
 
-    def __init__(self, command, environment, err, subcommand):
-        super(SubprocessError, self).__init__(command, environment)
-        if subcommand:
-            command = "{command}[{subcommand}]"
+    def __init__(self, command, environment, err, subcommand=None):
+        super(InvalidOutputError, self).__init__(command, environment, subcommand)
+        self.parameters = {'command': command, 'environment': environment, 'err': err}
+
+
+class SubprocessError(CommandError):
+    """Base exception for errors returned by a subprocess
+
+    Parameters
+    ----------
+    command : :py:class:`~pybsd.commands.BaseCommand`
+        The command
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment on which the command is executed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    subcommand : :py:class:`str`
+        The subcommand, if any
+    err : :py:class:`str`
+        The error returned by the subprocess
+    """
+    msg = "`{command}` on `{environment}` returned: '{err}'"
+
+    def __init__(self, command, environment, err, subcommand=None):
+        super(SubprocessError, self).__init__(command, environment, subcommand)
         self.parameters = {'command': command, 'environment': environment, 'err': err}
 
 

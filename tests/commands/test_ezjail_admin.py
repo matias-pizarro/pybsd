@@ -3,8 +3,10 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import unittest
 
-from ..utils import extract_message
+from pybsd import InvalidOutputError, WhitespaceError
+
 from .test_base import BaseCommandTestCase
+from ..test_executors import TestExecutorShortOutput, TestExecutorUnknownHeaders
 
 
 class EzjailAdminTestCase(BaseCommandTestCase):
@@ -34,7 +36,27 @@ class EzjailAdminTestCase(BaseCommandTestCase):
     def test_catch_whitespace(self):
         cmd = 'service'
         jail_name = 'test jail'
-        with self.assertRaises(SystemError) as context_manager:
+        with self.assertRaises(WhitespaceError) as context_manager:
             self.system.ezjail_admin.console(cmd, jail_name)
-        message = u'The value `{}` of kwarg `{}` contains whitespace'.format(jail_name, 'jail_name')
-        self.assertEqual(extract_message(context_manager), message)
+        self.assertEqual(context_manager.exception.message,
+                         "`ezjail-admin` on `system.foo.bar`: value `test jail` of argument `jail_name` contains whitespace")
+
+
+class ShortOutputTestCase(BaseCommandTestCase):
+    executor_class = TestExecutorShortOutput
+
+    def test_list_too_short(self):
+        with self.assertRaises(InvalidOutputError) as context_manager:
+            self.system.ezjail_admin.list()
+        self.assertEqual(context_manager.exception.message,
+                         "`ezjail-admin` on `system.foo.bar` returned: 'output too short'")
+
+
+class UnknownHeadersTestCase(BaseCommandTestCase):
+    executor_class = TestExecutorUnknownHeaders
+
+    def test_unknown_headers(self):
+        with self.assertRaises(InvalidOutputError) as context_manager:
+            self.system.ezjail_admin.list()
+        self.assertEqual(context_manager.exception.message,
+                         "`ezjail-admin` on `system.foo.bar` returned: 'output has unknown headers\n['STA', 'JOID', 'IP', 'Hostname', 'Root Directory']'")

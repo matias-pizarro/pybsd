@@ -6,13 +6,7 @@ import ipaddress
 from pybsd import (AttachNonJailError, BaseJailHandler, DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError,
                    InterfaceError, Jail, JailAlreadyAttachedError, Master)
 
-from ..test_executors import TestExecutor
 from .test_base import SystemTestCase
-
-
-class TestMaster(Master):
-    """Describes a master that works on purely programmatic jails"""
-    ExecutorClass = TestExecutor
 
 
 class MasterTestCase(SystemTestCase):
