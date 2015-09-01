@@ -31,10 +31,7 @@ class Interface(object):
 
     @property
     def ips(self):
-        ips = set()
-        ips.update([x.ip.compressed for x in self.ifsv4])
-        ips.update([x.ip.compressed for x in self.ifsv6])
-        return ips
+        return {x.ip.compressed for x in self.ifsv4 + self.ifsv6}
 
     def __eq__(self, other):
         name_eq = self.name == other.name
