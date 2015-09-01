@@ -97,7 +97,7 @@ class JailTestCase(unittest.TestCase):
         self.assertEqual(self.system.hostname, 'system.foo.bar',
                         'incorrect hostname')
 
-    def test_base_hostname_set(self):
+    def test_base_hostname_unset(self):
         params = self.params.copy()
         del params['hostname']
         system = Jail(**params)
