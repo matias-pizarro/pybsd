@@ -84,7 +84,7 @@ class SystemTestCase(BaseSystemTestCase):
         with self.assertRaises(InterfaceError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message,
-                         "Can't assign ip(s) `[192.168.0.0]` to `eth0` on `{}`, already in use.".format(params['hostname']))
+                         "Can't assign ip(s) `[192.168.0.0]` to `eth0` on `{}`, already in use.".format(params['name']))
 
     def test_int_if_name(self):
         self.assertEqual(self.system.int_if.name, 'eth0',
@@ -120,7 +120,7 @@ class SystemTestCase(BaseSystemTestCase):
         with self.assertRaises(InterfaceError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message,
-                         "Can't assign ip(s) `[148.241.178.106]` to `eth0` on `{}`, already in use.".format(params['hostname']))
+                         "Can't assign ip(s) `[148.241.178.106]` to `eth0` on `{}`, already in use.".format(params['name']))
 
     def test_no_lo_if_name(self):
         self.assertEqual(self.system.lo_if.name, 'lo0',
@@ -154,7 +154,7 @@ class SystemTestCase(BaseSystemTestCase):
         with self.assertRaises(InterfaceError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message,
-                         "Can't assign ip(s) `[148.241.178.106]` to `lo0` on `{}`, already in use.".format(params['hostname']))
+                         "Can't assign ip(s) `[148.241.178.106]` to `lo0` on `{}`, already in use.".format(params['name']))
 
     def test_lo_if_ifsv4(self):
         params = self.params.copy()

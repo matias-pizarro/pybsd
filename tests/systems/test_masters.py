@@ -58,7 +58,7 @@ class MasterTestCase(SystemTestCase):
         with self.assertRaises(InterfaceError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message,
-                         "Can't assign ip(s) `[148.241.178.106]` to `re0` on `{}`, already in use.".format(params['hostname']))
+                         "Can't assign ip(s) `[148.241.178.106]` to `re0` on `{}`, already in use.".format(params['name']))
 
     def test_jlo_if_name(self):
         self.assertEqual(self.system.jlo_if.name, 'lo1',
@@ -96,7 +96,7 @@ class MasterTestCase(SystemTestCase):
         with self.assertRaises(InterfaceError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message,
-                         "Can't assign ip(s) `[127.0.0.1]` to `lo1` on `{}`, already in use.".format(params['hostname']))
+                         "Can't assign ip(s) `[127.0.0.1]` to `lo1` on `{}`, already in use.".format(params['name']))
 
     def test_jail_handler(self):
         self.assertIsInstance(self.system.jail_handler, BaseJailHandler,
@@ -112,7 +112,8 @@ class MasterTestCase(SystemTestCase):
         with self.assertRaises(AttachNonJailError) as context_manager:
             self.system.add_jail(master2)
         self.assertEqual(context_manager.exception.message,
-                         "Can't attach `master2.foo.bar` to `master.foo.bar`. `master2.foo.bar` is not a jail.")
+                         "Can't attach `{jail.name}` to `{master.name}`. `{jail.name}`"
+                         " is not a jail.".format(master=self.system, jail=master2))
 
     def test_jail_already_attached(self):
         master2 = Master(name='master2',
@@ -126,29 +127,32 @@ class MasterTestCase(SystemTestCase):
         with self.assertRaises(JailAlreadyAttachedError) as context_manager:
             self.system.add_jail(jail)
         self.assertEqual(context_manager.exception.message,
-                         "Can't attach `jail.foo.bar` to `master.foo.bar`. `jail.foo.bar` is already attached to `master2.foo.bar`.")
+                         "Can't attach `{jail.name}` to `{master1.name}`. `{jail.name}` is already attached"
+                         " to `{master2.name}`.".format(master1=self.system, master2=master2, jail=jail))
 
     def test_duplicate_name(self):
-        assert Jail(name='jail1', uid=11, master=self.system)
+        jail = Jail(name='jail1', uid=11, master=self.system)
         with self.assertRaises(DuplicateJailNameError) as context_manager:
             jail2 = Jail(name='jail1', uid=12, master=self.system)
         self.assertEqual(context_manager.exception.message,
-                         "Can't attach `jail1` to `master.foo.bar`. A jail called `jail1` is already attached to `master.foo.bar`.")
+                         "Can't attach `{jail.name}` to `{master.name}`. A jail called `{jail.name}` is already attached"
+                         " to `{master.name}`.".format(master=self.system, jail=jail))
 
     def test_duplicate_hostname(self):
-        assert Jail(name='jail1', hostname='something.foo.bar', uid=11, master=self.system)
+        jail = Jail(name='jail1', hostname='something.foo.bar', uid=11, master=self.system)
         with self.assertRaises(DuplicateJailHostnameError) as context_manager:
             jail2 = Jail(name='jail2', hostname='something.foo.bar', uid=12, master=self.system)
         self.assertEqual(context_manager.exception.message,
-                         "Can't attach `something.foo.bar` to `master.foo.bar`. A jail with hostname `something.foo.bar`"
-                         " is already attached to `master.foo.bar`.")
+                         "Can't attach `jail2` to `{master.name}`. A jail with hostname `something.foo.bar`"
+                         " is already attached to `{master.name}`.".format(master=self.system, jail=jail))
 
     def test_duplicate_uid(self):
-        assert Jail(name='jail1', uid=11, master=self.system)
+        jail = Jail(name='jail1', uid=11, master=self.system)
         with self.assertRaises(DuplicateJailUidError) as context_manager:
             jail2 = Jail(name='jail2', uid=11, master=self.system)
         self.assertEqual(context_manager.exception.message,
-                         "Can't attach `jail2` to `master.foo.bar`. A jail with uid `11` is already attached to `master.foo.bar`.")
+                         "Can't attach `jail2` to `{master.name}`. A jail with uid `{jail.uid}` is"
+                         " already attached to `{master.name}`.".format(master=self.system, jail=jail))
 
     def test_jails_dict(self):
         jail1 = Jail(name='jail1', uid=11, master=self.system)

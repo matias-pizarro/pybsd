@@ -57,7 +57,7 @@ class BaseCommandTestCase(unittest.TestCase):
         with self.assertRaises(CommandNotImplementedError) as context_manager:
             _bc.invoke()
         self.assertEqual(context_manager.exception.message,
-                         "Can't execute command: `some_command` is not implemented on `system.foo.bar`.")
+                         "Can't execute command: `some_command` is not implemented on `{system.name}`.".format(system=self.system))
 
     @unittest.skip('Cannot be tested until BaseCommand is actually able to connect remotely')
     def test_socket_error(self):

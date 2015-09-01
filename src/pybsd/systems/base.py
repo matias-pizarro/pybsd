@@ -59,7 +59,7 @@ class BaseSystem(object):
         # -------
         # : :py:class:`str`
         #     the system's hostname
-        return self.hostname
+        return self.name
 
 
 class System(BaseSystem):

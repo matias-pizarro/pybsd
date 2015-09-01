@@ -39,7 +39,7 @@ class EzjailAdminTestCase(BaseCommandTestCase):
         with self.assertRaises(WhitespaceError) as context_manager:
             self.system.ezjail_admin.console(cmd, jail_name)
         self.assertEqual(context_manager.exception.message,
-                         "`ezjail-admin` on `system.foo.bar`: value `test jail` of argument `jail_name` contains whitespace")
+                         "`ezjail-admin` on `{system.name}`: value `test jail` of argument `jail_name` contains whitespace".format(system=self.system))
 
 
 class ShortOutputTestCase(BaseCommandTestCase):
@@ -49,7 +49,7 @@ class ShortOutputTestCase(BaseCommandTestCase):
         with self.assertRaises(InvalidOutputError) as context_manager:
             self.system.ezjail_admin.list()
         self.assertEqual(context_manager.exception.message,
-                         "`ezjail-admin` on `system.foo.bar` returned: 'output too short'")
+                         "`ezjail-admin` on `{system.name}` returned: 'output too short'".format(system=self.system))
 
 
 class UnknownHeadersTestCase(BaseCommandTestCase):
@@ -59,5 +59,5 @@ class UnknownHeadersTestCase(BaseCommandTestCase):
         with self.assertRaises(InvalidOutputError) as context_manager:
             self.system.ezjail_admin.list()
         self.assertEqual(context_manager.exception.message,
-                         "`ezjail-admin` on `system.foo.bar` returned: 'output has unknown headers\n"
-                         "['STA', 'JOID', 'IP', 'Hostname', 'Root Directory']'")
+                         "`ezjail-admin` on `{system.name}` returned: 'output has unknown headers\n"
+                         "['STA', 'JOID', 'IP', 'Hostname', 'Root Directory']'".format(system=self.system))

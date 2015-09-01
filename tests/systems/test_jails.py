@@ -41,11 +41,12 @@ class JailTestCase(unittest.TestCase):
         del master_params['j_if']
         del master_params['jlo_if']
         params = self.params.copy()
-        params['master'] = System(**master_params)
+        params['master'] = system = System(**master_params)
         with self.assertRaises(AttachNonMasterError) as context_manager:
             self.system = Jail(**params)
         self.assertEqual(context_manager.exception.message,
-                         "Can't attach `system.foo.bar` to `master.foo.bar`. `master.foo.bar` is not a master.")
+                         "Can't attach `{params[name]}` to `{system.name}`."
+                         " `{system.name}` is not a master.".format(system=system, params=params))
 
     def test_clone_jail(self):
         jail2 = self.system.master.clone_jail(self.system, 'new_jail', 13)
