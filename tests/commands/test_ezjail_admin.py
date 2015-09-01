@@ -39,7 +39,8 @@ class EzjailAdminTestCase(BaseCommandTestCase):
         with self.assertRaises(WhitespaceError) as context_manager:
             self.system.ezjail_admin.console(cmd, jail_name)
         self.assertEqual(context_manager.exception.message,
-                         "`ezjail-admin` on `{system.name}`: value `test jail` of argument `jail_name` contains whitespace".format(system=self.system))
+                         "`ezjail-admin` on `{system.name}`: value `test jail` of argument `jail_name`"
+                         " contains whitespace".format(system=self.system))
 
 
 class ShortOutputTestCase(BaseCommandTestCase):

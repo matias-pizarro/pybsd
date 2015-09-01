@@ -185,7 +185,7 @@ class MasterTestCase(SystemTestCase):
         jail1 = Jail(name='jail1', uid=11, master=self.system)
         jail2 = Jail(name='jail2', uid=12, master=self.system)
         jail3 = Jail(name='jail3', uid=13, master=self.system)
-        self.assertSetEqual(self.system.uids, {11, 12, 13},
+        self.assertSetEqual(self.system.uids, {jail1.uid, jail2.uid, jail3.uid},
                         'incorrect uids')
 
     def test_ezjail_admin_binary(self):
