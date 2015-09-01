@@ -87,8 +87,13 @@ class Jail(BaseSystem):
                 raise AttachNonMasterError(master, self)
 
     @property
+    def base_hostname(self):
+        """:py:class:`str` or :py:class:`NoneType`: The system's hostname."""
+        return self._hostname
+
+    @property
     def hostname(self):
-        """:py:class:`str` or :py:class:`NoneType`: The system's hostname. If not attached, it. is set to None"""
+        """:py:class:`str` or :py:class:`NoneType`: The jail's hostname. If not attached, it. is equal to None"""
         if self.is_attached:
             return self._hostname or self.handler.get_jail_hostname(self)
         else:

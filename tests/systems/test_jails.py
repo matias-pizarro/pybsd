@@ -97,6 +97,17 @@ class JailTestCase(unittest.TestCase):
         self.assertEqual(self.system.hostname, 'system.foo.bar',
                         'incorrect hostname')
 
+    def test_base_hostname_set(self):
+        params = self.params.copy()
+        del params['hostname']
+        system = Jail(**params)
+        self.assertEqual(system.base_hostname, None,
+                        'incorrect base_hostname')
+
+    def test_base_hostname_set(self):
+        self.assertEqual(self.system.base_hostname, 'system.foo.bar',
+                        'incorrect base_hostname')
+
     def test_is_attached_false(self):
         params = self.params.copy()
         system = Jail(**params)

@@ -116,7 +116,6 @@ class Master(System):
         : :py:exc:`~pybsd.exceptions.DuplicateJailUidError`
             if another :py:class:`~pybsd.systems.jails.Jail` with the same uid is already attached to `master`
         """
-        hostname = jail._hostname or self.jail_handler.get_jail_hostname(jail)
         if not isinstance(jail, Jail):
             raise AttachNonJailError(self, jail)
         elif jail.is_attached:
@@ -125,7 +124,8 @@ class Master(System):
             raise JailAlreadyAttachedError(self, jail)
         elif jail.name in self.jails:
             raise DuplicateJailNameError(self, jail)
-        elif hostname in self.hostnames:
+        hostname = jail.base_hostname or self.jail_handler.get_jail_hostname(jail)
+        if hostname in self.hostnames:
             raise DuplicateJailHostnameError(self, jail, hostname)
         elif jail.uid in self.uids:
             raise DuplicateJailUidError(self, jail)
