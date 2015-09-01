@@ -92,6 +92,11 @@ class Jail(BaseSystem):
         return self.master is not None
 
     @property
+    def handler(self):
+        """:py:class:`bool`: Whether the jail is currently attached to a master."""
+        return self.master.jail_handler if self.is_attached else None
+
+    @property
     def status(self):
         """:py:class:`str`: Returns this jail's status as per ezjail_admin
 
@@ -127,7 +132,7 @@ class Jail(BaseSystem):
         This is an integer value which is given by its jail_handler according to its class.
         """
         if self.is_attached:
-            return self.master.jail_handler.jail_class_ids[self.jail_class]
+            return self.handler.jail_class_ids[self.jail_class]
         else:
             return None
 
@@ -139,7 +144,7 @@ class Jail(BaseSystem):
         jail_path: foo.path = unipath.Path('/usr/jails/foo').
         """
         if self.is_attached:
-            return self.master.jail_handler.get_jail_path(self)
+            return self.handler.get_jail_path(self)
         else:
             return None
 
@@ -149,7 +154,7 @@ class Jail(BaseSystem):
         master's jail handler, so that the same base jail cloned on different host systems can return different values.
         """
         if self.is_attached:
-            return self.master.jail_handler.get_jail_ext_if(self)
+            return self.handler.get_jail_ext_if(self)
         else:
             return None
 
@@ -159,6 +164,6 @@ class Jail(BaseSystem):
         master's jail handler, so that the same base jail cloned on different host systems can return different values.
         """
         if self.is_attached:
-            return self.master.jail_handler.get_jail_lo_if(self)
+            return self.handler.get_jail_lo_if(self)
         else:
             return None
