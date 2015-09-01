@@ -48,6 +48,9 @@ class BaseJailHandler(object):
             _if.ifsv6.add(_ifv6)
         return _if
 
+    def get_jail_hostname(self, jail):
+        return '{}.{}'.format(jail.name, self.master.hostname)
+
     def get_jail_path(self, jail):
         return self.jail_root.child(jail.name)
 

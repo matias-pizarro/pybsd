@@ -33,7 +33,7 @@ class JailTestCase(unittest.TestCase):
 
     def setUp(self):
         params = self.params.copy()
-        params['master'] = Master(**self.master_params)
+        self.master = params['master'] = Master(**self.master_params)
         self.system = Jail(**params)
 
     def test_bad_master(self):
@@ -66,16 +66,56 @@ class JailTestCase(unittest.TestCase):
         self.assertEqual(self.system.name, 'system',
                         'incorrect name')
 
-    def test_no_hostname(self):
+    def test_no_hostname_wo_master(self):
         params = self.params.copy()
         del params['hostname']
         system = Jail(**params)
-        self.assertEqual(system.hostname, 'system',
+        self.assertEqual(system.hostname, None,
                         'incorrect hostname')
 
-    def test_hostname(self):
+    def test_no_hostname_w_master(self):
+        params = self.params.copy()
+        del params['hostname']
+        params['master'] = Master(**self.master_params)
+        system = Jail(**params)
+        self.assertEqual(system.hostname, '{}.{}'.format(params['name'], self.master_params['hostname']),
+                        'incorrect hostname')
+
+    def test_hostname_wo_master(self):
+        params = self.params.copy()
+        system = Jail(**params)
+        system.name = 'system2'
+        system.uid = '11'
+        system.hostname = 'system2.foo.bar'
+        self.assertEqual(system.hostname, None,
+                        'incorrect hostname')
+        self.master.add_jail(system)
+        self.assertEqual(system.hostname, 'system2.foo.bar',
+                        'incorrect hostname')
+
+    def test_hostname_w_master(self):
         self.assertEqual(self.system.hostname, 'system.foo.bar',
                         'incorrect hostname')
+
+    def test_is_attached_false(self):
+        params = self.params.copy()
+        system = Jail(**params)
+        self.assertFalse(system.is_attached,
+                        'incorrect is_attached value')
+
+    def test_is_attached_true(self):
+        self.assertTrue(self.system.is_attached,
+                        'incorrect is_attached value')
+
+    def test_handler_wo_master(self):
+        params = self.params.copy()
+        system = Jail(**params)
+        self.assertEqual(system.handler, None,
+                        'incorrect handler')
+
+    def test_handler_w_master(self):
+        self.assertEqual(self.system.handler, self.master.jail_handler,
+                        'incorrect handler')
 
     def test_no_uid(self):
         params = self.params.copy()

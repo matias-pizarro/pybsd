@@ -114,10 +114,13 @@ class Master(System):
             raise JailAlreadyAttachedError(self, jail)
         elif jail.name in self.jails:
             raise DuplicateJailNameError(self, jail)
-        elif jail.hostname in self.hostnames:
-            raise DuplicateJailHostnameError(self, jail)
         elif jail.uid in self.uids:
             raise DuplicateJailUidError(self, jail)
+        potential_hostnames = set([jail._hostname, self.jail_handler.get_jail_hostname(jail)])
+        intersec = potential_hostnames.intersection(set(self.hostnames))
+        if intersec:
+            duplicate = jail._hostname or self.jail_handler.get_jail_hostname(jail)
+            raise DuplicateJailHostnameError(self, jail, duplicate)
         else:
             self.jails[jail.name] = jail
             jail.master = self
