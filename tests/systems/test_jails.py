@@ -52,8 +52,8 @@ class JailTestCase(unittest.TestCase):
         jail2 = self.system.master.clone_jail(self.system, 'new_jail', 13)
         self.assertNotEqual(self.system, jail2)
 
-    def test_idempotent_add_jail(self):
-        jail2 = self.system.master.add_jail(self.system)
+    def test_idempotent_attach_jail(self):
+        jail2 = self.system.master.attach_jail(self.system)
         self.assertEqual(self.system, jail2)
 
     def test_no_name(self):
@@ -89,7 +89,7 @@ class JailTestCase(unittest.TestCase):
         system.hostname = 'system2.foo.bar'
         self.assertEqual(system.hostname, None,
                         'incorrect hostname')
-        self.master.add_jail(system)
+        self.master.attach_jail(system)
         self.assertEqual(system.hostname, 'system2.foo.bar',
                         'incorrect hostname')
 

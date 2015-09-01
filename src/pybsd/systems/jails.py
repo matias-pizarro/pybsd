@@ -82,7 +82,7 @@ class Jail(BaseSystem):
         self.master = None
         if master:
             try:
-                master.add_jail(self)
+                master.attach_jail(self)
             except AttributeError:
                 raise AttachNonMasterError(master, self)
 

@@ -110,7 +110,7 @@ class MasterTestCase(SystemTestCase):
                          ext_if=('re0', ['148.241.178.106/24'])
                          )
         with self.assertRaises(AttachNonJailError) as context_manager:
-            self.system.add_jail(master2)
+            self.system.attach_jail(master2)
         self.assertEqual(context_manager.exception.message,
                          "Can't attach `{jail.name}` to `{master.name}`. `{jail.name}`"
                          " is not a jail.".format(master=self.system, jail=master2))
@@ -125,7 +125,7 @@ class MasterTestCase(SystemTestCase):
                     hostname='jail.foo.bar',
                     master=master2)
         with self.assertRaises(JailAlreadyAttachedError) as context_manager:
-            self.system.add_jail(jail)
+            self.system.attach_jail(jail)
         self.assertEqual(context_manager.exception.message,
                          "Can't attach `{jail.name}` to `{master1.name}`. `{jail.name}` is already attached"
                          " to `{master2.name}`.".format(master1=self.system, master2=master2, jail=jail))

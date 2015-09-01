@@ -88,7 +88,7 @@ class Master(System):
     def uids(self):
         return {j.uid for k, j in six.iteritems(self.jails)}
 
-    def add_jail(self, jail):
+    def attach_jail(self, jail):
         """Adds a jail to the system's jails list.
 
         Re-attaching an already-owned jail is transparent.
@@ -141,7 +141,7 @@ class Master(System):
         _jail.hostname = hostname
         _jail.uid = uid
         _jail.master = None
-        return self.add_jail(_jail)
+        return self.attach_jail(_jail)
 
     @lazy
     def ezjail_admin_binary(self):
