@@ -78,6 +78,16 @@ class Master(System):
         """Resets the system's jlo_if to its default value (its own lo_if)"""
         self._jlo_if = None
 
+    @property
+    def hostnames(self):
+        hostnames = {j.hostname for k, j in six.iteritems(self.jails)}
+        hostnames.add(self.hostname)
+        return hostnames
+
+    @property
+    def uids(self):
+        return {j.uid for k, j in six.iteritems(self.jails)}
+
     def add_jail(self, jail):
         """Adds a jail to the system's jails list.
 
@@ -106,6 +116,7 @@ class Master(System):
         : :py:exc:`~pybsd.exceptions.DuplicateJailUidError`
             if another :py:class:`~pybsd.systems.jails.Jail` with the same uid is already attached to `master`
         """
+        hostname = jail._hostname or self.jail_handler.get_jail_hostname(jail)
         if not isinstance(jail, Jail):
             raise AttachNonJailError(self, jail)
         elif jail.is_attached:
@@ -114,26 +125,15 @@ class Master(System):
             raise JailAlreadyAttachedError(self, jail)
         elif jail.name in self.jails:
             raise DuplicateJailNameError(self, jail)
+        elif hostname in self.hostnames:
+            raise DuplicateJailHostnameError(self, jail, hostname)
         elif jail.uid in self.uids:
             raise DuplicateJailUidError(self, jail)
-        potential_hostnames = set([jail._hostname, self.jail_handler.get_jail_hostname(jail)])
-        intersec = potential_hostnames.intersection(set(self.hostnames))
-        if intersec:
-            duplicate = jail._hostname or self.jail_handler.get_jail_hostname(jail)
-            raise DuplicateJailHostnameError(self, jail, duplicate)
         else:
             self.jails[jail.name] = jail
             jail.master = self
             jail.jail_type = jail.jail_type or self.default_jail_type
             return jail
-
-    @property
-    def hostnames(self):
-        return [j.hostname for k, j in six.iteritems(self.jails)]
-
-    @property
-    def uids(self):
-        return [j.uid for k, j in six.iteritems(self.jails)]
 
     def clone_jail(self, jail, name, uid, hostname=None):
         _jail = copy.deepcopy(jail)

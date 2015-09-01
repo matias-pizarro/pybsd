@@ -49,7 +49,6 @@ class BaseSystemTestCase(unittest.TestCase):
                         'incorrect hostname')
 
 
-
 class SystemTestCase(BaseSystemTestCase):
 
     system_class = System

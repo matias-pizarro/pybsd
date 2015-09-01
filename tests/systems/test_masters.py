@@ -163,6 +163,31 @@ class MasterTestCase(SystemTestCase):
                                                  'jail3': jail3},
                         'incorrect jails dictionnary')
 
+    def test_hostnames_wo_jails(self):
+        self.assertSetEqual(self.system.hostnames, {self.system.hostname},
+                        'incorrect hostnames')
+
+    def test_hostnames_w_jails(self):
+        jail1 = Jail(name='jail1', uid=11, master=self.system)
+        jail2 = Jail(name='jail2', uid=12, master=self.system)
+        jail3 = Jail(name='jail3', uid=13, master=self.system)
+        self.assertSetEqual(self.system.hostnames, {self.system.hostname,
+                                                    jail1.hostname,
+                                                    jail2.hostname,
+                                                    jail3.hostname},
+                        'incorrect hostnames')
+
+    def test_uids_wo_jails(self):
+        self.assertSetEqual(self.system.uids, set(),
+                        'incorrect uids')
+
+    def test_uids_w_jails(self):
+        jail1 = Jail(name='jail1', uid=11, master=self.system)
+        jail2 = Jail(name='jail2', uid=12, master=self.system)
+        jail3 = Jail(name='jail3', uid=13, master=self.system)
+        self.assertSetEqual(self.system.uids, {11, 12, 13},
+                        'incorrect uids')
+
     def test_ezjail_admin_binary(self):
         self.assertEqual(self.system.ezjail_admin_binary, u'/usr/local/bin/ezjail-admin',
                         'incorrect j_if name')
