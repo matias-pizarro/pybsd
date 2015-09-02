@@ -128,7 +128,7 @@ class Master(System):
         if hostname in self.hostnames:
             raise DuplicateJailHostnameError(self, jail, hostname)
         elif jail.uid in self.uids:
-            raise DuplicateJailUidError(self, jail)
+            raise DuplicateJailUidError(self, jail, jail.uid)
         else:
             self.jails[jail.name] = jail
             jail.master = self

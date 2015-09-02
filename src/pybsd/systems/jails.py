@@ -3,7 +3,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import logging
 
-from ..exceptions import AttachNonMasterError
+from ..exceptions import AttachNonMasterError, DuplicateJailHostnameError, DuplicateJailUidError
 from .base import BaseSystem
 
 __logger__ = logging.getLogger('pybsd')
@@ -69,7 +69,7 @@ class Jail(BaseSystem):
     def __init__(self, name, uid, hostname=None, master=None, auto_start=False, jail_class='service'):
         super(Jail, self).__init__(name=name, hostname=hostname)
         #: :py:class:`int`: The jail's id, unique over a user's or an organization's domain
-        self.uid = uid
+        self._uid = uid
         #: Optional[:py:class:`bool`]: Whether the jail should be started automatically at host system's boot time.
         self.auto_start = auto_start
         #: Optional[:py:class:`str`]: Allows differentiating jails by class.
@@ -108,7 +108,22 @@ class Jail(BaseSystem):
 
     @hostname.setter
     def hostname(self, hostname):
+        if self.is_attached:
+            if hostname in self.master.hostnames:
+                raise DuplicateJailHostnameError(self.master, self, hostname)
         self._hostname = hostname
+
+    @property
+    def uid(self):
+        """:py:class:`str` or :py:class:`NoneType`: The jail's uid."""
+        return self._uid
+
+    @uid.setter
+    def uid(self, uid):
+        if self.is_attached:
+            if uid in self.master.uids:
+                raise DuplicateJailUidError(self.master, self, uid)
+        self._uid = uid
 
     @property
     def jail_type(self):
