@@ -14,7 +14,7 @@ To do
     * Use Makefile ¿?
     * Give jails a uuid
     * Work commits into Changelog
-    * Restore tox PyPy, 3.3 and 2.6 envs
+    * Add PyPy3 env
     * Make sure different interfaces can have the same name ('re0' for instance)
       But with a different range of ips, of course
     * implement systems.Master.remove_jail
@@ -34,6 +34,7 @@ To do
 
 Done
 ----
+    * Restore tox PyPy, 3.3 and 2.6 envs
     * jail hostname should be defined by its handler, unless forced by jail itself
     * Use custom exceptions instead of SystemError
     * Make Sphinx pick up generated docs

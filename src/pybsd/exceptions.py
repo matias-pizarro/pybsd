@@ -271,7 +271,7 @@ class DuplicateJailHostnameError(MasterJailError):
     duplicate : :py:class:`str`
         The duplicated hostname
     """
-    msg = u"Can't attach `{jail}` to `{master}`. A jail with hostname `{duplicate}` is already attached to `{master}`."
+    msg = u"Can't attach `{jail}` to `{master}`. Hostname `{duplicate}` is already associated with `{master}`."
 
     def __init__(self, master, jail, duplicate):
         super(DuplicateJailHostnameError, self).__init__(master=master, jail=jail)

@@ -143,8 +143,16 @@ class MasterTestCase(SystemTestCase):
         with self.assertRaises(DuplicateJailHostnameError) as context_manager:
             jail2 = Jail(name='jail2', hostname='something.foo.bar', uid=12, master=self.system)
         self.assertEqual(context_manager.exception.message,
-                         "Can't attach `jail2` to `{master.name}`. A jail with hostname `something.foo.bar`"
-                         " is already attached to `{master.name}`.".format(master=self.system, jail=jail))
+                         "Can't attach `jail2` to `{master.name}`. Hostname `something.foo.bar`"
+                         " is already associated with `{master.name}`.".format(master=self.system, jail=jail))
+
+    def test_duplicate_own_hostname(self):
+        jail = Jail(name='jail1', hostname='master.foo.bar', uid=11)
+        with self.assertRaises(DuplicateJailHostnameError) as context_manager:
+            self.system.attach_jail(jail)
+        self.assertEqual(context_manager.exception.message,
+                         "Can't attach `{jail.name}` to `{master.name}`. Hostname `master.foo.bar`"
+                         " is already associated with `{master.name}`.".format(master=self.system, jail=jail))
 
     def test_duplicate_uid(self):
         jail = Jail(name='jail1', uid=11, master=self.system)
