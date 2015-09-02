@@ -12,10 +12,6 @@ Handlers
 
 Executors
 =========
-.. autoclass:: pybsd.executors.BaseExecutor
-    :members:
-    :show-inheritance:
-
 .. autoclass:: pybsd.executors.Executor
     :members:
     :show-inheritance:

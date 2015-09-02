@@ -74,7 +74,6 @@ class InterfaceTestCase(unittest.TestCase):
                         'incorrect ips')
         # The following is an edge case, wholly unlikely, but better provide a consistent interface
         ips.add('0:aa::1')
-        import pdb; pdb.set_trace()
         self.assertSetEqual(ips, set(['0:a0::1', '0:aa::1', '126.6.6.8', 'aa:aa::1', '6.6.6.6']),
                         'incorrect ips')
 
