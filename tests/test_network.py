@@ -68,8 +68,14 @@ class InterfaceTestCase(unittest.TestCase):
                         'incorrect ifsv6')
 
     def test_ips(self):
-        interface = Interface(name='re0', ips=['aa:aa:0:0::1/110', '126.6.6.8/24', 'a0:a0:0:0::1/110', '6.6.6.6/24'])
-        self.assertSetEqual(interface.ips, set(['126.6.6.8', 'aa:aa::1', '6.6.6.6', 'a0:a0::1']),
+        interface = Interface(name='re0', ips=['6.6.6.6/24', 'aa:aa:0:0::1/110', '126.6.6.8/24', '0:a0:0:0::1/110'])
+        ips = interface.ips
+        self.assertSetEqual(ips, set(['0:a0::1', '126.6.6.8', 'aa:aa::1', '6.6.6.6']),
+                        'incorrect ips')
+        # The following is an edge case, wholly unlikely, but better provide a consistent interface
+        ips.add('0:aa::1')
+        import pdb; pdb.set_trace()
+        self.assertSetEqual(ips, set(['0:a0::1', '0:aa::1', '126.6.6.8', 'aa:aa::1', '6.6.6.6']),
                         'incorrect ips')
 
     def test_duplicate_ips(self):

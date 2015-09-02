@@ -31,7 +31,8 @@ class Interface(object):
 
     @property
     def ips(self):
-        return {x.ip.compressed for x in self.ifsv4 + self.ifsv6}
+        ips = sortedcontainers.SortedSet()
+        return ips.update({x.ip.compressed for x in self.ifsv4 + self.ifsv6})
 
     def __eq__(self, other):
         name_eq = self.name == other.name
