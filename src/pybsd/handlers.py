@@ -48,6 +48,11 @@ class BaseJailHandler(object):
             _if.ifsv6.add(_ifv6)
         return _if
 
+    def get_jail_type(self, jail):
+        # provides a mechanism to decide jail type
+        assert jail
+        return self.master.default_jail_type
+
     def get_jail_hostname(self, jail):
         return '{}.{}'.format(jail.name, self.master.hostname)
 

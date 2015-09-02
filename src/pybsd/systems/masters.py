@@ -132,7 +132,6 @@ class Master(System):
         else:
             self.jails[jail.name] = jail
             jail.master = self
-            jail.jail_type = jail.jail_type or self.default_jail_type
             return jail
 
     def clone_jail(self, jail, name, uid, hostname=None):

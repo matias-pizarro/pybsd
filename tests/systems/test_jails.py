@@ -26,7 +26,6 @@ class JailTestCase(unittest.TestCase):
         'uid': 12,
         'hostname': 'system.foo.bar',
         'master': None,
-        'jail_type': 'Z',
         'auto_start': True,
         'jail_class': 'web',
     }
@@ -138,22 +137,26 @@ class JailTestCase(unittest.TestCase):
         self.assertEqual(self.system.uid, 12,
                         'incorrect uid')
 
-    def test_unattached_no_jail_type(self):
+    def test_unattached_jail_type(self):
         params = self.params.copy()
-        del params['jail_type']
         del params['master']
         self.system = Jail(**params)
         self.assertEqual(self.system.jail_type, None,
                         'incorrect jail_type')
 
-    def test_attached_no_jail_type(self):
-        master_params = self.master_params.copy()
-        master_params['name'] = 'foo'
-        params = self.params.copy()
-        del params['jail_type']
-        params['master'] = Master(**master_params)
-        self.system = Jail(**params)
+    def test_attached_jail_type(self):
         self.assertEqual(self.system.jail_type, 'Z',
+                        'incorrect jail_type')
+
+    def test_attached_jail_type_override(self):
+
+        class DummyMaster(Master):
+            default_jail_type = 'D'
+
+        params = self.params.copy()
+        self.master = params['master'] = DummyMaster(**self.master_params)
+        self.system = Jail(**params)
+        self.assertEqual(self.system.jail_type, 'D',
                         'incorrect jail_type')
 
     def test_jail_type(self):

@@ -29,7 +29,6 @@ class Jail(BaseSystem):
     ...               uid=12,
     ...               hostname='system.foo.bar',
     ...               master=None,
-    ...               jail_type='Z',
     ...               auto_start=True,
     ...               jail_class='web')
 
@@ -67,12 +66,10 @@ class Jail(BaseSystem):
         if `master` is specified and is not an instance of :py:class:`~pybsd.systems.masters.Master`
     """
 
-    def __init__(self, name, uid, hostname=None, master=None, jail_type=None, auto_start=False, jail_class='service'):
+    def __init__(self, name, uid, hostname=None, master=None, auto_start=False, jail_class='service'):
         super(Jail, self).__init__(name=name, hostname=hostname)
         #: :py:class:`int`: The jail's id, unique over a user's or an organization's domain
         self.uid = uid
-        #: Optional[:py:class:`str`]: The jail's type, according to its storage solution.
-        self.jail_type = jail_type
         #: Optional[:py:class:`bool`]: Whether the jail should be started automatically at host system's boot time.
         self.auto_start = auto_start
         #: Optional[:py:class:`str`]: Allows differentiating jails by class.
@@ -85,6 +82,16 @@ class Jail(BaseSystem):
                 master.attach_jail(self)
             except AttributeError:
                 raise AttachNonMasterError(master, self)
+
+    @property
+    def is_attached(self):
+        """:py:class:`bool`: Whether the jail is currently attached to a master."""
+        return self.master is not None
+
+    @property
+    def handler(self):
+        """:py:class:`bool`: Whether the jail is currently attached to a master."""
+        return self.master.jail_handler if self.is_attached else None
 
     @property
     def base_hostname(self):
@@ -104,14 +111,10 @@ class Jail(BaseSystem):
         self._hostname = hostname
 
     @property
-    def is_attached(self):
-        """:py:class:`bool`: Whether the jail is currently attached to a master."""
-        return self.master is not None
-
-    @property
-    def handler(self):
-        """:py:class:`bool`: Whether the jail is currently attached to a master."""
-        return self.master.jail_handler if self.is_attached else None
+    def jail_type(self):
+        """:py:class:`str` or :py:class:`NoneType`: The jail's type, according to its storage solution."""
+        """ If not attached, it. is equal to None"""
+        return self.handler.get_jail_type(self) if self.is_attached else None
 
     @property
     def status(self):

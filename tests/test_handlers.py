@@ -24,7 +24,6 @@ class BaseJailHandlerTestCase(unittest.TestCase):
                      uid=12,
                      hostname='jail1.foo.bar',
                      master=self.master,
-                     jail_type='Z',
                      auto_start=True,
                      jail_class='web',)
 
