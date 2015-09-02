@@ -4,9 +4,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import subprocess
 import unittest
 
-from pybsd import Executor, Master
-
-from .utils import extract_message
+from pybsd import Executor
 
 class TestExecutor(Executor):
     ezjail_admin_list_output = (0,
