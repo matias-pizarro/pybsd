@@ -112,8 +112,8 @@ class Jail(BaseSystem):
 
     @property
     def jail_type(self):
-        """:py:class:`str` or :py:class:`NoneType`: The jail's type, according to its storage solution."""
-        """ If not attached, it. is equal to None"""
+        """:py:class:`str` or :py:class:`NoneType`: The jail's type, according to its storage solution.
+        If not attached, it. is equal to None"""
         return self.handler.get_jail_type(self) if self.is_attached else None
 
     @property

@@ -148,13 +148,13 @@ class JailTestCase(unittest.TestCase):
         self.assertEqual(self.system.jail_type, 'Z',
                         'incorrect jail_type')
 
-    def test_attached_jail_type_override(self):
+    def test_attached_alt_jail_type(self):
 
         class DummyMaster(Master):
             default_jail_type = 'D'
 
         params = self.params.copy()
-        self.master = params['master'] = DummyMaster(**self.master_params)
+        params['master'] = DummyMaster(**self.master_params)
         self.system = Jail(**params)
         self.assertEqual(self.system.jail_type, 'D',
                         'incorrect jail_type')
