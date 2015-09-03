@@ -139,7 +139,7 @@ class MasterTestCase(SystemTestCase):
                          " with `{master.name}`.".format(master=self.system, jail=jail))
 
     def test_duplicate_name(self):
-        jail = Jail(name='jail1', uid=11, master=self.system)
+        assert Jail(name='jail1', uid=11, master=self.system)
         jail2 = Jail(name='jail3', uid=12, master=self.system)
         with self.assertRaises(DuplicateJailNameError) as context_manager:
             jail2.name = 'jail1'

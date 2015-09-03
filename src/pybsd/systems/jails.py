@@ -41,8 +41,10 @@ class Jail(BaseSystem):
         The jail's id, unique over a user's or an organization's domain.
     hostname : Optional[:py:class:`str`]
         The jail's hostname. It not specified the jail's name is used instead.
+        #: Optional[:py:class:`~pybsd.systems.masters.Master`]: 
     master : Optional[:py:class:`~pybsd.systems.masters.Master`]
-        The jail's master i.e. host system. Default is None
+        The jail's master i.e. host system. By default a :py:class:`~pybsd.systems.jails.Jail` is created detached and the value
+        of master is None.
     jail_type : Optional[:py:class:`str`]
         The jail's type, according to its storage solution.
         If the jail is not attached it is set to None by default.
@@ -62,20 +64,23 @@ class Jail(BaseSystem):
 
     Raises
     ------
-    SystemError
+    AttachNonMasterError
         if `master` is specified and is not an instance of :py:class:`~pybsd.systems.masters.Master`
+    DuplicateJailNameError
+        if `master` is specified and the jail's name is already attached to it
+    DuplicateJailHostnameError
+        if `master` is specified and the jail's hostname is already attached to it
+    DuplicateJailUidError
+        if `master` is specified and the jail's uid is already attached to it
+    JailAlreadyAttachedError
+        if `master` is specified and the jail is already attached to another master
     """
 
     def __init__(self, name, uid, hostname=None, master=None, auto_start=False, jail_class='service'):
         super(Jail, self).__init__(name=name, hostname=hostname)
-        #: :py:class:`int`: The jail's id, unique over a user's or an organization's domain
         self._uid = uid
-        #: Optional[:py:class:`bool`]: Whether the jail should be started automatically at host system's boot time.
         self.auto_start = auto_start
-        #: Optional[:py:class:`str`]: Allows differentiating jails by class.
         self.jail_class = jail_class
-        #: Optional[:py:class:`~pybsd.systems.masters.Master`]: The jail's master i.e. host system. By default a
-        #: :py:class:`~pybsd.systems.jails.Jail` is created detached.
         self.master = None
         if master:
             try:
@@ -127,7 +132,7 @@ class Jail(BaseSystem):
 
     @property
     def uid(self):
-        """:py:class:`str` or :py:class:`NoneType`: The jail's uid."""
+        """:py:class:`int`: The jail's uid."""
         return self._uid
 
     @uid.setter

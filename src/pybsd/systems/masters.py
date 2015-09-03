@@ -18,7 +18,7 @@ __logger__ = logging.getLogger('pybsd')
 
 
 class Master(System):
-    """Describes a system that will host jails
+    """Describes a system that can host jails
 
     Parameters
     ----------
@@ -69,8 +69,8 @@ class Master(System):
 
     @property
     def jlo_if(self):
-        """:py:class:`~pybsd.network.Interface`: the interface the system provides to hosted jails as their loopback interface. By default,
-        this will be the system's own lo_if.
+        """:py:class:`~pybsd.network.Interface`: the interface the system provides to hosted jails as their loopback interface.
+        By default, this will be the system's own lo_if.
         """
         return self._jlo_if or self.lo_if
 
@@ -80,18 +80,27 @@ class Master(System):
 
     @property
     def names(self):
+        """:py:class:`set`: returns a set containing the names attached to a :py:class:`~pybsd.systems.masters.Master`.
+        These will be its own name and that of jails attached to it.
+        """
         names = {j.name for k, j in six.iteritems(self.jails)}
         names.add(self.name)
         return names
 
     @property
     def hostnames(self):
+        """:py:class:`set`: returns a set containing the hostnames attached to a :py:class:`~pybsd.systems.masters.Master`.
+        These will be its own hostname and that of jails attached to it.
+        """
         hostnames = {j.hostname for k, j in six.iteritems(self.jails)}
         hostnames.add(self.hostname)
         return hostnames
 
     @property
     def uids(self):
+        """:py:class:`set`: returns a set containing the uids attached to a :py:class:`~pybsd.systems.masters.Master`.
+        These will be the uids of jails attached to it.
+        """
         return {j.uid for k, j in six.iteritems(self.jails)}
 
     def attach_jail(self, jail):
@@ -141,6 +150,33 @@ class Master(System):
             return jail
 
     def clone_jail(self, jail, name, uid, hostname=None):
+        """Creates and returns the clone of a :py:class:`~pybsd.systems.jails.Jail`, using provided parameters
+        as the new value of unique properties.
+
+        Parameters
+        ----------
+        jail : :py:class:`~pybsd.systems.jails.Jail`
+            The jail to be cloned
+        name : :py:class:`str`
+            a name that identifies the system.
+        uid : :py:class:`int`
+            The jail's id.
+        hostname : Optional[:py:class:`str`]
+            The jail's hostname.
+
+        Returns
+        -------
+        : :py:class:`~pybsd.systems.jails.Jail`
+            The cloned jail
+
+        Raises
+        ------
+        :
+            see exceptions raised by :py:meth:`~pybsd.systems.masters.Master.attach_jail`
+
+        """
+        if not isinstance(jail, Jail):
+            raise AttachNonJailError(self, jail)
         _jail = copy.deepcopy(jail)
         _jail.name = name
         _jail.hostname = hostname
@@ -150,4 +186,10 @@ class Master(System):
 
     @lazy
     def ezjail_admin_binary(self):
+        """Returns the path of this environment's ezjail-admin binary.
+
+        Returns
+        -------
+        : :py:class:`str`
+        """
         return u'/usr/local/bin/ezjail-admin'
