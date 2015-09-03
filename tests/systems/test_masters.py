@@ -115,6 +115,17 @@ class MasterTestCase(SystemTestCase):
                          "Can't attach `{jail.name}` to `{master.name}`. `{jail.name}`"
                          " is not a jail.".format(master=self.system, jail=master2))
 
+    def test_clone_non_jail(self):
+        master2 = Master(name='master2',
+                         hostname='master2.foo.bar',
+                         ext_if=('re0', ['148.241.178.106/24'])
+                         )
+        with self.assertRaises(AttachNonJailError) as context_manager:
+            self.system.clone_jail(master2, 'jail1', 3)
+        self.assertEqual(context_manager.exception.message,
+                         "Can't attach `{jail.name}` to `{master.name}`. `{jail.name}`"
+                         " is not a jail.".format(master=self.system, jail=master2))
+
     def test_jail_already_attached(self):
         master2 = Master(name='master2',
                          hostname='master2.foo.bar',
