@@ -3,7 +3,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import logging
 
-from ..exceptions import AttachNonMasterError, DuplicateJailHostnameError, DuplicateJailUidError
+from ..exceptions import AttachNonMasterError, DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError
 from .base import BaseSystem
 
 __logger__ = logging.getLogger('pybsd')
@@ -92,6 +92,18 @@ class Jail(BaseSystem):
     def handler(self):
         """:py:class:`bool`: Whether the jail is currently attached to a master."""
         return self.master.jail_handler if self.is_attached else None
+
+    @property
+    def name(self):
+        """:py:class:`str`: a name that identifies the system."""
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        if self.is_attached:
+            if name in self.master.names:
+                raise DuplicateJailNameError(self.master, self, name)
+        self._name = name
 
     @property
     def base_hostname(self):

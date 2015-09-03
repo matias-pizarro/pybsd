@@ -32,6 +32,11 @@ class BaseSystemTestCase(unittest.TestCase):
         self.assertEqual(self.system.name, 'system',
                         'incorrect name')
 
+    def test_set_name(self):
+        self.system.name = 'system2'
+        self.assertEqual(self.system.name, 'system2',
+                        'incorrect name')
+
     def test_no_hostname(self):
         params = self.params.copy()
         del params['hostname']

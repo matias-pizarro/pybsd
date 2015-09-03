@@ -37,11 +37,19 @@ class BaseSystem(object):
 
     def __init__(self, name, hostname=None):
         super(BaseSystem, self).__init__()
-        #: :py:class:`str`: a name that identifies the system
-        self.name = name
+        self._name = name
         self._hostname = hostname
         #: :py:class:`~function`: a method that proxies binaries invocations
         self.execute = self.ExecutorClass()
+
+    @property
+    def name(self):
+        """:py:class:`str`: a name that identifies the system."""
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        self._name = name
 
     @property
     def hostname(self):

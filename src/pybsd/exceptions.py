@@ -255,11 +255,17 @@ class DuplicateJailNameError(MasterJailError):
         The master
     jail : :py:class:`~pybsd.systems.jails.Jail`
         The jail
+    duplicate : :py:class:`str`
+        The duplicated hostname
     """
-    msg = u"Can't attach `{jail}` to `{master}`. A jail called `{jail.name}` is already attached to `{master}`."
+    msg = u"Can't attach `{jail}` to `{master}`. Name `{duplicate}` is already associated with `{master}`."
+
+    def __init__(self, master, jail, duplicate):
+        super(DuplicateJailNameError, self).__init__(master=master, jail=jail)
+        self.parameters['duplicate'] = duplicate
 
 
-class DuplicateJailHostnameError(MasterJailError):
+class DuplicateJailHostnameError(DuplicateJailNameError):
     """Error when another jail with the same hostname is already attached to a master
 
     Parameters
@@ -273,12 +279,8 @@ class DuplicateJailHostnameError(MasterJailError):
     """
     msg = u"Can't attach `{jail}` to `{master}`. Hostname `{duplicate}` is already associated with `{master}`."
 
-    def __init__(self, master, jail, duplicate):
-        super(DuplicateJailHostnameError, self).__init__(master=master, jail=jail)
-        self.parameters['duplicate'] = duplicate
 
-
-class DuplicateJailUidError(MasterJailError):
+class DuplicateJailUidError(DuplicateJailNameError):
     """Error when another jail with the same uid is already attached to a master
 
     Parameters
@@ -291,7 +293,3 @@ class DuplicateJailUidError(MasterJailError):
         The duplicated hostname
     """
     msg = u"Can't attach `{jail}` to `{master}`. A jail with uid `{duplicate}` is already attached to `{master}`."
-
-    def __init__(self, master, jail, duplicate):
-        super(DuplicateJailUidError, self).__init__(master=master, jail=jail)
-        self.parameters['duplicate'] = duplicate

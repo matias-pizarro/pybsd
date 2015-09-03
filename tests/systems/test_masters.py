@@ -135,8 +135,17 @@ class MasterTestCase(SystemTestCase):
         with self.assertRaises(DuplicateJailNameError) as context_manager:
             assert Jail(name='jail1', uid=12, master=self.system)
         self.assertEqual(context_manager.exception.message,
-                         "Can't attach `{jail.name}` to `{master.name}`. A jail called `{jail.name}` is already attached"
-                         " to `{master.name}`.".format(master=self.system, jail=jail))
+                         "Can't attach `{jail.name}` to `{master.name}`. Name `{jail.name}` is already associated"
+                         " with `{master.name}`.".format(master=self.system, jail=jail))
+
+    def test_duplicate_name(self):
+        jail = Jail(name='jail1', uid=11, master=self.system)
+        jail2 = Jail(name='jail3', uid=12, master=self.system)
+        with self.assertRaises(DuplicateJailNameError) as context_manager:
+            jail2.name = 'jail1'
+        self.assertEqual(context_manager.exception.message,
+                         "Can't attach `{jail.name}` to `{master.name}`. Name `jail1` is already associated"
+                         " with `{master.name}`.".format(master=self.system, jail=jail2))
 
     def test_duplicate_orig_hostname(self):
         jail = Jail(name='jail1', hostname='something.foo.bar', uid=11, master=self.system)
@@ -188,6 +197,20 @@ class MasterTestCase(SystemTestCase):
                                                  'jail2': jail2,
                                                  'jail3': jail3},
                         'incorrect jails dictionnary')
+
+    def test_names_wo_jails(self):
+        self.assertSetEqual(self.system.names, {self.system.name},
+                        'incorrect names')
+
+    def test_names_w_jails(self):
+        jail1 = Jail(name='jail1', uid=11, master=self.system)
+        jail2 = Jail(name='jail2', uid=12, master=self.system)
+        jail3 = Jail(name='jail3', uid=13, master=self.system)
+        self.assertSetEqual(self.system.names, {self.system.name,
+                                                    jail1.name,
+                                                    jail2.name,
+                                                    jail3.name},
+                        'incorrect names')
 
     def test_hostnames_wo_jails(self):
         self.assertSetEqual(self.system.hostnames, {self.system.hostname},

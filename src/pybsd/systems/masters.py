@@ -79,6 +79,12 @@ class Master(System):
         self._jlo_if = None
 
     @property
+    def names(self):
+        names = {j.name for k, j in six.iteritems(self.jails)}
+        names.add(self.name)
+        return names
+
+    @property
     def hostnames(self):
         hostnames = {j.hostname for k, j in six.iteritems(self.jails)}
         hostnames.add(self.hostname)
@@ -123,7 +129,7 @@ class Master(System):
                 return jail
             raise JailAlreadyAttachedError(self, jail)
         elif jail.name in self.jails:
-            raise DuplicateJailNameError(self, jail)
+            raise DuplicateJailNameError(self, jail, jail.name)
         hostname = jail.base_hostname or self.jail_handler.get_jail_hostname(jail)
         if hostname in self.hostnames:
             raise DuplicateJailHostnameError(self, jail, hostname)
