@@ -41,7 +41,7 @@ class Jail(BaseSystem):
         The jail's id, unique over a user's or an organization's domain.
     hostname : Optional[:py:class:`str`]
         The jail's hostname. It not specified the jail's name is used instead.
-        #: Optional[:py:class:`~pybsd.systems.masters.Master`]: 
+        #: Optional[:py:class:`~pybsd.systems.masters.Master`]:
     master : Optional[:py:class:`~pybsd.systems.masters.Master`]
         The jail's master i.e. host system. By default a :py:class:`~pybsd.systems.jails.Jail` is created detached and the value
         of master is None.
