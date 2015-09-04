@@ -5,7 +5,7 @@ import logging
 
 from .commands import BaseCommand, EzjailAdmin  # noqa
 from .exceptions import (AttachNonJailError, AttachNonMasterError, CommandConnectionError, CommandNotImplementedError,  # noqa
-                         DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError, InterfaceError,  # noqa
+                         DuplicateIPError, DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError,  # noqa
                          InvalidCommandExecutorError, InvalidCommandNameError, InvalidOutputError, JailAlreadyAttachedError,  # noqa
                          MasterJailError, PyBSDError, SubprocessError, WhitespaceError)  # noqa
 from .executors import Executor  # noqa

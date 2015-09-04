@@ -7,7 +7,7 @@ import re
 import six
 import sortedcontainers
 
-from ..exceptions import InterfaceError
+from ..exceptions import DuplicateIPError
 from ..executors import Executor
 from ..network import Interface
 
@@ -118,8 +118,8 @@ class System(BaseSystem):
 
     Raises
     ------
-    SystemError
-        if any ip address in the interface definitions is duplicated.
+    DuplicateIPError
+        if any ip address in the interface definitions is already in use.
     """
     def __init__(self, name, ext_if, int_if=None, lo_if=None, hostname=None):
         super(System, self).__init__(name=name, hostname=hostname)
@@ -145,8 +145,8 @@ class System(BaseSystem):
 
         Raises
         ------
-        SystemError
-            if one of the ip addresses in `definition` is already in use
+        DuplicateIPError
+            raised if one of the ip addresses in `definition` is already in use
 
         """
         if not definition:
@@ -155,7 +155,7 @@ class System(BaseSystem):
         _if = Interface(name=if_name, ips=if_ips)
         intersec = _if.ips.intersection(self.ips)
         if len(intersec):
-            raise InterfaceError(self, _if, intersec)
+            raise DuplicateIPError(self, _if, intersec)
         return _if
 
     @property

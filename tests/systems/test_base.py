@@ -5,7 +5,7 @@ import unittest
 
 import ipaddress
 
-from pybsd import BaseSystem, InterfaceError, System
+from pybsd import BaseSystem, DuplicateIPError, System
 
 
 class BaseSystemTestCase(unittest.TestCase):
@@ -85,7 +85,7 @@ class SystemTestCase(BaseSystemTestCase):
     def test_duplicate_ext_if(self):
         params = self.params.copy()
         params['ext_if'] = ('eth0', ['192.168.0.0/24'])
-        with self.assertRaises(InterfaceError) as context_manager:
+        with self.assertRaises(DuplicateIPError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message,
                          "Can't assign ip(s) `[192.168.0.0]` to `eth0` on `{}`, already in use.".format(params['name']))
@@ -121,7 +121,7 @@ class SystemTestCase(BaseSystemTestCase):
     def test_duplicate_int_if(self):
         params = self.params.copy()
         params['int_if'] = ('eth0', ['148.241.178.106/24'])
-        with self.assertRaises(InterfaceError) as context_manager:
+        with self.assertRaises(DuplicateIPError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message,
                          "Can't assign ip(s) `[148.241.178.106]` to `eth0` on `{}`, already in use.".format(params['name']))
@@ -155,7 +155,7 @@ class SystemTestCase(BaseSystemTestCase):
     def test_duplicate_lo_if(self):
         params = self.params.copy()
         params['lo_if'] = ('lo0', ['148.241.178.106/24'])
-        with self.assertRaises(InterfaceError) as context_manager:
+        with self.assertRaises(DuplicateIPError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message,
                          "Can't assign ip(s) `[148.241.178.106]` to `lo0` on `{}`, already in use.".format(params['name']))

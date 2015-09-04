@@ -7,7 +7,7 @@ Exceptions
 
 Network
 -------
-.. autoclass:: pybsd.exceptions.InterfaceError
+.. autoclass:: pybsd.exceptions.DuplicateIPError
     :members:
     :show-inheritance:
 

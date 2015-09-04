@@ -27,7 +27,7 @@ class PyBSDError(Exception):
         return self.msg.format(**self.parameters)
 
 
-class InterfaceError(PyBSDError):
+class DuplicateIPError(PyBSDError):
     """Base exception for errors involving a network interface.
 
     Parameters
@@ -42,7 +42,7 @@ class InterfaceError(PyBSDError):
     msg = "Can't assign ip(s) `[{ips}]` to `{interface}` on `{environment}`, already in use."
 
     def __init__(self, environment, interface, ips):
-        super(InterfaceError, self).__init__()
+        super(DuplicateIPError, self).__init__()
         ips_string = ', '.join(ips)
         self.parameters = {'environment': environment, 'interface': interface, 'ips': ips_string}
 

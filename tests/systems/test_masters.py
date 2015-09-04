@@ -4,7 +4,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import ipaddress
 
 from pybsd import (AttachNonJailError, BaseJailHandler, DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError,
-                   InterfaceError, Jail, JailAlreadyAttachedError, Master)
+                   DuplicateIPError, Jail, JailAlreadyAttachedError, Master)
 
 from .test_base import SystemTestCase
 
@@ -55,7 +55,7 @@ class MasterTestCase(SystemTestCase):
     def test_duplicate_j_if(self):
         params = self.params.copy()
         params['j_if'] = ('re0', ['148.241.178.106/24'])
-        with self.assertRaises(InterfaceError) as context_manager:
+        with self.assertRaises(DuplicateIPError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message,
                          "Can't assign ip(s) `[148.241.178.106]` to `re0` on `{}`, already in use.".format(params['name']))
@@ -93,7 +93,7 @@ class MasterTestCase(SystemTestCase):
     def test_duplicate_jlo_if(self):
         params = self.params.copy()
         params['jlo_if'] = ('lo1', ['127.0.0.1/24'])
-        with self.assertRaises(InterfaceError) as context_manager:
+        with self.assertRaises(DuplicateIPError) as context_manager:
             self.system_class(**params)
         self.assertEqual(context_manager.exception.message,
                          "Can't assign ip(s) `[127.0.0.1]` to `lo1` on `{}`, already in use.".format(params['name']))
