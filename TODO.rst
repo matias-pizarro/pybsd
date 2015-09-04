@@ -3,6 +3,8 @@ In Progress
     * Add docstrings
     * document tests and release
     * tidy up CI configurations
+    * Use Makefile
+    * Add PyPy3 env
 
 To do
 -----
@@ -10,10 +12,8 @@ To do
     * Fix appveyor builds
     * check for complexity once Executor.__call__ has been refactored
         flake8  --max-complexity 10 src
-    * Use Makefile ¿?
     * Give jails a uuid
     * Work commits into Changelog
-    * Add PyPy3 env
     * Make sure different interfaces can have the same name ('re0' for instance)
       But with a different range of ips, of course
     * implement systems.Master.remove_jail

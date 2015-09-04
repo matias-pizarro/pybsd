@@ -6,17 +6,13 @@ import subprocess
 
 import six
 
+from . import utils
+
 __logger__ = logging.getLogger('pybsd')
 
 
-def safe_unicode(string):
-    if isinstance(string, six.binary_type):
-        string = string.decode('utf8')
-    return string
-
-
 class Executor(object):
-    """Adapted from https://github.com/ployground/ploy"""
+    """Executes a command Adapted from https://github.com/ployground/ploy"""
 
     def __init__(self, instance=None, prefix_args=(), splitlines=False):
         self.instance = instance
@@ -40,10 +36,10 @@ class Executor(object):
         else:
             pass
             # not supported yet
-        _out = safe_unicode(_out)
-        _err = safe_unicode(_err)
-        out = safe_unicode(out)
-        err = safe_unicode(err)
+        _out = utils.safe_unicode(_out)
+        _err = utils.safe_unicode(_err)
+        out = utils.safe_unicode(out)
+        err = utils.safe_unicode(err)
         result = []
         if rc is None:
             result.append(_rc)

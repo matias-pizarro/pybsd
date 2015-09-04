@@ -6,7 +6,7 @@ All the -- *expected* -- dates of completion and version numbers are pure hypoth
 Until version 1.0.0, the API, properties, methods and trheir signature are likely to change a lot.
 
 
-0.0.3 (expected end of 2015-08)
+0.0.3 (expected wk1 of 2015-09)
 -------------------------------
 **Complete documentation:**
 
@@ -14,7 +14,7 @@ the idea is that keeping documentation up to date is not a realistic prospect un
 Further development is therefore put on the backburner until this is achieved. However, opportunities for simplification or
 fixes in the existing code base will be followed up.
 
-0.0.4 (expected wk1 of 2015-09)
+0.0.4 (expected wk2 of 2015-09)
 --------------------------------
 **Make all existing methods work with a modelized set up:**
 
@@ -25,15 +25,15 @@ fixes in the existing code base will be followed up.
   state-dependent methods to work
 * implement Master.remove_jail method
 
-0.0.5 (expected wk2 of 2015-09)
+0.0.5 (expected wk3 of 2015-09)
 -------------------------------
 Check all existing methods correctly work on a local instance
 
-0.0.6 (expected wk3 of 2015-09)
+0.0.6 (expected end of 2015-09)
 -------------------------------
 Make all existing methods work remotely
 
-0.0.7 (expected end of 2015-09)
+0.0.7 (expected wk1 of 2015-10)
 -------------------------------
 **Implement the other methods of EzjailAdmin**
 
@@ -43,11 +43,11 @@ Make all existing methods work remotely
 * start
 * stop
 
-0.0.8 (expected wk1 of 2015-10)
+0.0.8 (expected wk2 of 2015-10)
 -------------------------------
 * Serialize to files an existing model
 
-0.0.9 (expected wk2 of 2015-10)
+0.0.9 (expected wk3 of 2015-10)
 -------------------------------
 * Import from files a serialized model
 
