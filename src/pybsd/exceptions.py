@@ -27,7 +27,7 @@ class PyBSDError(Exception):
         return self.msg.format(**self.parameters)
 
 
-class DuplicateIPError(PyBSDError):
+class InterfaceError(PyBSDError):
     """Base exception for errors involving a network interface.
 
     Parameters
@@ -36,13 +36,46 @@ class DuplicateIPError(PyBSDError):
         The environment on which the command is deployed. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
     interface : :py:class:`~pybsd.network.Interface`
         The interface
+    """
+
+    def __init__(self, environment, interface):
+        super(InterfaceError, self).__init__()
+        self.parameters = {'environment': environment, 'interface': interface}
+
+
+class MissingMainIPError(InterfaceError):
+    """Error when a network interface doesn't have at least one main ip.
+
+    Parameters
+    ----------
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment to which the interface is attached. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    interface : :py:class:`~pybsd.network.Interface`
+        The interface
+    """
+    msg = "`{interface}` on `{environment}` should have at least one main ip."
+
+    def __init__(self, environment, interface):
+        super(InterfaceError, self).__init__(environment, interface)
+        self.parameters = {'environment': environment, 'interface': interface}
+
+
+class DuplicateIPError(InterfaceError):
+    """Error when ips are duplicated.
+
+    Parameters
+    ----------
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment to which the interface is attached. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    interface : :py:class:`~pybsd.network.Interface`
+        The interface
     ips : :py:class:`set`
         The ips
     """
     msg = "Can't assign ip(s) `[{ips}]` to `{interface}` on `{environment}`, already in use."
 
     def __init__(self, environment, interface, ips):
-        super(DuplicateIPError, self).__init__()
+        super(DuplicateIPError, self).__init__(environment, interface)
         ips_string = ', '.join(ips)
         self.parameters = {'environment': environment, 'interface': interface, 'ips': ips_string}
 
@@ -231,6 +264,19 @@ class AttachNonJailError(MasterJailError):
         The object that was supposed to be attached
     """
     msg = u"Can't attach `{jail}` to `{master}`. `{jail}` is not a jail."
+
+
+class MasterJailMismatchError(MasterJailError):
+    """Error when a master tries to import a non-jail
+
+    Parameters
+    ----------
+    master : :py:class:`~pybsd.systems.masters.Master`
+        The master
+    jail : `any`
+        The object that was supposed to be attached
+    """
+    msg = u"`{jail}` is not attached to `{master}`."
 
 
 class JailAlreadyAttachedError(MasterJailError):

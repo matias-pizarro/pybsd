@@ -7,6 +7,16 @@ Exceptions
 
 Network
 -------
+.. autoclass:: pybsd.exceptions.InterfaceError
+    :members:
+    :show-inheritance:
+
+Commands
+.. autoclass:: pybsd.exceptions.MissingMainIPError
+    :members:
+    :show-inheritance:
+
+Commands
 .. autoclass:: pybsd.exceptions.DuplicateIPError
     :members:
     :show-inheritance:
@@ -61,6 +71,10 @@ Systems
     :show-inheritance:
 
 .. autoclass:: pybsd.exceptions.AttachNonJailError
+    :members:
+    :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.MasterJailMismatchError
     :members:
     :show-inheritance:
 

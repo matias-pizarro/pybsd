@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
 
-import copy
 import logging
 
-import ipaddress
 import unipath
+
+from . import network
+from .exceptions import MasterJailMismatchError, MissingMainIPError
 
 __logger__ = logging.getLogger('pybsd')
 
@@ -22,45 +23,76 @@ class BaseJailHandler(object):
         self.jail_root = unipath.Path(j)
 
     @classmethod
-    def get_base_ip(cls, _if, jail):
-        if _if.version == 4:
-            ip = _if.ip.exploded.split('.')
-            ip[2] = str(jail.jail_class_id)
-            ip[3] = str(jail.uid)
-            ip_as_string = '{}/{}'.format('.'.join(ip), str(_if.network.prefixlen))
-        else:
-            ip = _if.ip.exploded.split(':')
-            ip[5] = str(jail.jail_class_id)
-            ip[6] = str(jail.uid)
-            ip_as_string = '{}/{}'.format(':'.join(ip), str(_if.network.prefixlen))
-        return ipaddress.ip_interface(ip_as_string)
+    def derive_interface(cls, master_if, jail):
+        _name = master_if.name
+        ips = []
+        if master_if.main_ifv4:
+            prefixlen = str(master_if.main_ifv4.network.prefixlen)
+            ip_chunks = master_if.main_ifv4.ip.exploded.split('.')
+            ip_chunks[2] = str(jail.jail_class_id)
+            ip_chunks[3] = str(jail.uid)
+            _ip = '.'.join(ip_chunks)
+            ip_as_string = '{}/{}'.format(_ip, prefixlen)
+            ips.append(ip_as_string)
+        if master_if.main_ifv6:
+            prefixlen = str(master_if.main_ifv6.network.prefixlen)
+            ip_chunks = master_if.main_ifv6.ip.exploded.split(':')
+            ip_chunks[5] = str(jail.jail_class_id)
+            ip_chunks[6] = str(jail.uid)
+            ip_chunks[7] = '1'
+            _ip = ':'.join(ip_chunks)
+            ipv6_as_string = '{}/{}'.format(_ip, prefixlen)
+            ips.append(ipv6_as_string)
+        if not len(ips):
+            raise MissingMainIPError(jail.master, master_if)
+        return network.Interface(_name, ips)
 
-    @classmethod
-    def extract_if(cls, master_if, jail):
-        _if = copy.deepcopy(master_if)
-        if _if.main_ifv4:
-            _ifv4 = cls.get_base_ip(_if.main_ifv4, jail=jail)
-            _if.ifsv4.clear()
-            _if.ifsv4.add(_ifv4)
-        if _if.main_ifv6:
-            _ifv6 = cls.get_base_ip(_if.main_ifv6, jail=jail)
-            _if.ifsv6.clear()
-            _if.ifsv6.add(_ifv6)
-        return _if
+    def check_mismatch(self, jail):
+        if jail.master != self.master:
+            raise MasterJailMismatchError(self.master, jail)
 
     def get_jail_type(self, jail):
         # provides a mechanism to decide jail type
-        assert jail
+        self.check_mismatch(jail)
         return self.master.default_jail_type
 
-    def get_jail_hostname(self, jail):
+    def get_jail_hostname(self, jail, strict=True):
+        if strict:
+            self.check_mismatch(jail)
         return '{}.{}'.format(jail.name, self.master.hostname)
 
     def get_jail_path(self, jail):
+        self.check_mismatch(jail)
         return self.jail_root.child(jail.name)
 
     def get_jail_ext_if(self, jail):
-        return self.extract_if(self.master.j_if, jail=jail)
+        """Returns a given jail's ext_if
+
+        Parameters
+        ----------
+        jail : :py:class:`~pybsd.systems.jails.Jail`
+            the jail whose ext_if is requested
+
+        Returns
+        -------
+        : :py:class:`~pybsd.network.Interface`
+            the jail's ext_if
+        """
+        self.check_mismatch(jail)
+        return self.derive_interface(self.master.j_if, jail=jail)
 
     def get_jail_lo_if(self, jail):
-        return self.extract_if(self.master.jlo_if, jail=jail)
+        """Returns a given jail's lo_if
+
+        Parameters
+        ----------
+        jail : :py:class:`~pybsd.systems.jails.Jail`
+            the jail whose lo_if is requested
+
+        Returns
+        -------
+        : :py:class:`~pybsd.network.Interface`
+            the jail's lo_if
+        """
+        self.check_mismatch(jail)
+        return self.derive_interface(self.master.jlo_if, jail=jail)

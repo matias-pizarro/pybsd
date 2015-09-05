@@ -250,7 +250,7 @@ class JailTestCase(unittest.TestCase):
     def test_lo_if_ifsv4(self):
         self.assertSequenceEqual(self.system.lo_if.ifsv4, [ipaddress.IPv4Interface('127.0.2.12/24')],
                         'incorrect lo_if ifsv4')
-        self.assertSequenceEqual(self.system.lo_if.ifsv6, [ipaddress.IPv6Interface('::0:2:12:0/110')],
+        self.assertSequenceEqual(self.system.lo_if.ifsv6, [ipaddress.IPv6Interface('::0:2:12:1/110')],
                         'incorrect lo_if ifsv6')
 
     def test_lo_if_failed_assignement(self):

@@ -139,7 +139,7 @@ class Master(System):
             raise JailAlreadyAttachedError(self, jail)
         elif jail.name in self.jails:
             raise DuplicateJailNameError(self, jail, jail.name)
-        hostname = jail.base_hostname or self.jail_handler.get_jail_hostname(jail)
+        hostname = jail.base_hostname or self.jail_handler.get_jail_hostname(jail, strict=False)
         if hostname in self.hostnames:
             raise DuplicateJailHostnameError(self, jail, hostname)
         elif jail.uid in self.uids:

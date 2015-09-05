@@ -79,8 +79,12 @@ class Jail(BaseSystem):
     def __init__(self, name, uid, hostname=None, master=None, auto_start=False, jail_class='service'):
         super(Jail, self).__init__(name=name, hostname=hostname)
         self._uid = uid
+        #: Optional[:py:class:`bool`]: Whether the jail should be started automatically at host system's boot time.
         self.auto_start = auto_start
+        #: Optional[:py:class:`str`]: Allows differentiating jails by class.
         self.jail_class = jail_class
+        #: Optional[:py:class:`~pybsd.systems.masters.Master`]: The jail's master i.e. host system. By default a
+        #: :py:class:`~pybsd.systems.jails.Jail` is created detached.
         self.master = None
         if master:
             try:

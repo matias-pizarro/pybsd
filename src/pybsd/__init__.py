@@ -7,7 +7,8 @@ from .commands import BaseCommand, EzjailAdmin  # noqa
 from .exceptions import (AttachNonJailError, AttachNonMasterError, CommandConnectionError, CommandNotImplementedError,  # noqa
                          DuplicateIPError, DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError,  # noqa
                          InvalidCommandExecutorError, InvalidCommandNameError, InvalidOutputError, JailAlreadyAttachedError,  # noqa
-                         MasterJailError, PyBSDError, SubprocessError, WhitespaceError)  # noqa
+                         MasterJailError, MasterJailMismatchError, MissingMainIPError, PyBSDError, SubprocessError,  # noqa
+                         WhitespaceError)  # noqa
 from .executors import Executor  # noqa
 from .handlers import BaseJailHandler  # noqa
 from .network import Interface  # noqa

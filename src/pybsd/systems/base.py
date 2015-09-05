@@ -147,7 +147,6 @@ class System(BaseSystem):
         ------
         DuplicateIPError
             raised if one of the ip addresses in `definition` is already in use
-
         """
         if not definition:
             return None
@@ -170,7 +169,7 @@ class System(BaseSystem):
 
     @property
     def ips(self):
-        """:py:class:`set` ([ :py:class:`str` ]): The list of all ips in this system."""
+        """:py:class:`sortedcontainers.SortedSet` ([ :py:class:`str` ]): a sorted set containing all ips on this system."""
         ips = sortedcontainers.SortedSet()
         for prop, interface in six.iteritems(self.__dict__):
             if IF_PROPERTY.match(prop) and interface:
