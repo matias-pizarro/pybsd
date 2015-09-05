@@ -71,21 +71,21 @@ class BaseJailHandlerTestCase(unittest.TestCase):
     def test_derive_interface(self):
         ext_if = self.handler.derive_interface(self.master.j_if, self.jail1)
         self.assertEqual(ext_if.ifsv4, [ipaddress.IPv4Interface('10.0.2.12/24')],
-                        'incorrect master')
+                        'incorrect ifsv4')
         self.assertEqual(ext_if.ifsv6, [ipaddress.IPv6Interface('1c02:4f8:f0:14e6:0:2:12:1/110')],
-                        'incorrect master')
+                        'incorrect ifsv6')
 
     def test_derive_interface_noifv4(self):
         self.master.j_if.main_ifv4 = None
         ext_if = self.handler.derive_interface(self.master.j_if, self.jail1)
         self.assertSequenceEqual(ext_if.ifsv4, [],
-                        'incorrect master')
+                        'incorrect ifsv4')
 
     def test_derive_interface_noifv6(self):
         self.master.jlo_if.main_ifv6 = None
         lo_if = self.handler.derive_interface(self.master.jlo_if, self.jail1)
         self.assertSequenceEqual(lo_if.ifsv6, [],
-                        'incorrect master')
+                        'incorrect ifsv6')
 
     def test_no_main_ip(self):
         self.master.j_if.main_ifv4 = None
@@ -100,20 +100,22 @@ class BaseJailHandlerTestCase(unittest.TestCase):
         self.jail1.jail_class = 'service'
         ext_if = self.handler.derive_interface(self.master.j_if, self.jail1)
         self.assertEqual(ext_if.ifsv4, [ipaddress.IPv4Interface('10.0.1.12/24')],
-                        'incorrect master')
+                        'incorrect ifsv4')
         self.assertEqual(ext_if.ifsv6, [ipaddress.IPv6Interface('1c02:4f8:f0:14e6:0:1:12:1/110')],
-                        'incorrect master')
+                        'incorrect ifsv6')
 
     def test_derive_interface_ot_main(self):
         self.master.j_if.add_ips('192.168.1.0/32')
         self.master.j_if.main_ifv4 = self.master.j_if.ifsv4[2]
         ext_if = self.handler.derive_interface(self.master.j_if, self.jail1)
         self.assertEqual(ext_if.ifsv4, [ipaddress.IPv4Interface('192.168.2.12/32')],
-                        'incorrect master')
+                        'incorrect ifsv4')
         self.assertEqual(ext_if.ifsv6, [ipaddress.IPv6Interface('1c02:4f8:f0:14e6:0:2:12:1/110')],
-                        'incorrect master')
+                        'incorrect ifsv6')
 
     def test_mismatch_master_jail(self):
         jail = Jail(name='jail', uid=12)
         with self.assertRaises(MasterJailMismatchError) as context_manager:
             self.handler.get_jail_ext_if(jail)
+        self.assertEqual(context_manager.exception.message,
+                         "`{jail}` is not attached to `{master}`.".format(master=self.master, jail=jail))
