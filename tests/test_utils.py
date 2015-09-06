@@ -40,7 +40,7 @@ class UtilsTestCase(unittest.TestCase):
 
     def test_from_split_ipv4(self):
         _list = [4, 32, '1', '2', '3', '4']
-        self.assertEqual(from_split_if(_list), '1.2.3.4/32' ,
+        self.assertEqual(from_split_if(_list), '1.2.3.4/32',
                         'incorrect output')
 
     def test_from_split_ipv6(self):
