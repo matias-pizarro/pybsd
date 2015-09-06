@@ -341,6 +341,19 @@ class DuplicateJailHostnameError(DuplicateJailNameError):
     msg = u"Can't attach `{jail}` to `{master}`. Hostname `{duplicate}` is already associated with `{master}`."
 
 
+class InvalidUIDError(MasterJailError):
+    """Error when a master tries to import a non-jail
+
+    Parameters
+    ----------
+    master : :py:class:`~pybsd.systems.masters.Master`
+        The object that was supposed to host the jail
+    jail : `any`
+        The jail
+    """
+    msg = u"`{jail}` on `{master}`: uid must be an integer >= 0."
+
+
 class DuplicateJailUidError(DuplicateJailNameError):
     """Error when another jail with the same uid is already attached to a master
 

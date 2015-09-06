@@ -6,7 +6,7 @@ import unittest
 import ipaddress
 import unipath
 
-from pybsd import AttachNonMasterError, Jail, Master, System
+from pybsd import AttachNonMasterError, InvalidUIDError, Jail, Master, System
 
 from ..utils import extract_message
 
@@ -257,3 +257,11 @@ class JailTestCase(unittest.TestCase):
         with self.assertRaises(AttributeError) as context_manager:
             self.system.lo_if = ('re0', ['8.8.8.8/24'])
         self.assertEqual(extract_message(context_manager), u"can't set attribute")
+
+    def test_invalid_uid(self):
+        params = self.params.copy()
+        params['uid'] = 0
+        with self.assertRaises(InvalidUIDError) as context_manager:
+            self.system = Jail(**params)
+        self.assertEqual(context_manager.exception.message,
+                         "`system` on `None`: uid must be an integer >= 0.")

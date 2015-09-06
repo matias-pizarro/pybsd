@@ -3,7 +3,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import logging
 
-from ..exceptions import AttachNonMasterError, DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError
+from ..exceptions import AttachNonMasterError, DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError, InvalidUIDError
 from .base import BaseSystem
 
 __logger__ = logging.getLogger('pybsd')
@@ -78,7 +78,10 @@ class Jail(BaseSystem):
 
     def __init__(self, name, uid, hostname=None, master=None, auto_start=False, jail_class='service'):
         super(Jail, self).__init__(name=name, hostname=hostname)
-        self._uid = uid
+        if uid:
+            self._uid = uid
+        else:
+            raise InvalidUIDError(master, self)
         #: Optional[:py:class:`bool`]: Whether the jail should be started automatically at host system's boot time.
         self.auto_start = auto_start
         #: Optional[:py:class:`str`]: Allows differentiating jails by class.

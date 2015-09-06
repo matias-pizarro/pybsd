@@ -95,3 +95,7 @@ Systems
 .. autoclass:: pybsd.exceptions.DuplicateJailUidError
     :members:
     :show-inheritance:
+
+.. autoclass:: pybsd.exceptions.InvalidUIDError
+    :members:
+    :show-inheritance:
