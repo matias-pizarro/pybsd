@@ -27,7 +27,7 @@ class Interface(object):
         a single ip address or a list of ip addresses, represented as strings. Duplicates are silently ignored.
         The first ip added for each version will become the main ip address for this interface.
     """
-    def __init__(self, name, ips=[]):
+    def __init__(self, name, ips=None):
         #: :py:class:`str`: a name that identifies the interface.
         self.name = name
         #: :py:class:`sortedcontainers.SortedSet` ([ :py:class:`ipaddress.IPv4Interface` ]): a sorted set containing all the
@@ -40,6 +40,7 @@ class Interface(object):
         self.main_ifv4 = None
         #: :py:class:`ipaddress.IPv6Interface`: this interface's main IPv6 interface
         self.main_ifv6 = None
+        ips = ips or []
         self.add_ips(ips)
 
     def add_ips(self, ips):

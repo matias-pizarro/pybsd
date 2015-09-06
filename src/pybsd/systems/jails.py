@@ -152,7 +152,15 @@ class Jail(BaseSystem):
     @property
     def jail_type(self):
         """:py:class:`str` or :py:class:`NoneType`: The jail's type, according to its storage solution.
-        If not attached, it. is equal to None"""
+        If not attached, it. is equal to None
+
+        Possible types are:
+            * **D** --> Directory tree based jail.
+            * **I** --> File-based jail.
+            * **E** --> Geli encrypted file-based jail.
+            * **B** --> Bde encrypted file-based jail.
+            * **Z** --> ZFS filesystem-based jail.
+        """
         return self.handler.get_jail_type(self) if self.is_attached else None
 
     @property
