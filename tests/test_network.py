@@ -20,8 +20,11 @@ class InterfaceTestCase(unittest.TestCase):
                         'incorrect name')
 
     def test_no_ips(self):
-        with self.assertRaises(TypeError):
-            Interface(name='re0')
+        interface = Interface(name='re0')
+        self.assertEqual(interface.name, 're0',
+                        'incorrect name')
+        self.assertSetEqual(interface.ips, set(),
+                        'incorrect name')
 
     def test_eq_1(self):
         interface_1 = Interface(name='re0', ips=['8.8.8.8/32', '1:1:1::', '1:1:1::2/110'])

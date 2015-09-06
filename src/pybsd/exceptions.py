@@ -55,10 +55,6 @@ class MissingMainIPError(InterfaceError):
     """
     msg = "`{interface}` on `{environment}` should have at least one main ip."
 
-    def __init__(self, environment, interface):
-        super(MissingMainIPError, self).__init__(environment, interface)
-        self.parameters = {'environment': environment, 'interface': interface}
-
 
 class DuplicateIPError(InterfaceError):
     """Error when ips are duplicated.

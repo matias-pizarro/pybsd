@@ -11,12 +11,10 @@ Network
     :members:
     :show-inheritance:
 
-Commands
 .. autoclass:: pybsd.exceptions.MissingMainIPError
     :members:
     :show-inheritance:
 
-Commands
 .. autoclass:: pybsd.exceptions.DuplicateIPError
     :members:
     :show-inheritance:

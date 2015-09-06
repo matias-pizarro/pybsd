@@ -23,11 +23,11 @@ class Interface(object):
     ----------
     name : :py:class:`str`
         a name that identifies the interface.
-    ips : :py:class:`str`, :py:class:`list`[:py:class:`str`] or :py:class:`set`(:py:class:`str`)
+    ips : Optional[ :py:class:`str`, :py:class:`list`[:py:class:`str`] or :py:class:`set`(:py:class:`str`) ]
         a single ip address or a list of ip addresses, represented as strings. Duplicates are silently ignored.
         The first ip added for each version will become the main ip address for this interface.
     """
-    def __init__(self, name, ips):
+    def __init__(self, name, ips=[]):
         #: :py:class:`str`: a name that identifies the interface.
         self.name = name
         #: :py:class:`sortedcontainers.SortedSet` ([ :py:class:`ipaddress.IPv4Interface` ]): a sorted set containing all the
@@ -45,7 +45,7 @@ class Interface(object):
     def add_ips(self, ips):
         """Adds a single ip address or a list of ip addresses, represented as strings, to the interface.
 
-        Duplicates are silently ignored.
+        None and duplicates are silently ignored.
 
         Parameters
         ----------
@@ -53,19 +53,20 @@ class Interface(object):
             a single ip address or a list of ip addresses, represented as strings. Duplicates are silently ignored.
             The first ip added for each version will become the main ip address for this interface.
         """
-        if isinstance(ips, six.string_types):
-            ips = [ips]
-        for _ip in ips:
-            _if = ipaddress.ip_interface(_ip)
-            if _if.ip.compressed not in self.ips:
-                if _if.version == 4:
-                    self.ifsv4.add(_if)
-                    if len(self.ifsv4) == 1:
-                        self.main_ifv4 = _if
-                else:
-                    self.ifsv6.add(_if)
-                    if len(self.ifsv6) == 1:
-                        self.main_ifv6 = _if
+        if ips:
+            if isinstance(ips, six.string_types):
+                ips = [ips]
+            for _ip in ips:
+                _if = ipaddress.ip_interface(_ip)
+                if _if.ip.compressed not in self.ips:
+                    if _if.version == 4:
+                        self.ifsv4.add(_if)
+                        if len(self.ifsv4) == 1:
+                            self.main_ifv4 = _if
+                    else:
+                        self.ifsv6.add(_if)
+                        if len(self.ifsv6) == 1:
+                            self.main_ifv6 = _if
 
     @property
     def ips(self):

@@ -7,6 +7,7 @@ import unipath
 
 from . import network
 from .exceptions import MasterJailMismatchError, MissingMainIPError
+from .utils import from_split_if, split_if
 
 __logger__ = logging.getLogger('pybsd')
 
@@ -24,28 +25,24 @@ class BaseJailHandler(object):
 
     @classmethod
     def derive_interface(cls, master_if, jail):
-        _name = master_if.name
-        ips = []
-        if master_if.main_ifv4:
-            prefixlen = str(master_if.main_ifv4.network.prefixlen)
-            ip_chunks = master_if.main_ifv4.ip.exploded.split('.')
-            ip_chunks[2] = str(jail.jail_class_id)
-            ip_chunks[3] = str(jail.uid)
-            _ip = '.'.join(ip_chunks)
-            ip_as_string = '{}/{}'.format(_ip, prefixlen)
-            ips.append(ip_as_string)
-        if master_if.main_ifv6:
-            prefixlen = str(master_if.main_ifv6.network.prefixlen)
-            ip_chunks = master_if.main_ifv6.ip.exploded.split(':')
-            ip_chunks[5] = str(jail.jail_class_id)
-            ip_chunks[6] = str(jail.uid)
-            ip_chunks[7] = '1'
-            _ip = ':'.join(ip_chunks)
-            ipv6_as_string = '{}/{}'.format(_ip, prefixlen)
-            ips.append(ipv6_as_string)
-        if not len(ips):
+        if master_if.main_ifv4 or master_if.main_ifv6:
+            _if = network.Interface(master_if.name)
+            if master_if.main_ifv4:
+                ip_chunks = split_if(master_if.main_ifv4)
+                ip_chunks[4] = str(jail.jail_class_id)
+                ip_chunks[5] = str(jail.uid)
+                _ip = from_split_if(ip_chunks)
+                _if.add_ips(_ip)
+            if master_if.main_ifv6:
+                ip_chunks = split_if(master_if.main_ifv6)
+                ip_chunks[7] = str(jail.jail_class_id)
+                ip_chunks[8] = str(jail.uid)
+                ip_chunks[9] = '1'
+                _ip = from_split_if(ip_chunks)
+                _if.add_ips(_ip)
+            return _if
+        else:
             raise MissingMainIPError(jail.master, master_if)
-        return network.Interface(_name, ips)
 
     def check_mismatch(self, jail):
         if jail.master != self.master:
