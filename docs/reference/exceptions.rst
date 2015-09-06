@@ -15,6 +15,10 @@ Network
     :members:
     :show-inheritance:
 
+.. autoclass:: pybsd.exceptions.InvalidMainIPError
+    :members:
+    :show-inheritance:
+
 .. autoclass:: pybsd.exceptions.DuplicateIPError
     :members:
     :show-inheritance:

@@ -6,7 +6,7 @@ import unittest
 import ipaddress
 import unipath
 
-from pybsd import BaseJailHandler, Interface, Jail, Master, MasterJailMismatchError, MissingMainIPError
+from pybsd import BaseJailHandler, Interface, InvalidMainIPError, Jail, Master, MasterJailMismatchError, MissingMainIPError
 
 
 class BaseJailHandlerTestCase(unittest.TestCase):
@@ -67,6 +67,24 @@ class BaseJailHandlerTestCase(unittest.TestCase):
                         'incorrect lo_if name')
         self.assertNotEqual(lo_if, self.master.jlo_if,
                         'incorrect lo_if')
+
+    def test_derive_invalid_main_ipv4(self):
+        self.master.j_if.ifsv4.clear()
+        self.master.j_if.add_ips('10.0.1.1')
+        with self.assertRaises(InvalidMainIPError) as context_manager:
+            self.handler.derive_interface(self.master.j_if, self.jail1)
+        self.assertEqual(context_manager.exception.message,
+                         "Invalid main ip for `{interface}` on `{master}`: "
+                         "an IPv4 main_ip's last octet must be equal to 0.".format(master=self.master, interface=self.master.j_if))
+
+    def test_derive_invalid_main_ipv6(self):
+        self.master.j_if.ifsv6.clear()
+        self.master.j_if.add_ips('1::1:0')
+        with self.assertRaises(InvalidMainIPError) as context_manager:
+            self.handler.derive_interface(self.master.j_if, self.jail1)
+        self.assertEqual(context_manager.exception.message,
+                         "Invalid main ip for `{interface}` on `{master}`: "
+                         "an IPv6 main_ip's penultimate octet must be equal to 0.".format(master=self.master, interface=self.master.j_if))
 
     def test_derive_interface(self):
         ext_if = self.handler.derive_interface(self.master.j_if, self.jail1)

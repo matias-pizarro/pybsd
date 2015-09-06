@@ -56,6 +56,25 @@ class MissingMainIPError(InterfaceError):
     msg = "`{interface}` on `{environment}` should have at least one main ip."
 
 
+class InvalidMainIPError(InterfaceError):
+    """Error when ips are duplicated.
+
+    Parameters
+    ----------
+    environment : :py:class:`~pybsd.systems.base.BaseSystem`
+        The environment to which the interface is attached. Any subclass of :py:class:`~pybsd.systems.base.BaseSystem`
+    interface : :py:class:`~pybsd.network.Interface`
+        The interface
+    reason : :py:class:`str`
+        The reason why this main if is invalid
+    """
+    msg = "Invalid main ip for `{interface}` on `{environment}`: {reason}."
+
+    def __init__(self, environment, interface, reason):
+        super(InvalidMainIPError, self).__init__(environment, interface)
+        self.parameters = {'environment': environment, 'interface': interface, 'reason': reason}
+
+
 class DuplicateIPError(InterfaceError):
     """Error when ips are duplicated.
 

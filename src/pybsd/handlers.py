@@ -6,7 +6,7 @@ import logging
 import unipath
 
 from . import network
-from .exceptions import MasterJailMismatchError, MissingMainIPError
+from .exceptions import InvalidMainIPError, MasterJailMismatchError, MissingMainIPError
 from .utils import from_split_if, split_if
 
 __logger__ = logging.getLogger('pybsd')
@@ -29,12 +29,16 @@ class BaseJailHandler(object):
             _if = network.Interface(master_if.name)
             if master_if.main_ifv4:
                 ip_chunks = split_if(master_if.main_ifv4)
+                if int(ip_chunks[-1]) != 0:
+                    raise InvalidMainIPError(jail.master, master_if, "an IPv4 main_ip's last octet must be equal to 0")
                 ip_chunks[4] = str(jail.jail_class_id)
                 ip_chunks[5] = str(jail.uid)
                 _ip = from_split_if(ip_chunks)
                 _if.add_ips(_ip)
             if master_if.main_ifv6:
                 ip_chunks = split_if(master_if.main_ifv6)
+                if int(ip_chunks[-2]) != 0:
+                    raise InvalidMainIPError(jail.master, master_if, "an IPv6 main_ip's penultimate octet must be equal to 0")
                 ip_chunks[7] = str(jail.jail_class_id)
                 ip_chunks[8] = str(jail.uid)
                 ip_chunks[9] = '1'
