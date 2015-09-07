@@ -133,6 +133,14 @@ class JailTestCase(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.system = Jail(**params)
 
+    def test_invalid_uid(self):
+        params = self.params.copy()
+        params['uid'] = 0
+        with self.assertRaises(InvalidUIDError) as context_manager:
+            self.system = Jail(**params)
+        self.assertEqual(context_manager.exception.message,
+                         "`system` on `None`: uid must be an integer >= 0.")
+
     def test_uid(self):
         self.assertEqual(self.system.uid, 12,
                         'incorrect uid')
@@ -257,11 +265,3 @@ class JailTestCase(unittest.TestCase):
         with self.assertRaises(AttributeError) as context_manager:
             self.system.lo_if = ('re0', ['8.8.8.8/24'])
         self.assertEqual(extract_message(context_manager), u"can't set attribute")
-
-    def test_invalid_uid(self):
-        params = self.params.copy()
-        params['uid'] = 0
-        with self.assertRaises(InvalidUIDError) as context_manager:
-            self.system = Jail(**params)
-        self.assertEqual(context_manager.exception.message,
-                         "`system` on `None`: uid must be an integer >= 0.")

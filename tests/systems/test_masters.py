@@ -4,7 +4,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import ipaddress
 
 from pybsd import (AttachNonJailError, BaseJailHandler, DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError,
-                   DuplicateIPError, Jail, JailAlreadyAttachedError, Master)
+                   DuplicateIPError, Interface, Jail, JailAlreadyAttachedError, Master)
 
 from .test_base import SystemTestCase
 
@@ -261,3 +261,12 @@ class MasterTestCase(SystemTestCase):
         self.system.reset_jlo_if()
         self.assertEqual(self.system.jlo_if, self.system.lo_if,
                         'systems.master.Master.reset_jlo_if is broken')
+
+    def test_interfaces(self):
+        ifs = self.system.interfaces
+        ext_if = Interface('re0', ['148.241.178.106/24', '1c02:4f8:0f0:14e6::/110'])
+        int_if = Interface('eth0', ['192.168.0.0/24', '1c02:4f8:0f0:14e6::0:0:1/110'])
+        lo_if = Interface('lo0', ['127.0.0.1/8', '::1/110'])
+        jlo_if = Interface('lo1', ['127.0.2.0/24', '127.0.1.0/24', '::0:2:0:0/110', '::0:1:0:0/110'])
+        self.assertDictEqual(self.system.interfaces, {ext_if.name: ext_if, int_if.name: int_if, lo_if.name: lo_if, jlo_if.name: jlo_if},
+                        'systems.master.Master.reset_int_if is broken')

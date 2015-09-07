@@ -5,7 +5,7 @@ import unittest
 
 import ipaddress
 
-from pybsd import BaseSystem, DuplicateIPError, System
+from pybsd import BaseSystem, DuplicateIPError, Interface, System
 
 
 class BaseSystemTestCase(unittest.TestCase):
@@ -183,4 +183,12 @@ class SystemTestCase(BaseSystemTestCase):
     def test_reset_int_if(self):
         self.system.reset_int_if()
         self.assertEqual(self.system.int_if, self.system.ext_if,
+                        'systems.master.Master.reset_int_if is broken')
+
+    def test_interfaces(self):
+        ifs = self.system.interfaces
+        ext_if = Interface('re0', ['148.241.178.106/24', '1c02:4f8:0f0:14e6::/110'])
+        int_if = Interface('eth0', ['192.168.0.0/24', '1c02:4f8:0f0:14e6::0:0:1/110'])
+        lo_if = Interface('lo0', ['127.0.0.1/8', '::1/110'])
+        self.assertDictEqual(self.system.interfaces, {ext_if.name: ext_if, int_if.name: int_if, lo_if.name: lo_if},
                         'systems.master.Master.reset_int_if is broken')
