@@ -263,7 +263,6 @@ class MasterTestCase(SystemTestCase):
                         'systems.master.Master.reset_jlo_if is broken')
 
     def test_interfaces(self):
-        ifs = self.system.interfaces
         ext_if = Interface('re0', ['148.241.178.106/24', '1c02:4f8:0f0:14e6::/110'])
         int_if = Interface('eth0', ['192.168.0.0/24', '1c02:4f8:0f0:14e6::0:0:1/110'])
         lo_if = Interface('lo0', ['127.0.0.1/8', '::1/110'])
