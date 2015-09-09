@@ -3,6 +3,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import ipaddress
 
+import six
+
 from pybsd import (AttachNonJailError, BaseJailHandler, DuplicateJailHostnameError, DuplicateJailNameError, DuplicateJailUidError,
                    DuplicateIPError, Interface, Jail, JailAlreadyAttachedError, Master)
 
@@ -267,6 +269,10 @@ class MasterTestCase(SystemTestCase):
         int_if = Interface('eth0', ['192.168.0.0/24', '1c02:4f8:0f0:14e6::0:0:1/110'])
         lo_if = Interface('lo0', ['127.0.0.1/8', '::1/110'])
         jlo_if = Interface('lo1', ['127.0.2.0/24', '127.0.1.0/24', '::0:2:0:0/110', '::0:1:0:0/110'])
-        int_dict = {ext_if.name: ext_if, int_if.name: int_if, lo_if.name: lo_if, jlo_if.name: jlo_if}
-        self.assertDictEqual(self.system.interfaces, int_dict,
-                        'systems.master.Master.reset_int_if is broken')
+        int_dict = {}
+        int_dict[ext_if.name] = ext_if
+        int_dict[int_if.name] = int_if
+        int_dict[ lo_if.name] = lo_if
+        int_dict[jlo_if.name] = jlo_if
+        self.assertEqual(self.system.interfaces, int_dict,
+            'systems.master.Master.reset_int_if is broken')
