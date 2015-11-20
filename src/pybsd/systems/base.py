@@ -168,10 +168,18 @@ class System(BaseSystem):
         self._int_if = None
 
     @property
+    def interfaces(self):
+        """:py:class:`dict` ([ :py:class:`~pybsd.network.Interface` ]): a list containing all interfaces on this system."""
+        ifs = {}
+        for prop, interface in six.iteritems(self.__dict__):
+            if IF_PROPERTY.match(prop) and interface:
+                ifs[interface.name] = interface
+        return ifs
+
+    @property
     def ips(self):
         """:py:class:`sortedcontainers.SortedSet` ([ :py:class:`str` ]): a sorted set containing all ips on this system."""
         ips = sortedcontainers.SortedSet()
-        for prop, interface in six.iteritems(self.__dict__):
-            if IF_PROPERTY.match(prop) and interface:
-                ips.update([x.ip.compressed for x in interface.ifsv4 + interface.ifsv6])
+        for interface in six.itervalues(self.interfaces):
+            ips.update([x.ip.compressed for x in interface.ifsv4 + interface.ifsv6])
         return ips
